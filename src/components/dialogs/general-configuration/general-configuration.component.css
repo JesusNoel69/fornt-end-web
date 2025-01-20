@@ -1,0 +1,34 @@
+.without-border{
+    border: none;
+}
+.card-content{
+    display:flex; 
+    justify-content: center; 
+    flex-direction: column; 
+    gap:20px; 
+    align-items:center;
+}
+#revision-succes{/*change in div with warning, success or error*/
+    background: var(--success-color);
+}
+.display-content{
+    width:50%; display:flex; justify-content:space-between;
+}
+.backckground-developer-information{
+    background: var(--background-color-2); 
+    width:50%; 
+    align-items:center; 
+    border-radius: 7px; 
+    padding:.5rem;
+}
+.developer-information{
+    text-align: center;
+    width: 70%;
+    border-radius:7px!important;
+
+    height:70%;
+    background: var(--background-color-2);
+}
+.revision-background{
+    background: var(--background-color-2);
+}

@@ -1,0 +1,8 @@
+.mat-mdc-card-title {
+    --mat-card-title-text-size:12px;
+    font-family: var(--mat-card-title-text-font) !important;
+    line-height: var(--mat-card-title-text-line-height);
+    font-size: var(--mat-card-title-text-size);
+    letter-spacing: var(--mat-card-title-text-tracking);
+    font-weight: var(--mat-card-title-text-weight);
+}

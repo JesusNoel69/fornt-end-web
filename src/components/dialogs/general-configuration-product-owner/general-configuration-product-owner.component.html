@@ -1,0 +1,57 @@
+<h2 mat-dialog-title >
+    <button mat-button mat-dialog-close class="button-close">X</button>
+    Configuracion general</h2>
+<mat-dialog-content class="mat-typography">
+    <mat-card appearance="outlined" style="border: none;">
+        <mat-card-content >
+            <mat-grid-list cols="4" rowHeight="10vh">
+                  <mat-grid-tile
+                    [colspan]="2"
+                    [rowspan]="4"
+                    >
+                    <div class="container-docker">
+                        <button mat-raised-button class="button">Imagen de Docker</button>
+                        <div>
+                            <button mat-raised-button class="button">Crear equipo</button>
+                            <button mat-raised-button (click)="fileInput.click()">
+                                <img src="../../../assets/ms-excel.svg" alt="Excel" >
+                            </button>
+                            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" />
+    
+                        </div>
+                        <textarea id="team-members-add"></textarea>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile
+                    [colspan]="2"
+                    [rowspan]="3"
+                    >
+                        <div class="input-container">
+                            <p>Rol: <input/></p>
+                            <p>Nombre: <input/></p>
+                            <p>Cuenta: <input/></p>
+                            <button mat-raised-button class="button" id="add-product-owner-configuration">Agregar</button>
+                        </div>
+                </mat-grid-tile>
+                <mat-grid-tile
+                [colspan]="2"
+                [rowspan]="1"
+                    >
+                        <div class="revision-container" >
+                            <button mat-raised-button class="button" >Revision del proyecto</button>
+                            <div 
+                                class="circle">
+                            </div>
+                        </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+            
+            
+        </mat-card-content>
+    </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  
+  <button mat-raised-button [mat-dialog-close]="true" class="confirm" cdkFocusInitial>Confirmar</button>
+</mat-dialog-actions>
+

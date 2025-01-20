@@ -1,0 +1,31 @@
+input{
+    border:none;
+    border-radius: 2.5px;
+    background: var(--background-color-2);
+    flex: 1;
+}
+.button{
+    background: var(--button-configuration) !important;
+}
+.input-container{
+    display:flex; flex-direction: column; gap:5px; height:100%;
+}
+.revision-container{
+    display:flex; flex-direction: row; gap:5px;align-items: center;
+}
+#add-product-owner-configuration{
+    background: var(--mdc-circular-progress-active-indicator-color) !important;
+    color:var(--primary-color);
+}
+mat-grid-tile{
+    display:flex; flex-direction: column;
+}
+.container-docker{
+    display:flex; flex-direction: column; gap:10%; height:100%;
+}
+#team-members-add{
+    width: 100%; height:50% !important;
+}
+img{
+    width: 24px; height: 24px; margin-right: 8px;
+}

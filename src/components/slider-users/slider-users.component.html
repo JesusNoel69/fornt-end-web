@@ -1,0 +1,25 @@
+<section class="slider-container">
+    <button mat-icon-button (click)="prevSlide()" class="nav-button">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+  
+    <div class="slider">
+        @for (item of  visibleItems; track $index) {
+            <button
+            
+                class="slider-item"
+                [style.background-color]="item.color"
+                [style]="{
+                    'transform': getScale($index),
+                    'background-color': item.color
+                }"
+                 [style.z-index]="getZIndex($index)"
+            >
+                {{ item.label }}
+            </button>
+        }
+    </div>
+    <button mat-icon-button (click)="nextSlide()" class="nav-button">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+</section>

@@ -1,0 +1,43 @@
+.container-principal{
+    background: var(--background-color-2); 
+    padding:0;
+}
+mat-card{
+    background:transparent; 
+    border: none;
+}
+mat-card-content{
+    display:flex; 
+    justify-content: center; 
+    flex-direction: column; 
+    /* gap:.7rem;  */
+    align-items:center;
+}
+p{
+    margin:0;
+    color:black;
+}
+input{
+    display:flex; 
+    width:70%; 
+    border-radius: 5px; 
+    background:var(--primary-color); 
+    border:none; 
+    height:20px; 
+    justify-content:space-between;
+    margin-bottom: 1.5rem;
+}
+.container-states{
+    display:flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    gap: 1.5rem; 
+    align-items: center;
+}
+.states{
+    display: flex; 
+    flex-wrap: nowrap; 
+    flex-direction: row; 
+    gap:.5rem;
+}
+

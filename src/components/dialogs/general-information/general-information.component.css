@@ -1,0 +1,60 @@
+.principal-container{
+  background: var(--background-color-2); 
+  padding:0;
+}
+.scrum-board {
+  display: flex;
+  border-radius: .5rem!important;
+  overflow-x: auto; /* Permite el scroll horizontal */
+  /* overflow-y: hidden;  */
+  background: var(--background-color-2);
+  max-width: 100%;
+  box-sizing: border-box; 
+}
+.scrum-column {
+  width: 150px;
+  min-height: 200px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 0px !important;
+  background: var(--primary-color);
+}
+.header {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+.circle-personal{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+}
+mat-card{
+  background:transparent; 
+  border: none; 
+}
+mat-card-content{
+  display:flex; 
+  justify-content: center; 
+  flex-direction: column;  
+  gap:20px; align-items:center;
+}
+.comments{
+  display:flex; 
+  width:70%;  
+  background:var(--primary-color); 
+  height:100px; 
+  border-radius: .5rem;
+  justify-content:space-between; 
+  border:none;
+}
+.scrum-semanal-information-container{
+  background:var(--primary-color);
+  border-radius: .5rem;
+  width:100%; 
+}

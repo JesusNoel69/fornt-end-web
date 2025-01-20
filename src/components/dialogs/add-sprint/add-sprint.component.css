@@ -1,0 +1,101 @@
+
+#task-list-dialog{
+  height: 100%;
+}
+.container {
+  width: 80%;
+  padding:0;
+  display: inline-block;
+  height:80%;
+  background: white;
+  vertical-align: top;
+  border-radius: 7px;
+}
+.box{
+  display: flex; align-items: flex-start; flex: 1;
+}
+
+.sprint-card-container{
+  box-shadow: none; 
+  background:var(--background-color-2); 
+  height:70%; 
+  width:80%
+}
+mat-card-content{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+  padding:0 !important;
+}
+mat-dialog-content{
+  height:80%;
+}
+mat-card-header{
+  width:100%; 
+  border:1px solid var(--background-color-2); 
+  box-sizing: border-box; 
+  border-radius: 7px 7px 0 0; 
+  padding:0; 
+  justify-content: center;
+}
+.mdc-card{
+  align-items: center !important;
+  justify-content: center;
+}
+.button-position{
+  position:absolute; top:0; left: 0; background:red;
+}
+mat-card-title{
+  color:black;
+}
+#sprint-name{
+  width:80% !important; margin: 0; padding: 0;
+  border:none;
+  border-radius: 2.5px;
+
+}
+
+.sprint-mat-card-actions{
+  width:100%; display:flex; justify-items: center; justify-content: space-between; align-items: center; gap:20px;
+}
+.task-assign-card{
+  width:100% !important; 
+  height: 20vh; 
+  margin: 0; 
+  padding: 0; 
+  overflow-y: none; 
+  scrollbar-width: thin;
+}
+.task-assign-card-content{
+  height: 100%; scrollbar-width: none; overflow-y:none; padding: 5px;
+}
+.assign-task{
+  padding:5px; 
+  max-height: 100%; 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
+  overflow-y: auto; 
+  scrollbar-width: thin; 
+  justify-content: center; 
+  align-items: flex-start;
+  background: var(--primary-color);
+}
+.sprint-card-header{
+  width:100%; justify-content: center;
+}
+.task-card{
+  width: 100px; cursor: move; height: 40px; background: lightgray; border: solid 1px black; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+.sprint-goal-card{
+  width:70% !important; height:10vh; margin: 0; padding: 0;
+  border-radius: 7px;
+}
+.sprint-goal{
+  border-radius: 7px;
+
+  height:100%; 
+  width:100%;
+  border:none;
+}

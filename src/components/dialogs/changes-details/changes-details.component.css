@@ -1,0 +1,79 @@
+.principal-container{
+    background: var(--background-color-2) ;
+}
+mat-card{
+    background:var(--background-color-2);
+    border:none;
+}
+mat-card-content{
+    display:flex; 
+    flex-direction: column; gap:1.5rem;
+}
+.projects-container{
+    display:flex; 
+    align-items:flex-start; 
+    gap:1.5rem; 
+    border:1px solid lightgray; 
+    padding:1.5rem; 
+    flex-wrap:wrap;
+    background: var(--changes-background);
+    border-radius:.3rem;
+}
+.all-width{
+    width:100%;
+    text-align: center;
+}
+.each-sprint{
+    display:flex; 
+    gap:1.5rem; 
+    justify-content:center; 
+    align-items:baseline;
+    flex-wrap:wrap;                       
+}
+.sprint-display{
+    display:flex; 
+    flex-direction: column;
+}
+.perfil-changes{
+    width:40px; 
+    height:40px; 
+    border-radius:50%; 
+    background:pink; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center;
+}
+p{
+    margin:0;
+}
+input{
+    border:1px solid gray; 
+    border-radius:5px; 
+    height:25px; 
+    min-width:100px;
+}
+#changes-task{
+    flex:1;
+}
+#changes-details{
+    flex:2;
+}
+.button-dialog-close{
+    background:red; 
+    color: white !important;
+}
+.button-dialog-close-display{
+    display: flex; 
+    justify-content: flex-end; 
+    /* padding:0; */
+    /* padding-top:-10px; */
+    margin-top:-2.2rem;
+    margin-right:1rem;
+
+}
+/* .flex-space-1{
+    flex:1;
+} */
+.flex-space-2{
+    flex:2;
+}

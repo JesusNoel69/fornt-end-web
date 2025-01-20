@@ -1,0 +1,108 @@
+<h2 mat-dialog-title>
+    <button mat-button mat-dialog-close class="button-position">X</button>
+    Agregar Sprint
+</h2>
+<mat-dialog-content  >
+    <mat-grid-list  cols="12" rowHeight="8vh">
+        <mat-grid-tile
+          [colspan]=5
+          [rowspan]=7
+          [style.background]="'var(--background-color-2)'"
+          >
+          
+          <div class="container">
+              <mat-card-header  >
+                  <mat-card-title>Listado de tareas por hacer</mat-card-title>
+              </mat-card-header>
+              <div id="task-list-dialog"
+                cdkDropList
+                #todoList="cdkDropList"
+                [cdkDropListData]="todo"
+                [cdkDropListConnectedTo]="[doneList]"
+                (cdkDropListDropped)="drop($event)">
+    
+                @for (item of todo; track item) {
+                    <mat-divider></mat-divider>
+                      <div class="box" cdkDrag>
+                          <div class="circle"></div>
+                          <div>{{item}}</div>
+                      </div>                
+                }
+                <mat-divider></mat-divider>
+              </div>
+          </div>
+      </mat-grid-tile>
+    
+    
+      <mat-grid-tile
+          
+          [colspan]=7
+          [rowspan]=7
+          [style.background]="'var(--background-color-2)'"
+          >
+
+          <mat-card appearance="raised" class="sprint-card-container">
+              
+              <mat-card-content  style="display:flex; min-width:0%; margin: 0; padding: 0; gap:10px; flex-direction: column;">
+                <mat-card-header style="width:100%; justify-content: center;">
+                    <mat-card-title>Nombre del Sprint</mat-card-title>
+                </mat-card-header>
+                <input  id="sprint-name">
+                    
+                    
+    
+                <mat-card-header class="sprint-card-header" >
+                    <mat-card-title>Asignacion de tareas</mat-card-title>
+                </mat-card-header>
+                <mat-card  class="task-assign-card" >
+                    <mat-card-content class="task-assign-card-content">
+                        <div
+                            cdkDropList
+                            #doneList="cdkDropList"
+                            [cdkDropListData]="done"
+                            [cdkDropListConnectedTo]="[todoList]"
+                            class="assign-task"
+                            (cdkDropListDropped)="drop($event)">
+                            @for (item of done; track $index) {
+                                <div 
+                                class="task-card"
+                                     
+                                    cdkDrag>
+                                    {{item}}
+                                </div>
+                            }
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                
+                
+                <mat-card-header style="width:100%; justify-content: center;">
+                    <mat-card-title>Meta del Sprint</mat-card-title>
+                </mat-card-header>
+                <mat-card class="sprint-goal-card">
+                    
+                    <mat-card-content  style="height:100%;">
+                        <textarea class="sprint-goal" >
+                           
+                        </textarea>
+                    </mat-card-content>
+                </mat-card>
+                
+    
+              </mat-card-content>
+              <mat-card-actions  class="sprint-card-actions" >
+                <button mat-raised-button  mat-dialog-close>
+                   Cancelar
+                </button>
+                <button mat-raised-button  mat-dialog-close>
+                   Confirmar
+                </button>
+            </mat-card-actions>
+          </mat-card>
+          
+      </mat-grid-tile>
+     
+    </mat-grid-list>
+</mat-dialog-content>
+
+

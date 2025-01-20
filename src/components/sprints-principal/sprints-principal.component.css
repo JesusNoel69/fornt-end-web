@@ -1,0 +1,92 @@
+.card {
+    min-width: 250px;
+    min-height: 200px;
+    background:#D9D9D9;
+    box-shadow: none;
+    margin-right:5px;
+    margin-left:5px;
+}
+
+.custom-arrow-button {
+    font-size: 20px;
+    padding: 0;
+    height: 100px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    border-radius: 5px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: none;
+    border: none;
+}
+
+.icon-overwrite-height {
+    font-size: 48px; /* Tamaño del icono ajustado */
+    line-height: 1; /* Corrige la alineación vertical */
+    margin-top: -10px !important;
+}
+
+.custom-arrow-button mat-icon {
+    color: gray; /* Color del icono */
+}
+
+.add-button{
+    background: var(--success-color);
+    color:var(--primary-color);
+    position: absolute; 
+    top: 0;
+    right: 0;
+    margin: 24px 3px;
+}
+.container{
+    background: #D9D9D9; 
+    width:100%;
+    height: 100%; 
+    gap:50px; 
+    display:flex; 
+    align-items: center; 
+    justify-content:center; 
+    margin-top: 15px;
+}
+app-slider-users{
+    position: absolute; 
+    top: 0; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin-top:-22px;
+}
+mat-card-header{
+    padding: 0 !important; 
+    margin-bottom: 7px; 
+    background: var( --mdc-circular-progress-active-indicator-color); 
+    border-radius: 7px; 
+    color: white; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+mat-card-content{
+    flex:1;
+    background: white;
+    border-radius: 7px 7px 0px 0px;
+}
+mat-card-actions{
+    margin-top: auto; 
+    background: white; 
+    border-radius: 0 0 7px 7px;
+}
+.objective-button{
+    background:#CBE8F0 !important;
+}
+.slider-container{
+    width: 520px ; 
+    overflow: hidden;
+    div{
+        display: flex; transition: transform 0.5s ease-in-out;
+    }
+}
+.align-sprints-container{
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}

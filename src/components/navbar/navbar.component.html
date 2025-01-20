@@ -1,0 +1,36 @@
+<section class="container mat-app-background">
+  <div class="perfil-align">
+    <mat-icon aria-hidden="false" class="perfil" aria-label="Perfil icon">
+      account_circle
+    </mat-icon>
+    <button mat-raised-button routerLink="/perfil">Perfil</button>
+  </div>  
+
+  <button class="invisible-button">
+    @if (productOwner) {
+      <mat-icon aria-hidden="false" aria-label="Settings icon" (click)="openGeneralConfigurationProductOwner()">
+        settings
+      </mat-icon>
+    }@else {
+      <mat-icon aria-hidden="false" aria-label="Settings icon" (click)="openGeneralConfiguration()">
+        settings
+      </mat-icon>
+    }
+    
+  </button>
+  
+  <div class="button-row">
+    <button mat-raised-button 
+            routerLink="/sprints" 
+            routerLinkActive="activebutton" 
+            aria-current="page">Sprints</button>
+    <button mat-raised-button 
+            routerLink="/scrum" 
+            routerLinkActive="activebutton" 
+            aria-current="page">Tablero de Scrum</button>
+    <button mat-raised-button 
+            routerLink="/home" 
+            routerLinkActive="activebutton" 
+            aria-current="page">Tablero principal</button>
+  </div>
+</section>

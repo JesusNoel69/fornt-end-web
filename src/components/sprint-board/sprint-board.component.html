@@ -1,0 +1,109 @@
+<mat-grid-list cols="12" rowHeight="9.8vh">
+    <mat-grid-tile
+        [colspan]=4
+        [rowspan]=9
+        [style.background]="'var(--background-color-2)'"
+        >
+        <div class="container to-do-list">
+            <mat-card-header id="header-to-do" >
+                <mat-card-title>Listado de tareas por hacer</mat-card-title>
+            </mat-card-header>
+            <div
+              cdkDropList
+              #todoList="cdkDropList"
+              [cdkDropListData]="todo"
+              [cdkDropListConnectedTo]="[doneList]"
+              class="list to-do-content"
+              (cdkDropListDropped)="drop($event)">
+              @for (item of todo; track item) {
+                    <div class="box" cdkDrag >
+                        <div class="circle" ></div>
+                        <div>{{item}}</div>
+                    </div>                
+              }
+            </div>
+            <button mat-raised-button (click)="openAddTask()" class="button-add">Agregar</button>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]=8
+        [rowspan]=5
+        [style.background]="'var(--background-color-2)'"
+        >
+        <mat-card appearance="raised" class="principal-card">
+            <mat-card-header>
+                <mat-card-title>Sprint #N</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content class="container-sprint" >
+                <mat-card >
+                    <mat-card-content>
+                        <div class="container">
+                            <div
+                            class="box-sprint"
+                                cdkDropList
+                                #doneList="cdkDropList"
+                                [cdkDropListData]="done"
+                                [cdkDropListConnectedTo]="[todoList]"
+                                (cdkDropListDropped)="drop($event)">
+                                @for (item of done; track $index) {
+                                    <div 
+                                        class="box-card"
+                                        cdkDrag>
+                                        {{item}}
+                                    </div>
+                                    @if ((($index + 1) % 5 == 3) || (($index + 1) % 5 == 0)){
+                                        {{changePlus3($index+1)}}
+                                        <div style="width: 20px; height: 40px;" ></div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </mat-card-content>
+                    <mat-card-actions >
+                        <button mat-icon-button class="nav-button">
+                            <mat-icon >chevron_left</mat-icon>
+                        </button>
+                        <button mat-icon-button class="nav-button">
+                            <mat-icon >chevron_right</mat-icon>
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card appearance="raised">
+                    <mat-card-header id="meta">
+                        <mat-card-title>Meta</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      Informacion de la meta
+                    </mat-card-content>
+                </mat-card>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [style.background]="'var(--background-color-2)'"
+        [colspan]=8
+        [rowspan]=4>
+        <mat-card appearance="raised" class="principal-card" id="card-task-details">
+            <mat-card-header >
+                <mat-card-title>Detalles de tarea</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div >
+                    <div>Responsable: </div>
+                    <div > Estado:  <div class="circle"></div></div>
+                </div>
+                <div id="description">
+                    <p>Descripción:</p>
+                    <mat-divider></mat-divider>
+                    Información
+                    srdfv
+                    szadf
+                    <button mat-icon-button class="icon-button" (click)="openGeneralInformation()">
+                      <mat-icon>message</mat-icon>
+                    </button>
+                  </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>

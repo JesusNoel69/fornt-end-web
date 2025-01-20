@@ -1,0 +1,26 @@
+<div class="container-principal">
+    <h2 mat-dialog-title>
+        <button mat-button mat-dialog-close class="button-close">X</button>
+        Agregar tarea</h2>
+    <mat-dialog-content class="mat-typography">
+        <mat-card appearance="outlined" >
+            <mat-card-content>
+                <p>Nombre:</p>
+                <input id="task-name"/>
+                <p>Informacion:</p>
+                <input id="task-information"/>
+                <div class="container-states">
+                    <P>Estado: </P>
+                    <div class="states">
+                        @for (state of states; track $index) {
+                            <div 
+                                class="circle">
+                            </div>
+                        }
+                    </div>           
+                    <button mat-raised-button class="confirm">Confirmar</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-dialog-content>
+</div>

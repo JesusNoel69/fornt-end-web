@@ -1,0 +1,31 @@
+<div class="principal-container">
+    <h2 mat-dialog-title >
+        <button mat-button mat-dialog-close class="button-close">X</button>
+        Informacion general
+    </h2>
+    <mat-dialog-content class="mat-typography" >
+        <mat-card appearance="outlined">
+            <mat-card-content >
+                <p>comentarios:</p>
+                <textarea class="comments" >
+                </textarea>
+                <p>Scrum semanal:</p>
+                <div class="scrum-semanal-information-container">
+                    <div class="scrum-board">
+                      @for (column of columns; track $index) {
+                        <mat-card class="scrum-column">
+                          <div class="header">
+                            <div class="circle-personal" [style.background]="column.color">{{ column.initials }}</div>
+                          </div>
+                          <mat-divider></mat-divider>
+                          <div class="content">
+                            {{ column.content }}
+                          </div>
+                        </mat-card>
+                      }
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-dialog-content>
+</div>

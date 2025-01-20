@@ -1,0 +1,26 @@
+<section >
+    <mat-card class="details-card" >
+        <mat-card-header class="center-text">
+            <mat-card-title>Detalles del Sprint</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <p>Content</p>
+          </mat-card-content>
+    </mat-card>
+    <mat-card class="card" appearance="outlined" >
+        <mat-card-content>
+          <mat-progress-spinner
+              [mode]="mode"
+              [value]="value">
+          </mat-progress-spinner>
+        </mat-card-content>
+        <mat-card-actions class="center-text">
+            <button mat-raised-button class="details-button" (click)="openChangeDetails()">
+                <mat-icon class="overwrite-height">menu</mat-icon>
+                <span>Detalles</span>
+            </button>
+        </mat-card-actions>
+        
+    </mat-card>
+</section>
