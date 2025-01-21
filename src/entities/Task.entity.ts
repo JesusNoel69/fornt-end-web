@@ -1,5 +1,5 @@
 import { ChangeDetails } from "./changedetails.entity";
-import { ProductBacklog } from "./ProductBacklog.entity";
+import { ProductBacklog } from "./productbacklog.entity";
 import { Sprint } from "./sprint.entity";
 
 export interface Task{

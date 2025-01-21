@@ -1,4 +1,4 @@
-import { ProductBacklog } from "./ProductBacklog.entity";
+import { ProductBacklog } from "./productbacklog.entity";
 import { Sprint } from "./sprint.entity";
 import { TeamProject } from "./teamproject.entity";
 
