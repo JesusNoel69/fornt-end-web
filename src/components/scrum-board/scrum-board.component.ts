@@ -9,6 +9,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { AddTaskComponent } from '../dialogs/add-task/add-task.component';
 import { MatDialog } from '@angular/material/dialog';
+import { concatWith } from 'rxjs';
 
 @Component({
   selector: 'app-scrum-board',
@@ -35,39 +36,87 @@ export class ScrumBoardComponent {
   columns = [this.todo, this.progress, this.review, this.done];
 
   drop(event: CdkDragDrop<string[]>) {
-    if ( event.previousIndex !== event.currentIndex){
-      if(event.container.data[event.currentIndex]!="")return;
-      const prevIndex = event.previousIndex;
-      const currIndex = event.currentIndex;
-      const list = event.container.data;
-      const item = list[prevIndex];
-      list[prevIndex] = '';
-      list[currIndex] = item;
-      this.syncColumns(prevIndex, currIndex, event.container.data);
-      console.log(this.columns);
-    }else{
-      const temp = event.previousContainer.data[event.previousIndex];
-      const temp2 = event.container.data[event.currentIndex];
-      event.container.data[event.currentIndex] = temp;
-      event.previousContainer.data[event.previousIndex] = temp2;
+    const prevIndex = event.previousIndex;
+    const currIndex = event.currentIndex;
+    const prevList = event.previousContainer.data;
+    const currList = event.container.data;
+
+    // Validar que el drop esté dentro del rango válido de la lista destino
+    if (currIndex >= currList.length) {
+      console.warn('Drop fuera del rango válido');
+      return; // Salir si el índice está fuera del rango
+    }
+
+    if (event.previousContainer === event.container) {
+      //misma lista
+      this.reorderWithinList(prevList, prevIndex, currIndex);
+      this.syncColumns(prevIndex, currIndex, prevList);
+    } else {
+      //entre listas
+      this.exchangeBetweenLists(prevList, currList, prevIndex, currIndex);
+    }
+
+    console.log(this.columns);
+  }
+
+  reorderWithinList(list: string[], prevIndex: number, currIndex: number): void {
+    const item = list[prevIndex];
+    //elimina el elemento de su posición anterior
+    list.splice(prevIndex, 1);
+    //inserta el elemento en la nueva posición
+    list.splice(currIndex, 0, item);
+    // que no exceda el tamaño
+    while (list.length < this.columns[0].length) {
+      list.push('');
     }
   }
-  syncColumns(prevIndex: number, currIndex: number, currentColumn: string[]): void {
+
+  //intercambia valores entre dos listas en posiciones específicas.
+  exchangeBetweenLists(
+    prevList: string[],
+    currList: string[],
+    prevIndex: number,
+    currIndex: number
+  ): void {
+    const prevItem = prevList[prevIndex];
+    const currItem = currList[currIndex];
+
+    currList[currIndex] = prevItem;
+    prevList[prevIndex] = currItem;
+
+    this.syncColumns();
+  }
+
+  //sincroniza las demás columnas después de un movimiento manteniendo la estructura.
+   
+  syncColumns(prevIndex?: number, currIndex?: number, currentColumn?: string[]): void {
     this.columns.forEach((column) => {
-      if (column === currentColumn) {//ya se manejo
+      // Si es el movimiento dentro de una misma lista, ignora la lista actual
+      if (currentColumn && column === currentColumn) {
         return;
       }
 
-      if (prevIndex < currIndex) {
-        for (let i = prevIndex; i < currIndex; i++) {
-          column[i] = column[i + 1] || ''; //mover hacia arriba
+      if (prevIndex !== undefined && currIndex !== undefined) {
+        if (prevIndex < currIndex) {
+          //hacia abajo
+          for (let i = prevIndex; i < currIndex; i++) {
+            column[i] = column[i + 1] || '';
+          }
+          column[currIndex] = '';
+        } else if (prevIndex > currIndex) {
+          //hacia arriba
+          for (let i = prevIndex; i > currIndex; i--) {
+            column[i] = column[i - 1] || '';
+          }
+          column[currIndex] = '';
         }
-        column[currIndex] = ''; //vaciar la posición final
-      } else if (prevIndex > currIndex) {
-        for (let i = prevIndex; i > currIndex; i--) {
-          column[i] = column[i - 1] || ''; //mover hacia abajo
-        }
-        column[currIndex] = '';
+      }
+    });
+
+    // todas las lista con el mismo tamaño
+    this.columns.forEach((column) => {
+      while (column.length > this.columns[0].length) {
+        column.pop(); // eliminar cualquier elemento extra fuera del rango
       }
     });
   }
@@ -79,3 +128,4 @@ export class ScrumBoardComponent {
     });
   }
 }
+
