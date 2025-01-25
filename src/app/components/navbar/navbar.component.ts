@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy,Component, inject } from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { GeneralConfigurationProductOwnerComponent } from '../dialogs/general-configuration-product-owner/general-configuration-product-owner.component';
-import { GeneralConfigurationComponent } from '../dialogs/general-configuration/general-configuration.component';
+import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { RouterLink, RouterLinkActive } from "@angular/router";
+import { GeneralConfigurationProductOwnerComponent } from "../dialogs/general-configuration-product-owner/general-configuration-product-owner.component";
+import { GeneralConfigurationComponent } from "../dialogs/general-configuration/general-configuration.component";
 
 
 @Component({

@@ -1,6 +1,7 @@
-import { Project } from "../../entities/project.entity";
+import { Project } from "../entities/project.entity";
 
-const project1: Project = {
+
+let project1: Project = {
     Id: 1,
     StartDate: new Date('2025-01-01'),
     State: 1,
@@ -90,7 +91,7 @@ const project1: Project = {
         ]
     }
 };
-const project2: Project = {
+let project2: Project = {
     Id: 2,
     StartDate: new Date('2025-02-01'),
     State: 2,
@@ -101,7 +102,7 @@ const project2: Project = {
         {
             Id: 2,
             StartDate: new Date('2025-02-05'),
-            State: 1,
+            State: 3,
             Repository: "https://github.com/example/ecommerce-platform/sprint1",
             Goal: "Implementar sistema de autenticación",
             ProjectNumber: 202,
@@ -113,6 +114,48 @@ const project2: Project = {
                     WeeklyScrum: "Finalizada integración inicial",
                     Description: "Creación de tablas para usuarios y roles",
                     State: 2,
+                    ChangeDetails: [],
+                    Sprint: null as any,
+                    ProductBacklog: null as any,
+                },
+                {
+                    Id: 4,
+                    Name: "Configurar base de datos 2",
+                    WeeklyScrum: "Finaliza",
+                    Description: "Creación de tablas",
+                    State: 4,
+                    ChangeDetails: [],
+                    Sprint: null as any,
+                    ProductBacklog: null as any,
+                }
+            ],
+            Project: null as any,
+        },
+        {
+            Id: 5,
+            StartDate: new Date('2025-02-05'),
+            State: 1,
+            Repository: "https://github.com/example/ecommerce-platform/sprint1",
+            Goal: "Implementar sistema de autenticación",
+            ProjectNumber: 202,
+            ChangeDetails: [],
+            Tasks: [
+                {
+                    Id: 6,
+                    Name: "Configurar base de datos",
+                    WeeklyScrum: "Finalizada integración inicial",
+                    Description: "Creación de tablas para usuarios y roles",
+                    State: 1,
+                    ChangeDetails: [],
+                    Sprint: null as any,
+                    ProductBacklog: null as any,
+                },
+                {
+                    Id: 7,
+                    Name: "Configurar base de datos 2",
+                    WeeklyScrum: "Finaliza",
+                    Description: "Creación de tablas",
+                    State: 4,
                     ChangeDetails: [],
                     Sprint: null as any,
                     ProductBacklog: null as any,
@@ -180,7 +223,7 @@ const project2: Project = {
         ]
     }
 };
-let projects: Project[]=[project1, project2];
+export let projects: Project[]=[project1, project2];
 
 // const project1: Project = {
 //     Id: 1,

@@ -1,4 +1,4 @@
-<section style="width: 100%;" class="mat-app-background">
+<section class="mat-app-background">
 @for (project of projects; track $index) {
     <mat-card class="project-card" appearance="outlined"
     [class.selected]="selectedProjectIndex === $index"
@@ -7,12 +7,12 @@
           <!-- <div mat-card-avatar class="example-header-image"></div> -->
           <!-- <mat-card-title>Shiba Inu</mat-card-title> -->
           <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
-          <p style="margin: 0  auto;">
-            Proyecto #{{project}}
+          <p >
+            Proyecto #{{project.Id}}
           </p>
         </mat-card-header>
         <mat-card-content class="project-card">
-          <mat-progress-bar mode="determinate" value="40" ></mat-progress-bar>
+          <mat-progress-bar mode="determinate" value="{{percentajeCompleted(project.Sprints)}}" ></mat-progress-bar>
         </mat-card-content>
     </mat-card>
 }
