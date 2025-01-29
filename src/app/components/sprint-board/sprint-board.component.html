@@ -15,10 +15,11 @@
               [cdkDropListConnectedTo]="[doneList]"
               class="list to-do-content"
               (cdkDropListDropped)="drop($event)">
+              todo
               @for (item of todo; track item) {
                     <div class="box" cdkDrag >
-                        <div class="circle" ></div>
-                        <div>{{item}}</div>
+                        <div class="circle" >{{item.State}}</div>
+                        <div>{{item.Name}}</div>
                     </div>                
               }
             </div>
@@ -30,9 +31,9 @@
         [rowspan]=5
         [style.background]="'var(--background-color-2)'"
         >
-        <mat-card appearance="raised" class="principal-card">
+        <mat-card appearance="raised" class="principal-card" style="min-width: 80%;">
             <mat-card-header>
-                <mat-card-title>Sprint #N</mat-card-title>
+                <mat-card-title>Sprint #{{sprintNumber}}</mat-card-title>
             </mat-card-header>
 
             <mat-card-content class="container-sprint" >
@@ -50,7 +51,7 @@
                                     <div 
                                         class="box-card"
                                         cdkDrag>
-                                        {{item}}
+                                        {{item.Name}}
                                     </div>
                                     @if ((($index + 1) % 5 == 3) || (($index + 1) % 5 == 0)){
                                         {{changePlus3($index+1)}}
@@ -74,7 +75,7 @@
                         <mat-card-title>Meta</mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                      Informacion de la meta
+                      {{goal}}
                     </mat-card-content>
                 </mat-card>
             </mat-card-content>
@@ -96,9 +97,7 @@
                 <div id="description">
                     <p>Descripción:</p>
                     <mat-divider></mat-divider>
-                    Información
-                    srdfv
-                    szadf
+                    {{description}}
                     <button mat-icon-button class="icon-button" (click)="openGeneralInformation()">
                       <mat-icon>message</mat-icon>
                     </button>

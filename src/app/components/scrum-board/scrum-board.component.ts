@@ -1,92 +1,4 @@
-// import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatTableModule } from '@angular/material/table';
-// import {
-//   CdkDragDrop,
-//   CdkDrag,
-//   CdkDropList,
-//   CdkDropListGroup,
-// } from '@angular/cdk/drag-drop';
-// import { AddTaskComponent } from '../dialogs/add-task/add-task.component';
-// import { MatDialog } from '@angular/material/dialog';
-
-// @Component({
-//   selector: 'app-scrum-board',
-//   standalone: true,
-//   imports: [
-//     MatTableModule,
-//     MatButtonModule,
-//     CdkDropListGroup,
-//     CdkDropList,
-//     CdkDrag,
-//   ],
-//   templateUrl: './scrum-board.component.html',
-//   styleUrls: ['./scrum-board.component.css'],
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
-// export class ScrumBoardComponent {
-//   readonly dialog = inject(MatDialog);
-
-//   todo = ['', 'task 1', '', ''];
-//   progress = ['', '', 'task 2', ''];
-//   review = ['', '', '', 'task 3'];
-//   done = ['task 4', '', '', ''];
-
-//   columns = [this.todo, this.progress, this.review, this.done];
-
-//   drop(event: CdkDragDrop<string[]>) {
-//     const prevIndex = event.previousIndex;
-//     const currIndex = event.currentIndex;
-//     const prevList = event.previousContainer.data;
-//     const currList = event.container.data;
-
-//     // Restringir movimientos diagonales
-//     if (event.previousContainer !== event.container && prevIndex !== currIndex) {
-//       console.warn('Movimiento no permitido: solo se permite mover en el mismo índice.');
-//       return;
-//     }
-
-//     // Movimiento dentro de la misma lista
-//     if (event.previousContainer === event.container) {
-//       this.reorderWithinList(prevList, prevIndex, currIndex);
-//     } 
-//     // Movimiento entre listas en el mismo índice
-//     else {
-//       this.exchangeBetweenLists(prevList, currList, prevIndex, currIndex);
-//     }
-
-//     console.log(this.columns);
-//   }
-
-//   reorderWithinList(list: string[], prevIndex: number, currIndex: number): void {
-//     const item = list[prevIndex];
-//     list.splice(prevIndex, 1);
-//     list.splice(currIndex, 0, item);
-//   }
-
-//   exchangeBetweenLists(
-//     prevList: string[],
-//     currList: string[],
-//     prevIndex: number,
-//     currIndex: number
-//   ): void {
-//     const prevItem = prevList[prevIndex];
-//     const currItem = currList[currIndex];
-
-//     currList[currIndex] = prevItem;
-//     prevList[prevIndex] = currItem;
-//   }
-
-//   openAddTask() {
-//     const dialogRef = this.dialog.open(AddTaskComponent, { width: '70%' });
-//     dialogRef.afterClosed().subscribe((result) => {
-//       console.log(`Dialog result: ${result}`);
-//     });
-//   }
-// }
-
-
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import {
@@ -97,7 +9,8 @@ import {
 } from '@angular/cdk/drag-drop';
 import { AddTaskComponent } from '../dialogs/add-task/add-task.component';
 import { MatDialog } from '@angular/material/dialog';
-import { concatWith } from 'rxjs';
+import { Task } from '../../entities/Task.entity';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'app-scrum-board',
@@ -111,47 +24,100 @@ import { concatWith } from 'rxjs';
   ],
   templateUrl: './scrum-board.component.html',
   styleUrls: ['./scrum-board.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScrumBoardComponent {
+export class ScrumBoardComponent implements OnInit {
+  private projectService = inject(ProjectService);
+  private cdr = inject(ChangeDetectorRef);
+  ngOnInit() {
+    this.projectService.getSelectedProject().subscribe((project) => {
+      if (project && project.ProductBacklog?.Tasks) {
+        this.loadTasks(project.ProductBacklog.Tasks);
+      }
+    });
+  }
+  
+  loadTasks(tasks: Task[]) {
+    // clasifica las tareas según el estado
+    this.todo = [];
+    this.progress = [];
+    this.review = [];
+    this.done = [];
+    tasks.forEach(task => {
+      if(task.State===1){
+        this.todo.push(task);
+        this.progress.push(null);
+        this.review.push(null);
+        this.done.push(null);
+      }else if(task.State===2){
+        this.todo.push(null);
+        this.progress.push(task);
+        this.review.push(null);
+        this.done.push(null);
+      }else if(task.State===3){
+        this.todo.push(null);
+        this.progress.push(null);
+        this.review.push(task);
+        this.done.push(null);
+      }else{
+        this.todo.push(null);
+        this.progress.push(null);
+        this.review.push(null);
+        this.done.push(task);
+      }
+    });
+    this.columns = [this.todo, this.progress, this.review, this.done];
+    this.cdr.detectChanges();
+  }
   readonly dialog = inject(MatDialog);
 
-  todo = ['', 'task 1', '', ''];
-  progress = ['', '', 'task 2', ''];
-  review = ['', '', '', 'task 3'];
-  done = ['task 4', '', '', ''];
+  // todo = ['', 'task 1', '', ''];
+  // progress = ['', '', 'task 2', ''];
+  // review = ['', '', '', 'task 3'];
+  // done = ['task 4', '', '', ''];
 
-  columns = [this.todo, this.progress, this.review, this.done];
+  // columns = [this.todo, this.progress, this.review, this.done];
 
-  drop(event: CdkDragDrop<string[]>) {
+  todo: (Task | null)[] = [];
+  progress: (Task | null)[] = [];
+  review: (Task | null)[] = [];
+  done: (Task | null)[] = [];
+
+  columns: (Task|null)[][] = [this.todo, this.progress, this.review, this.done];
+  
+  drop(event: CdkDragDrop<(Task | null)[], any, any>) {
     const prevIndex = event.previousIndex;
     const currIndex = event.currentIndex;
     const prevList = event.previousContainer.data;
     const currList = event.container.data;
 
     // Validar que el drop esté dentro del rango válido de la lista destino
+    if(currList)
     if (currIndex >= currList.length) {
       console.warn('Drop fuera del rango válido');
       return; // Salir si el índice está fuera del rango
     }
-    if(event.previousContainer.data[prevIndex]==""){
-      console.log("nulo");
-      return;
-    }
 
     if (event.previousContainer === event.container) {
       //misma lista
-      this.reorderWithinList(prevList, prevIndex, currIndex);
-      this.syncColumns(prevIndex, currIndex, prevList);
+      if(prevList){
+        if(prevList[prevIndex]==null)return;//que no se puedan arrastrar los null
+        this.reorderWithinList(prevList, prevIndex, currIndex);
+      }
+      if(prevList)
+        this.syncColumns(prevIndex, currIndex, prevList);
     } else {
       //entre listas
-      this.exchangeBetweenLists(prevList, currList, prevIndex, currIndex);
-    }
+      if(prevList[prevIndex]==null)return;//que no se puedan arrastrar los null
 
-    // console.log(this.columns);
+      if(prevList || currList)
+        this.exchangeBetweenLists(prevList, currList, prevIndex, currIndex);
+    }
+    console.log(this.columns);
   }
 
-  reorderWithinList(list: string[], prevIndex: number, currIndex: number): void {
+  reorderWithinList(list: (Task|null)[], prevIndex: number, currIndex: number): void {
+    if(!list)return;
     const item = list[prevIndex];
     //elimina el elemento de su posición anterior
     list.splice(prevIndex, 1);
@@ -159,41 +125,31 @@ export class ScrumBoardComponent {
     list.splice(currIndex, 0, item);
     // que no exceda el tamaño
     while (list.length < this.columns[0].length) {
-      list.push('');
+      list.push(null);
     }
   }
 
   //intercambia valores entre dos listas en posiciones específicas.
   exchangeBetweenLists(
-    prevList: string[],
-    currList: string[],
+    prevList: (Task|null)[],
+    currList: (Task|null)[],
     prevIndex: number,
     currIndex: number
   ): void {
-    // Validar que solo se permita mover al mismo índice
-    if (prevIndex != currIndex) {
-      console.warn(
-        'Movimiento no permitido: solo se permite intercambiar en el mismo índice entre listas.'
-      );
-      return;
-    }
-  
-    // Intercambiar elementos entre listas en el mismo índice
     const prevItem = prevList[prevIndex];
     const currItem = currList[currIndex];
-  
+    if(currIndex!==prevIndex)return;
     currList[currIndex] = prevItem;
     prevList[prevIndex] = currItem;
+    this.syncColumns();
   }
-  
 
   //sincroniza las demás columnas después de un movimiento manteniendo la estructura.
    
-  syncColumns(prevIndex?: number, currIndex?: number, currentColumn?: string[]): void {
+  syncColumns(prevIndex?: number, currIndex?: number, currentColumn?: Task[]): void {
     this.columns.forEach((column) => {
       // Si es el movimiento dentro de una misma lista, ignora la lista actual
       if (currentColumn && column === currentColumn) {
-        console.log("here");
         return;
       }
 
@@ -201,15 +157,15 @@ export class ScrumBoardComponent {
         if (prevIndex < currIndex) {
           //hacia abajo
           for (let i = prevIndex; i < currIndex; i++) {
-            column[i] = column[i + 1] || '';
+            column[i] = column[i + 1] || null;
           }
-          column[currIndex] = '';
+          column[currIndex] = null;
         } else if (prevIndex > currIndex) {
           //hacia arriba
           for (let i = prevIndex; i > currIndex; i--) {
-            column[i] = column[i - 1] || '';
+            column[i] = column[i - 1] || null;
           }
-          column[currIndex] = '';
+          column[currIndex] = null;
         }
       }
     });
@@ -217,16 +173,24 @@ export class ScrumBoardComponent {
     // todas las lista con el mismo tamaño
     this.columns.forEach((column) => {
       while (column.length > this.columns[0].length) {
-        column.pop();
+        column.pop(); // eliminar cualquier elemento extra fuera del rango
       }
     });
   }
 
   openAddTask() {
     const dialogRef = this.dialog.open(AddTaskComponent, { width: '70%' });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+    dialogRef.afterClosed().subscribe((newTask: Task | null) => {
+      if (newTask) {
+        // Agregar la nueva tarea al backlog del tablero
+        this.projectService.getSelectedProject().subscribe((project) => {
+          if (project && project.ProductBacklog?.Tasks) {
+            project.ProductBacklog.Tasks.push(newTask);
+            this.loadTasks(project.ProductBacklog.Tasks); // Recargar las tareas en el tablero
+          }
+        });
+      }
     });
   }
+  
 }
-

@@ -6,19 +6,25 @@
         <mat-card appearance="outlined" >
             <mat-card-content>
                 <p>Nombre:</p>
-                <input id="task-name"/>
+                <input [(ngModel)]="taskName"/>
                 <p>Informacion:</p>
-                <input id="task-information"/>
+                <input [(ngModel)]="taskInformation"/>
+                <p>Scrum Semanal:</p>
+                <input [(ngModel)]="taskWeeklyScrum"/>
                 <div class="container-states">
                     <P>Estado: </P>
                     <div class="states">
                         @for (state of states; track $index) {
-                            <div 
-                                class="circle">
+                            <div
+                                id="state-{{ state }}"
+                                class="circle"
+                                (click)="setState($index)"
+                                [class.active]="currentState === state"
+                            >
                             </div>
                         }
                     </div>           
-                    <button mat-raised-button class="confirm">Confirmar</button>
+                    <button mat-raised-button mat-dialog-close (click)="addTask()" class="confirm">Confirmar</button>
                 </div>
             </mat-card-content>
         </mat-card>

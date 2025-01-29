@@ -41,3 +41,7 @@ input{
     gap:.5rem;
 }
 
+.circle.active {
+    background-color: lightblue;
+    font-weight: bold;
+}

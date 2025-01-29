@@ -5,6 +5,8 @@ import { Task } from "./Task.entity";
 export interface Sprint{
     Id: number;
     StartDate: Date;
+    EndDate: Date;
+    Description: string;
     State: number;
     Repository: string;
     Goal: string;

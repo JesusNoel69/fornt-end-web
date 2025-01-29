@@ -1,5 +1,6 @@
 .principal-container{
     background: var(--background-color-2) ;
+    padding:0!important;
 }
 mat-card{
     background:var(--background-color-2);
@@ -25,14 +26,16 @@ mat-card-content{
 }
 .each-sprint{
     display:flex; 
-    gap:1.5rem; 
-    justify-content:center; 
+    gap:.2rem; 
+    justify-content:space-between; 
     align-items:baseline;
-    flex-wrap:wrap;                       
+    flex-wrap:wrap;
+    text-wrap: wrap;                
 }
 .sprint-display{
     display:flex; 
     flex-direction: column;
+    text-wrap: wrap;
 }
 .perfil-changes{
     width:40px; 
@@ -48,15 +51,18 @@ p{
 }
 input{
     border:1px solid gray; 
-    border-radius:5px; 
+    /* border-radius:5px;  */
     height:25px; 
-    min-width:100px;
+    /* min-width:100px; */
 }
-#changes-task{
-    flex:1;
+.last-input{
+    border-radius: 0 5px 5px 0;
 }
-#changes-details{
-    flex:2;
+.first-input{
+    border-radius: 5px 0 0 5px;
+}
+.sprint{
+    max-width:5rem!important;
 }
 .button-dialog-close{
     background:red; 
@@ -71,9 +77,10 @@ input{
     margin-right:1rem;
 
 }
-/* .flex-space-1{
+.flex-space-1{
     flex:1;
-} */
+}
 .flex-space-2{
     flex:2;
 }
+

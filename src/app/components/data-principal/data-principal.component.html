@@ -1,19 +1,19 @@
 <section style="width:100%; height:100%; display:flex; flex-direction:column; background: lightgray;">
     <mat-card appearance="outlined" style="margin:5px; flex:1; border-radius: 7px;">
         <mat-card-content>
-            <mat-card-title>Nombre: </mat-card-title>
-            <mat-card-title>Fecha de inicio: </mat-card-title>
-            <mat-card-title>Estado: </mat-card-title>
+            <mat-card-title>Nombre: {{name}}</mat-card-title>
+            <mat-card-title>Fecha de inicio: {{startDate}}</mat-card-title>
+            <mat-card-title>Estado: {{state}}</mat-card-title>
         </mat-card-content>
     </mat-card>
     <mat-card appearance="outlined" style="margin: 5px; flex:1; border-radius: 7px; display: flex; flex-direction: column; height: 100%;">
-        <mat-card-content style="flex: 1;">
+        <mat-card-content style="flex: 1; margin: 0 auto;">
             <mat-card-title>Integración:</mat-card-title>
         </mat-card-content>
         <mat-card-actions >
-            <button mat-raised-button style="background:#CBE8F0;">Objetivo</button>
-            <button mat-raised-button style="background:#CBE8F0;">Objetivo</button>
-            <button mat-raised-button style="background:#CBE8F0;">Objetivo</button>
+            <button (click)="navigateTo(serverImage)" mat-raised-button style="background:#CBE8F0;">Servidor</button>
+            <button (click)="navigateTo(repository)" mat-raised-button style="background:#CBE8F0;">Repositorio</button>
+            <button mat-raised-button style="background:#CBE8F0;">Asuntos</button>
         </mat-card-actions>
     </mat-card>    
 </section>

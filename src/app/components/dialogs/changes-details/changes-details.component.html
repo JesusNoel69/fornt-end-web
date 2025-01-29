@@ -1,18 +1,72 @@
 <div class="principal-container">
     <h2 mat-dialog-title>
+      <button mat-button mat-dialog-close class="button-close">X</button>
+      Detalles de cambios
+    </h2>
+  
+    <mat-dialog-content>
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <!-- @for (project of projects; track project.Id) { -->
+            @for (sprint of selectedProject?.Sprints; track sprint.Id) {
+              @if (sprint.ChangeDetails && sprint.ChangeDetails.length > 0) {
+                <div class="projects-container">
+                  <div class="all-width">
+                    <p class="sprint-title"><strong>Proyecto {{ selectedProject?.ProjectNumber }}</strong></p>
+                  </div>
+                    <div class="all-width">
+                        @for (change of sprint.ChangeDetails; track change.Id) {
+                            <div class="each-sprint">
+                            <div class="sprint-display">
+                                <div class="perfil-changes">
+                                <p>{{ change.User?.Name?.charAt(0) || 'N/A' }}</p>
+                                </div>
+                                <p>{{ change.UserData || 'Usuario desconocido' }}</p>
+                            </div>
+                            <input class="sprint first-input" value="Sprint #{{ sprint.Id }}"/>
+                            <input class="flex-space-1"
+                                id="changes-task-{{change.Id}}"
+                                placeholder="Tarea"
+                                value="{{ change.Task?.Name || 'Sin tarea' }}"
+                            />
+                            <input class="flex-space-2 last-input"
+                                id="changes-details-{{change.Id}}"
+                                placeholder="Detalles del cambio"
+                                value="{{ change.TaskInformation || 'Sin detalles' }}"
+                            />
+                            </div>
+                        }   
+                    </div>
+                </div>
+              }
+            }
+          <!-- } -->
+        </mat-card-content>
+      </mat-card>
+    </mat-dialog-content>
+  
+    <div class="button-dialog-close-display">
+      <button mat-button mat-dialog-close class="button-dialog-close">Cerrar</button>
+    </div>
+  </div>
+  
+  
+  
+<!--
+<div class="principal-container">
+    <h2 mat-dialog-title>
         <button mat-button mat-dialog-close class="button-close">X</button>
         Detalles de cambios
-        <!-- <button mat-button style="position:absolute; top:0; right:0; background:blue; color:white;">Detalles</button> -->
     </h2>
     <mat-dialog-content class="mat-typography">
         
         <mat-card appearance="outlined" >
             <mat-card-content >
-                @for (project of projects; track project.id) {
+                @for (changeDetail of changeDetails; track changeDetail.Id) {
                     <div class="projects-container">
                         <div class="all-width">
-                            <p><strong>{{ project.name }}</strong></p>
-                            @for (sprint of project.sprints; track sprint.id) {
+                            <p><strong>{{ changeDetail.SprintNumber }}</strong></p>
+                            @for (sprint of changeDetail.; track sprint.id) {
                                 <div class="each-sprint">
                                     <div class="sprint-display">
                                         <div class="perfil-changes">
@@ -39,3 +93,5 @@
         <button mat-button mat-dialog-close class="button-dialog-close" >Cerrar</button>
     </div>
 </div>
+
+-->

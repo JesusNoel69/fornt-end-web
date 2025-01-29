@@ -10,16 +10,16 @@
         </button>
         <div class=slider-container>
             <div [style.transform]="'translateX(' + (-currentIndex * 260) + 'px)'">
-                @for (card of cards; track $index) {
+                @for (sprint of sprints; track $index) {
                     <mat-card class="card" >
                         <mat-card-header>
-                            <mat-card-title>{{card.title}}</mat-card-title>
+                            <mat-card-title>Sprint #{{sprint.Id}}</mat-card-title>
                         </mat-card-header>
                         <mat-card-content>
-                            <p>{{card.content}}</p>
+                            <p>{{sprint.Description}}</p>
                         </mat-card-content>
                         <mat-card-actions >
-                            <button mat-raised-button class="objective-button">Objetivo</button>
+                            <button mat-raised-button (click)="selectSprint(sprint)" class="objective-button">Objetivo</button>
                         </mat-card-actions>
                     </mat-card>
                 }

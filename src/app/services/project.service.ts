@@ -8,7 +8,11 @@ import { projects } from '../mocks/project.mock';
 })
 export class ProjectService {
   private projectsSubject = new BehaviorSubject<Project[]>(projects);
-  private selectedProjectSubject = new BehaviorSubject<Project | null>(null);
+  private selectedProjectSubject = new BehaviorSubject<Project | null>(
+    projects.length > 0 ? projects[0] : null
+  );
+
+  constructor() {}
 
   getProjects(): Observable<Project[]> {
     return this.projectsSubject.asObservable();
@@ -24,5 +28,24 @@ export class ProjectService {
 
   updateProjects(projects: Project[]): void {
     this.projectsSubject.next(projects);
+
+    // Actualizar el proyecto seleccionado si la lista de proyectos cambia
+    if (projects.length > 0 && !this.selectedProjectSubject.value) {
+      this.selectedProjectSubject.next(projects[0]);
+    }
+  }
+
+  // metodo para actualizar el proyecto seleccionado
+  updateSelectedProject(updatedProject: Project): void {
+    // Emitir el proyecto actualizado
+    this.selectedProjectSubject.next(updatedProject);
+
+    // actualizar la lista de proyectos si es necesario
+    const allProjects = this.projectsSubject.getValue();
+    const index = allProjects.findIndex((p) => p.Id === updatedProject.Id);
+    if (index !== -1) {
+      allProjects[index] = updatedProject;
+      this.projectsSubject.next([...allProjects]);
+    }
   }
 }
