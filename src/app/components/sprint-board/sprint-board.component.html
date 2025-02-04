@@ -15,9 +15,8 @@
               [cdkDropListConnectedTo]="[doneList]"
               class="list to-do-content"
               (cdkDropListDropped)="drop($event)">
-              todo
               @for (item of todo; track item) {
-                    <div class="box" cdkDrag >
+                    <div class="box" cdkDrag>
                         <div class="circle" >{{item.State}}</div>
                         <div>{{item.Name}}</div>
                     </div>                
@@ -26,55 +25,53 @@
             <button mat-raised-button (click)="openAddTask()" class="button-add">Agregar</button>
         </div>
     </mat-grid-tile>
+
     <mat-grid-tile
         [colspan]=8
         [rowspan]=5
         [style.background]="'var(--background-color-2)'"
         >
-        <mat-card appearance="raised" class="principal-card" style="min-width: 80%;">
-            <mat-card-header>
+        <mat-card appearance="raised" class="principal-card" >
+            <mat-card-header id="header-sprint" >
                 <mat-card-title>Sprint #{{sprintNumber}}</mat-card-title>
             </mat-card-header>
 
-            <mat-card-content class="container-sprint" >
+            <mat-card-content class="container-sprint"  >
                 <mat-card >
-                    <mat-card-content>
-                        <div class="container">
+                    <mat-card-content >
+                        <div class="container" >
                             <div
                             class="box-sprint"
+
                                 cdkDropList
                                 #doneList="cdkDropList"
                                 [cdkDropListData]="done"
                                 [cdkDropListConnectedTo]="[todoList]"
                                 (cdkDropListDropped)="drop($event)">
                                 @for (item of done; track $index) {
-                                    <div 
+                                    <div (dblclick)="showDetails(item.Description)"
                                         class="box-card"
                                         cdkDrag>
                                         {{item.Name}}
                                     </div>
-                                    @if ((($index + 1) % 5 == 3) || (($index + 1) % 5 == 0)){
-                                        {{changePlus3($index+1)}}
-                                        <div style="width: 20px; height: 40px;" ></div>
-                                    }
                                 }
                             </div>
                         </div>
                     </mat-card-content>
                     <mat-card-actions >
-                        <button mat-icon-button class="nav-button">
+                        <button (click)="backSprint()"  mat-icon-button class="nav-button">
                             <mat-icon >chevron_left</mat-icon>
                         </button>
-                        <button mat-icon-button class="nav-button">
-                            <mat-icon >chevron_right</mat-icon>
+                        <button (click)="forwardSprint()" mat-icon-button class="nav-button">
+                            <mat-icon>chevron_right</mat-icon>
                         </button>
                     </mat-card-actions>
                 </mat-card>
                 <mat-card appearance="raised">
-                    <mat-card-header id="meta">
+                    <mat-card-header id="goal">
                         <mat-card-title>Meta</mat-card-title>
                     </mat-card-header>
-                    <mat-card-content>
+                    <mat-card-content id="goal-info">
                       {{goal}}
                     </mat-card-content>
                 </mat-card>
@@ -89,12 +86,12 @@
             <mat-card-header >
                 <mat-card-title>Detalles de tarea</mat-card-title>
             </mat-card-header>
-            <mat-card-content>
+            <mat-card-content  >
                 <div >
                     <div>Responsable: </div>
                     <div > Estado:  <div class="circle"></div></div>
                 </div>
-                <div id="description">
+                <div id="description" >
                     <p>Descripción:</p>
                     <mat-divider></mat-divider>
                     {{description}}

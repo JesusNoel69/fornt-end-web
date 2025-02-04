@@ -4,6 +4,7 @@
 }
 .scrum-board {
   display: flex;
+  justify-content: center;
   border-radius: .5rem!important;
   overflow-x: auto; /* Permite el scroll horizontal */
   /* overflow-y: hidden;  */

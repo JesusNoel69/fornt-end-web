@@ -148,6 +148,7 @@ let project1: Project = {
               ProductOwner: null as any,
               Developer: null as any,
               ChangeDetails: null as any,
+              WeeklyScrum: null as any
             },
           ],
           TeamProject: null as any,
@@ -243,7 +244,7 @@ let project2: Project = {
             StartDate: new Date('2025-02-05'),
             State: 1,
             Repository: "https://github.com/example/ecommerce-platform/sprint1",
-            Goal: "Implementar sistema de autenticación",
+            Goal: "Implementar sistema de autenticación 2",
             EndDate: new Date('2025-01-10'),
             Description:"Lorem ipsumConsequat elit eiusmod aliqua ex proident commodo laboris amet. Aute incididunt minim irure ea proident non eiusmod fugiat adipisicing irure culpa eiusmod sit. In sunt reprehenderit incididunt quis nisi amet in elit veniam est nulla esse esse.",
             ProjectNumber: 202,
@@ -274,16 +275,17 @@ let project2: Project = {
                 },
                 Developers: [
                     {
-                        Id: 202,
-                        Rol: false,
-                        Name: "Carlos Rivera",
-                        Account: "carlos.rivera",
-                        Password: "securepassword101",
-                        NameSpecialization: "Backend Development",
-                        Team: null as any,
-                        ProductOwner: null as any,
-                        Developer: null as any,
-                        ChangeDetails: null as any,
+                      Id: 202,
+                      Rol: false,
+                      Name: "Carlos Rivera",
+                      Account: "carlos.rivera",
+                      Password: "securepassword101",
+                      NameSpecialization: "Backend Development",
+                      Team: null as any,
+                      ProductOwner: null as any,
+                      Developer: null as any,
+                      ChangeDetails: null as any,
+                      WeeklyScrum: null as any
                     },{
                         Id: 202,
                         Rol: false,
@@ -295,50 +297,56 @@ let project2: Project = {
                         ProductOwner: null as any,
                         Developer: null as any,
                         ChangeDetails: null as any,
+                      WeeklyScrum: null as any
+
                     },{
-                        Id: 202,
-                        Rol: false,
-                        Name: "Carlos Rivera",
-                        Account: "carlos.rivera",
-                        Password: "securepassword101",
-                        NameSpecialization: "Backend Development",
-                        Team: null as any,
-                        ProductOwner: null as any,
-                        Developer: null as any,
-                        ChangeDetails: null as any,
+                      Id: 202,
+                      Rol: false,
+                      Name: "Carlos Rivera",
+                      Account: "carlos.rivera",
+                      Password: "securepassword101",
+                      NameSpecialization: "Backend Development",
+                      Team: null as any,
+                      ProductOwner: null as any,
+                      Developer: null as any,
+                      ChangeDetails: null as any,
+                      WeeklyScrum: null
                     },{
-                        Id: 202,
-                        Rol: false,
-                        Name: "Carlos Rivera",
-                        Account: "carlos.rivera",
-                        Password: "securepassword101",
-                        NameSpecialization: "Backend Development",
-                        Team: null as any,
-                        ProductOwner: null as any,
-                        Developer: null as any,
-                        ChangeDetails: null as any,
+                      Id: 202,
+                      Rol: false,
+                      Name: "Carlos Rivera",
+                      Account: "carlos.rivera",
+                      Password: "securepassword101",
+                      NameSpecialization: "Backend Development",
+                      Team: null as any,
+                      ProductOwner: null as any,
+                      Developer: null as any,
+                      ChangeDetails: null as any,
+                      WeeklyScrum: null
                     },{
-                        Id: 2,
-                        Rol: false,
-                        Name: "Carlos Rivera",
-                        Account: "carlos.rivera",
-                        Password: "securepassword101",
-                        NameSpecialization: "Backend Development",
-                        Team: null as any,
-                        ProductOwner: null as any,
-                        Developer: null as any,
-                        ChangeDetails: null as any,
+                      Id: 2,
+                      Rol: false,
+                      Name: "Carlos Rivera",
+                      Account: "carlos.rivera",
+                      Password: "securepassword101",
+                      NameSpecialization: "Backend Development",
+                      Team: null as any,
+                      ProductOwner: null as any,
+                      Developer: null as any,
+                      ChangeDetails: null as any,
+                      WeeklyScrum: null
                     },{
-                        Id: 202,
-                        Rol: false,
-                        Name: "Joaquin",
-                        Account: "carlos.rivera",
-                        Password: "securepassword101",
-                        NameSpecialization: "Backend Development",
-                        Team: null as any,
-                        ProductOwner: null as any,
-                        Developer: null as any,
-                        ChangeDetails: null as any,
+                      Id: 202,
+                      Rol: false,
+                      Name: "Joaquin",
+                      Account: "carlos.rivera",
+                      Password: "securepassword101",
+                      NameSpecialization: "Backend Development",
+                      Team: null as any,
+                      ProductOwner: null as any,
+                      Developer: null as any,
+                      ChangeDetails: null as any,
+                      WeeklyScrum: null
                     }
                 ],
                 TeamProject: null as any,
@@ -397,6 +405,146 @@ project1.Sprints[0].ChangeDetails = [
     
   ];
   
+//////
+project1.Sprints[0].Tasks[0].weeklyScrums = [
+  {
+      Id: 1,
+      CreatedAt: new Date('2025-01-03'),
+      Task: project1.Sprints[0].Tasks[0], // "Configurar servicios en Angular"
+      Information: "El equipo discutió la integración de los servicios en Angular y los problemas de autenticación con la API.",
+      Developer: project1.TeamProject.Teams[0].Developers[0] // "John Smith"
+  },
+  {
+      Id: 2,
+      CreatedAt: new Date('2025-01-04'),
+      Task: project1.Sprints[0].Tasks[0],
+      Information: "Se encontró un problema con los servicios de autenticación, se realizará un hotfix.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project1.Sprints[0].Tasks[1].weeklyScrums = [
+  {
+      Id: 3,
+      CreatedAt: new Date('2025-01-06'),
+      Task: project1.Sprints[0].Tasks[1], // "Implementar integración inicial"
+      Information: "Se resolvieron errores en la autenticación y se probó la integración con la API.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 4,
+      CreatedAt: new Date('2025-01-07'),
+      Task: project1.Sprints[0].Tasks[1],
+      Information: "Se finalizó la conexión de los servicios de Angular con la API REST.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project1.Sprints[1].Tasks[0].weeklyScrums = [
+  {
+      Id: 5,
+      CreatedAt: new Date('2025-01-10'),
+      Task: project1.Sprints[1].Tasks[0], // "Pruebas unitarias"
+      Information: "Se ejecutaron pruebas unitarias en los servicios y se corrigieron errores menores.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 6,
+      CreatedAt: new Date('2025-01-11'),
+      Task: project1.Sprints[1].Tasks[0],
+      Information: "Se detectaron errores en la validación de formularios, en revisión.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project1.Sprints[1].Tasks[1].weeklyScrums = [
+  {
+      Id: 7,
+      CreatedAt: new Date('2025-01-12'),
+      Task: project1.Sprints[1].Tasks[1], // "Corrección de errores"
+      Information: "Se identificaron y solucionaron problemas de rendimiento en la API.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 8,
+      CreatedAt: new Date('2025-01-13'),
+      Task: project1.Sprints[1].Tasks[1],
+      Information: "Se mejoró la respuesta del servidor reduciendo tiempos de carga.",
+      Developer: project1.TeamProject.Teams[0].Developers[0]
+  }
+];
+/////
+
+// Agregamos los Daily Scrums directamente dentro del objeto `project2`
+project2.Sprints[0].Tasks[0].weeklyScrums = [
+  {
+      Id: 9,
+      CreatedAt: new Date('2025-02-06'),
+      Task: project2.Sprints[0].Tasks[0], // "Configurar base de datos"
+      Information: "Se revisó la estructura de la base de datos y se hicieron ajustes en los modelos.",
+      Developer: project2.TeamProject.Teams[0].Developers[0] // "Carlos Rivera"
+  },
+  {
+      Id: 10,
+      CreatedAt: new Date('2025-02-07'),
+      Task: project2.Sprints[0].Tasks[0],
+      Information: "Se creó la conexión entre la API y la base de datos, realizando pruebas de inserción.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project2.Sprints[0].Tasks[1].weeklyScrums = [
+  {
+      Id: 11,
+      CreatedAt: new Date('2025-02-08'),
+      Task: project2.Sprints[0].Tasks[1], // "Configurar base de datos 2"
+      Information: "Se implementaron restricciones en las tablas y validaciones.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 12,
+      CreatedAt: new Date('2025-02-09'),
+      Task: project2.Sprints[0].Tasks[1],
+      Information: "Se optimizaron índices en la base de datos para mejorar rendimiento.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project2.Sprints[1].Tasks[0].weeklyScrums = [
+  {
+      Id: 13,
+      CreatedAt: new Date('2025-02-10'),
+      Task: project2.Sprints[1].Tasks[0], // "Implementar sistema de autenticación"
+      Information: "Se inició la implementación del sistema de autenticación con JWT.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 14,
+      CreatedAt: new Date('2025-02-11'),
+      Task: project2.Sprints[1].Tasks[0],
+      Information: "Se realizaron pruebas en la autenticación y se detectaron errores menores.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  }
+];
+
+project2.Sprints[1].Tasks[1].weeklyScrums = [
+  {
+      Id: 15,
+      CreatedAt: new Date('2025-02-12'),
+      Task: project2.Sprints[1].Tasks[1], // "Implementar sistema de autenticación 2"
+      Information: "Se añadieron validaciones de seguridad y cifrado de contraseñas.",
+      Developer: project2.TeamProject.Teams[0].Developers[0]
+  },
+  {
+      Id: 16,
+      CreatedAt: new Date('2025-02-13'),
+      Task: project2.Sprints[1].Tasks[1],
+      Information: "Se finalizó la implementación de roles y permisos en la autenticación.",
+      Developer: project2.TeamProject.Teams[0].Developers[1]
+  }
+];
+
+
 export let projects: Project[]=[project1, project2];
 
 // const project1: Project = {

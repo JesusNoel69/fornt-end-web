@@ -1,6 +1,7 @@
 import { ChangeDetails } from "./changedetails.entity";
 import { ProductBacklog } from "./productbacklog.entity";
 import { Sprint } from "./sprint.entity";
+import { WeeklyScrum } from "./weeklyscrum.entity";
 
 export interface Task{
     Id: number;
@@ -11,4 +12,5 @@ export interface Task{
     ChangeDetails: ChangeDetails[];
     Sprint: Sprint;
     ProductBacklog: ProductBacklog;
+    weeklyScrums?: WeeklyScrum[];
 }

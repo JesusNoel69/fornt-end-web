@@ -2,107 +2,78 @@
     <button mat-button mat-dialog-close class="button-position">X</button>
     Agregar Sprint
 </h2>
-<mat-dialog-content  >
-    <mat-grid-list  cols="12" rowHeight="8vh">
-        <mat-grid-tile
-          [colspan]=5
-          [rowspan]=7
-          [style.background]="'var(--background-color-2)'"
-          >
-          
-          <div class="container">
-              <mat-card-header  >
-                  <mat-card-title>Listado de tareas por hacer</mat-card-title>
-              </mat-card-header>
-              <div id="task-list-dialog"
-                cdkDropList
-                #todoList="cdkDropList"
-                [cdkDropListData]="todo"
-                [cdkDropListConnectedTo]="[doneList]"
-                (cdkDropListDropped)="drop($event)">
-    
-                @for (item of todo; track item) {
-                    <mat-divider></mat-divider>
-                      <div class="box" cdkDrag>
-                          <div class="circle"></div>
-                          <div>{{item}}</div>
-                      </div>                
-                }
+<mat-dialog-content >
+  
+
+    <div class="list-todo">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Lista de lo que hay que hacer</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div cdkDropList 
+            #todoList="cdkDropList" 
+            [cdkDropListData]="todo" 
+            [cdkDropListConnectedTo]="[doneList]" 
+            (cdkDropListDropped)="drop($event)"
+            class="container-list-todo"
+            >
+            @for (item of todo; track item) {
                 <mat-divider></mat-divider>
-              </div>
+                  <div class="box" cdkDrag >
+                      <div class="circle"></div>
+                      <div>{{item.Name}}</div>
+                  </div>                
+            }
           </div>
-      </mat-grid-tile>
+        </mat-card-content>
+      </mat-card>
+    </div>
     
-    
-      <mat-grid-tile
-          
-          [colspan]=7
-          [rowspan]=7
-          [style.background]="'var(--background-color-2)'"
-          >
+    <div class="container-information">
+        <h3>Nombre del Sprint:</h3>
+        <input id="sprint-name" class="border" [(ngModel)]="name" >
+        <h3>Asignación de tareas</h3>
+        <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]" (cdkDropListDropped)="drop($event)" 
+        class="task-assign"
+        >
+            @for (item of done; track $index) {
+                <div 
+                class="task-card"
+                    cdkDrag>
+                    {{item.Name}}
+                </div>
 
-          <mat-card appearance="raised" class="sprint-card-container">
-              
-              <mat-card-content  style="display:flex; min-width:0%; margin: 0; padding: 0; gap:10px; flex-direction: column;">
-                <mat-card-header style="width:100%; justify-content: center;">
-                    <mat-card-title>Nombre del Sprint</mat-card-title>
-                </mat-card-header>
-                <input  id="sprint-name">
-                    
-                    
-    
-                <mat-card-header class="sprint-card-header" >
-                    <mat-card-title>Asignacion de tareas</mat-card-title>
-                </mat-card-header>
-                <mat-card  class="task-assign-card" >
-                    <mat-card-content class="task-assign-card-content">
-                        <div
-                            cdkDropList
-                            #doneList="cdkDropList"
-                            [cdkDropListData]="done"
-                            [cdkDropListConnectedTo]="[todoList]"
-                            class="assign-task"
-                            (cdkDropListDropped)="drop($event)">
-                            @for (item of done; track $index) {
-                                <div 
-                                class="task-card"
-                                     
-                                    cdkDrag>
-                                    {{item}}
-                                </div>
-                            }
-                        </div>
-                    </mat-card-content>
-                </mat-card>
-                
-                
-                <mat-card-header style="width:100%; justify-content: center;">
-                    <mat-card-title>Meta del Sprint</mat-card-title>
-                </mat-card-header>
-                <mat-card class="sprint-goal-card">
-                    
-                    <mat-card-content  style="height:100%;">
-                        <textarea class="sprint-goal" >
-                           
-                        </textarea>
-                    </mat-card-content>
-                </mat-card>
-                
-    
-              </mat-card-content>
-              <mat-card-actions  class="sprint-card-actions" >
-                <button mat-raised-button  mat-dialog-close>
-                   Cancelar
-                </button>
-                <button mat-raised-button  mat-dialog-close>
-                   Confirmar
-                </button>
-            </mat-card-actions>
-          </mat-card>
-          
-      </mat-grid-tile>
-     
-    </mat-grid-list>
-</mat-dialog-content>
-
-
+                <!-- style="background: blue; height: 4rem !important; width: 5rem; color: white; padding: 10px; border-radius: 5px; cursor: grab;" -->
+            }
+            
+        </div>
+        <!-- <div style="display: flex; flex-wrap: wrap; width: 100%; gap: .2rem; justify-content: center; align-items: center;"> -->
+        <div class="container-goal-description">
+            <h3 >Meta del Sprint</h3>
+            <textarea class="border" [(ngModel)]="goal" 
+                        ></textarea>
+        </div>
+        <div class="container-goal-description">
+            <h3>Descripción del Sprint</h3>
+            <textarea class="border" [(ngModel)]="description" 
+                        ></textarea>    
+        </div>
+        
+        <!-- </div> -->
+        <!-- <div style="display: flex; flex-wrap: wrap; width: 85%; gap: 1rem; justify-content: space-between;"> -->
+            <mat-form-field >
+                <mat-label>Fecha de termino</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="date">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        <!-- </div> -->
+        <div class="actions">
+            <button mat-raised-button color="warn" (click)="deleteFields()"  mat-dialog-close>Cancelar</button>
+            <button mat-raised-button color="primary" (click)="addSprint()" class="confirm"  mat-dialog-close>Confirmar</button>
+        </div>        
+    </div>
+  </mat-dialog-content>
+  
