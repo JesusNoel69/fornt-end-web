@@ -1,0 +1,28 @@
+<div class="container">
+    <mat-card class="login-card">
+      <div class="avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+    
+      <mat-form-field appearance="fill" >
+        <mat-label >Usuario</mat-label>
+        <mat-icon  matPrefix>account_circle</mat-icon>
+        <input  matInput type="text" [(ngModel)]="username" >
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label >Contraseña</mat-label>
+        <mat-icon matPrefix>lock</mat-icon >
+        <input matInput type="password" [(ngModel)]="password" >
+      </mat-form-field>
+      <button mat-raised-button color="primary" class="login-button" (click)="login()">Login</button>
+    </mat-card>
+    
+    <mat-card class="register-card">
+      <p>¿No eres miembro de un equipo?</p>
+      <button mat-button color="primary" (click)="register()">
+        <p>Regístrate</p> <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </mat-card>
+  </div>
+  
