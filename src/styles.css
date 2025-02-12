@@ -29,7 +29,7 @@ h2 {
   text-align: center;
   padding: 0 !important;
   margin: 0; /* Asegura que no haya márgenes externos */
-  height: 4vh!important;
+  height: 4.2vh!important;
   border-radius: 0px 0px 0 0;
   line-height: auto; 
   display: flex;
@@ -44,12 +44,13 @@ h2 {
 
 /*globals*/
 .right-bottom-rounded{
-  border-radius: 0 0 5px 0;
+  border-radius: 0 0 .3rem 0;
 }
 .button-close{
   width: 50px !important;
   min-width:45px !important;
-  position:absolute !important; top:0; left: 0; background: red !important;;
+  position:absolute !important; top:0; left: 0; background: red !important;
+  height:100%!important;
 }
 /**/
 
@@ -185,5 +186,20 @@ section {
   border-radius:50%; width: 20px; height: 20px; background:red;
 }
 
+.state-1 {
+  background: red;
+}
+
+.state-2 {
+  background: yellow;
+}
+
+.state-3 {
+  background: var(--background-color);
+}
+
+.state-4 {
+  background: var(--success-color);
+}
 
 /**/

@@ -1,5 +1,5 @@
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import {
@@ -20,6 +20,7 @@ import { Sprint } from '../../entities/sprint.entity';
 import { Task } from '../../entities/Task.entity';
 import { MatDividerModule } from '@angular/material/divider';
 import { Project } from '../../entities/project.entity';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sprint-board',
@@ -32,16 +33,17 @@ import { Project } from '../../entities/project.entity';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatDividerModule
+    MatDividerModule,
+    CommonModule
   ],
   templateUrl: './sprint-board.component.html',
   styleUrls: ['./sprint-board.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SprintBoardComponent implements OnInit {
   private projectService = inject(ProjectService);
   readonly dialog = inject(MatDialog);
-
+  constructor(private cdr: ChangeDetectorRef){}
   // Datos del sprint seleccionado
   currentSprint: Sprint | null = null;
   selectedProject: Project | null = null;
@@ -53,6 +55,7 @@ export class SprintBoardComponent implements OnInit {
   sprintNumber: number = 0;
   doneBacklog: Task[] = [];
   indexSprint: number = 0; // Se inicializa correctamente
+  taskState:number=0;
 
   ngOnInit() {
     this.projectService.getSelectedProject().subscribe((project) => {
@@ -68,6 +71,23 @@ export class SprintBoardComponent implements OnInit {
       }
     });
   }
+
+  getCircleClass(state: number): string {
+    console.log(state);
+    switch (state) {
+      case 1:
+        return 'circle state-1';
+      case 2:
+        return 'circle state-2';
+      case 3:
+        return 'circle state-3';
+      case 4:
+        return 'circle state-4';
+      default:
+        return '';
+    }
+  }
+  
 
   backSprint() {
     if (this.selectedProject?.Sprints && this.indexSprint > 0) {
@@ -90,17 +110,16 @@ export class SprintBoardComponent implements OnInit {
 
   private updateSprintData() {
     if (!this.currentSprint) return;
-
+    console.log(this.currentSprint)
     this.todo = this.selectedProject?.ProductBacklog?.Tasks ?? [];
     this.done = this.currentSprint?.Tasks ?? [];
-    // this.description = this.currentSprint.Description || "Detalles del Sprint";
     this.goal = this.currentSprint.Goal || "";
     this.sprintNumber = this.currentSprint.Id;
   }
 
-  showDetails(description:string){
-    console.log(description);
-    this.description=description;
+  showDetails(task:Task){
+    this.description=task.Description;
+    this.taskState=task.State;
   }
   drop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
@@ -123,21 +142,15 @@ export class SprintBoardComponent implements OnInit {
     }
   }
 
-  // openGeneralInformation() {
-  //   const dialogRef = this.dialog.open(GeneralInformationComponent, { width: '70%' });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     console.log(`Dialog result: ${result} r`);
-  //   });
-  // }
   openGeneralInformation() {
-    if (!this.currentSprint) return; // Si no hay Sprint seleccionado, no abre el diálogo
+    if (!this.currentSprint) return; // Si no hay Sprint seleccionado, no abre el dialogo
   
     const dialogRef = this.dialog.open(GeneralInformationComponent, {
       width: '70%',
       data: { sprint: this.currentSprint } 
     });
   
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result) => {//aqui el endpoint
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -146,6 +159,8 @@ export class SprintBoardComponent implements OnInit {
     const dialogRef = this.dialog.open(AddTaskComponent, { width: '70%' });
     dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
+      this.updateSprintData(); // Vuelve a cargar los datos del sprint
+      this.cdr.detectChanges();
     });
   }
 }

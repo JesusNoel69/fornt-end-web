@@ -89,6 +89,22 @@ export class AddSprintComponent implements OnInit{
       console.log(this.selectedProject.ProductBacklog)
     }
   }
+
+  getCircleClass(state: number): string {
+    switch (state) {
+      case 1:
+        return 'circle state-1';
+      case 2:
+        return 'circle state-2';
+      case 3:
+        return 'circle state-3';
+      case 4:
+        return 'circle state-4';
+      default:
+        return '';
+    }
+  }
+
   drop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -100,8 +116,7 @@ export class AddSprintComponent implements OnInit{
         event.currentIndex
       );
     }
-    console.log('Tareas en todo:', this.todo);
-    console.log('Tareas en done:', this.done);
+    
   }
   
 }

@@ -22,7 +22,7 @@ import { FormsModule } from '@angular/forms';
   ],
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddTaskComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
@@ -46,6 +46,21 @@ export class AddTaskComponent implements OnInit {
 
   setState(index: number): void {
     this.currentState = this.states[index];
+  }
+  getCircleClass(state: number): string {
+    console.log(state);
+    switch (state) {
+      case 1:
+        return 'circle state-1';
+      case 2:
+        return 'circle state-2';
+      case 3:
+        return 'circle state-3';
+      case 4:
+        return 'circle state-4';
+      default:
+        return '';
+    }
   }
 
   addTask() {
@@ -78,6 +93,7 @@ export class AddTaskComponent implements OnInit {
 
     // Forzar la detección de cambios
     this.cdr.detectChanges();
+    this.ngOnInit();
 
     console.log('Tarea añadida:', newTask);
   }

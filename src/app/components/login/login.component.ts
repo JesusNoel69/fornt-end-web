@@ -4,6 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,13 +16,14 @@ import { MatCardModule } from '@angular/material/card';
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  
+  constructor(private router:Router){}
   login() {
     console.log('Usuario:', this.username);
     console.log('Contraseña:', this.password);
   }
   
   register() {
+    this.router.navigate(['/register']);
     console.log('Registro de usuario iniciado.');
   }
 }

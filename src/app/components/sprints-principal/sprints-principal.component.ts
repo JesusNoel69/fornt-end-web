@@ -28,7 +28,7 @@ export class SprintsPrincipalComponent implements OnInit {
     this.projectService.getSelectedProject().subscribe((project) => {
       if (project) {
         this.sprints = project.Sprints; // Obtener los sprints del proyecto seleccionado
-  
+        this.currentIndex=0;
         // if (this.sprints.length > 0) {
         //   this.sprintService.selectSprint(this.sprints[0]);
         // } else {
@@ -36,6 +36,7 @@ export class SprintsPrincipalComponent implements OnInit {
         // }
       } else {
         this.sprints = []; // Vaciar la lista de sprints si no hay proyecto
+        this.currentIndex=0;
         this.sprintService.selectSprint(null); // Limpiar el sprint seleccionado
       }
     });

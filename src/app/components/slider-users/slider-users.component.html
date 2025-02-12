@@ -1,8 +1,9 @@
 <section class="slider-container">
-    <button mat-icon-button (click)="prevSlide()" class="nav-button">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-  
+    @if (users.length>5) {
+        <button mat-icon-button [disabled]="this.startIndex==0" (click)="prevSlide()" class="nav-button">
+        <mat-icon>chevron_left</mat-icon>
+        </button>
+    }  
     <div class="slider">
         @for (item of  visibleItems; track $index) {
             <button
@@ -18,8 +19,14 @@
                 {{ item.label }}
             </button>
         }
+        <!-- {{startIndex+5}}
+        {{users.length}} -->
+
     </div>
-    <button mat-icon-button (click)="nextSlide()" class="nav-button">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
+    @if (users.length>5 ) {
+        <button mat-icon-button [disabled]="(this.startIndex + 5) >= this.users.length" (click)="nextSlide()" class="nav-button">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    }
+    
 </section>

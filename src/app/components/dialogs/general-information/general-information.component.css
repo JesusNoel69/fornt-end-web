@@ -7,9 +7,13 @@
   justify-content: center;
   border-radius: .5rem!important;
   overflow-x: auto; /* Permite el scroll horizontal */
-  /* overflow-y: hidden;  */
-  background: var(--background-color-2);
+  overflow-y: none; 
+  background: var(--primary-color) !important;
+  /* border:solid red 1px;  */
+  height: 200px;
   max-width: 100%;
+  min-width: 70%!important;
+  /* border:solid 1px red; */
   box-sizing: border-box; 
 }
 .scrum-column {
@@ -19,6 +23,8 @@
   text-align: center;
   border-radius: 0px !important;
   background: var(--primary-color);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 .header {
   display: flex;

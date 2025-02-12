@@ -17,7 +17,7 @@
               (cdkDropListDropped)="drop($event)">
               @for (item of todo; track item) {
                     <div class="box" cdkDrag>
-                        <div class="circle" >{{item.State}}</div>
+                        <div [ngClass]="getCircleClass(item.State)" >{{item.State}}</div>
                         <div>{{item.Name}}</div>
                     </div>                
               }
@@ -38,9 +38,11 @@
 
             <mat-card-content class="container-sprint"  >
                 <mat-card >
-                    <mat-card-content >
+                    <mat-card-content  >
+                            
                         <div class="container" >
                             <div
+                            
                             class="box-sprint"
 
                                 cdkDropList
@@ -49,20 +51,26 @@
                                 [cdkDropListConnectedTo]="[todoList]"
                                 (cdkDropListDropped)="drop($event)">
                                 @for (item of done; track $index) {
-                                    <div (dblclick)="showDetails(item.Description)"
+                                    <div (dblclick)="showDetails(item)"
                                         class="box-card"
                                         cdkDrag>
                                         {{item.Name}}
+                                        <div class="drag-handle" cdkDragHandle>
+                                            <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                                              <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                              <path d="M0 0h24v24H0z" fill="none"></path>
+                                            </svg>
+                                          </div>
                                     </div>
                                 }
                             </div>
                         </div>
                     </mat-card-content>
                     <mat-card-actions >
-                        <button (click)="backSprint()"  mat-icon-button class="nav-button">
+                        <button (click)="backSprint()"   mat-icon-button class="nav-button">
                             <mat-icon >chevron_left</mat-icon>
                         </button>
-                        <button (click)="forwardSprint()" mat-icon-button class="nav-button">
+                        <button (click)="forwardSprint()"  mat-icon-button class="nav-button">
                             <mat-icon>chevron_right</mat-icon>
                         </button>
                     </mat-card-actions>
@@ -89,7 +97,10 @@
             <mat-card-content  >
                 <div >
                     <div>Responsable: </div>
-                    <div > Estado:  <div class="circle"></div></div>
+                    <div > Estado:  
+                        <div [ngClass]="getCircleClass(taskState)"
+                        [class.circle]="description !== ''"></div>
+                    </div>
                 </div>
                 <div id="description" >
                     <p>Descripción:</p>

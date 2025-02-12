@@ -22,6 +22,7 @@ export class SliderUsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectService.getSelectedProject().subscribe((project) => {
+      this.startIndex=0;
       if (project && project.TeamProject) {
         this.users = project.TeamProject.Teams[0]?.Developers.map((dev) => ({
           label: dev.Name,
@@ -53,13 +54,32 @@ export class SliderUsersComponent implements OnInit {
   }
 
   getScale(index: number): string {
-    if (index === 2) {
-      return 'scale(1.3)';
-    } else if (index === 1 || index === 3) {
-      return 'scale(1.1)';
-    } else {
-      return 'scale(1)';
+    let scale :number=1.0;
+    if(this.users.length>=5)
+    {
+      if (index === 2) {
+        scale=1.3;
+      } else if (index === 1 || index === 3) {
+        scale=1.1;
+      } else {
+        scale=1;
+      }
+    }else if(this.users.length==4||this.users.length==2){
+      if (index === 2 || index ===1) {
+        scale=1.3;
+      }else{
+        scale=1.1;
+      } 
+    }else if(this.users.length==3){
+      if (index ===1) {
+        scale=1.3;
+      }else{
+        scale=1.1;
+      } 
+    }else{
+      scale=1.3;
     }
+    return 'scale('+scale+')';
   }
 
   getZIndex(index: number): number {

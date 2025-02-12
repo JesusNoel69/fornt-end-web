@@ -112,8 +112,17 @@ export class ScrumBoardComponent implements OnInit {
 
       if(prevList || currList)
         this.exchangeBetweenLists(prevList, currList, prevIndex, currIndex);
+      let columnState:number=1;
+      this.columns.forEach(column => {
+        
+        column.forEach(task => {
+          if (task !== null && task !== undefined) {
+            task.State = columnState;
+          }          
+        });
+        columnState++;
+      });
     }
-    console.log(this.columns);
   }
 
   reorderWithinList(list: (Task|null)[], prevIndex: number, currIndex: number): void {
@@ -138,11 +147,16 @@ export class ScrumBoardComponent implements OnInit {
   ): void {
     const prevItem = prevList[prevIndex];
     const currItem = currList[currIndex];
+
     if(currIndex!==prevIndex)return;
     currList[currIndex] = prevItem;
     prevList[prevIndex] = currItem;
-    this.syncColumns();
+    console.log(prevList[prevIndex]?.State);
+    console.log(currList[currIndex]?.State);
+    // this.syncColumns();
   }
+
+
 
   //sincroniza las demás columnas después de un movimiento manteniendo la estructura.
    
@@ -155,19 +169,21 @@ export class ScrumBoardComponent implements OnInit {
 
       if (prevIndex !== undefined && currIndex !== undefined) {
         if (prevIndex < currIndex) {
-          //hacia abajo
+          // hacia abajo
           for (let i = prevIndex; i < currIndex; i++) {
             column[i] = column[i + 1] || null;
           }
           column[currIndex] = null;
         } else if (prevIndex > currIndex) {
-          //hacia arriba
+          // hacia arriba
           for (let i = prevIndex; i > currIndex; i--) {
             column[i] = column[i - 1] || null;
           }
           column[currIndex] = null;
         }
       }
+      
+
     });
 
     // todas las lista con el mismo tamaño

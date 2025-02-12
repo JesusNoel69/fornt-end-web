@@ -117,6 +117,23 @@ mat-card-header{
 *{
   box-sizing: border-box;
 }
+
+.box-card {
+  width: 8rem;
+  height: 6rem;
+  cursor: pointer;
+  background: var(--mdc-circular-progress-active-indicator-color);
+  color: var(--primary-color);
+  overflow-y: auto;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 0.3rem;
+  position: relative; /* Esto es clave para posicionar el drag-handle */
+}
+
 mat-card-content{
   display:flex;
   align-items: center;
@@ -127,9 +144,35 @@ mat-card-content{
   padding:0 !important;
 }
 
-.task-card{
-  width: 100px; cursor: move; height: 40px; background: var(--background-color-2); border: solid 1px black; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+.box-card {
+  width: 8rem;
+  height: 6rem;
+  /* cursor: pointer; */
+  background: var(--mdc-circular-progress-active-indicator-color);
+  color: var(--primary-color);
+  overflow-y: auto;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 0.3rem;
+  position: relative; /* Esto es clave para posicionar el drag-handle */
 }
+.drag-handle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: grab;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+  z-index: 10; /* Asegura que quede siempre encima */
+}
+
+/* .task-card{
+  width: 100px; cursor: move; height: 40px; background: var(--background-color-2); border: solid 1px black; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+} */
 mat-dialog-content{
   display: flex; flex-direction: row; width: 100% !important; height: 100% !important; background: var(--background-color-2); padding:.7rem !important;
 }

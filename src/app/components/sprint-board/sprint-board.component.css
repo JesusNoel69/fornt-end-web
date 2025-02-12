@@ -119,8 +119,8 @@ mat-card-header{
   height:90% !important; 
   border: solid 1px #ccc;
   min-height: 60px;
-  background: white;
-  border-radius: 4px;
+  background: var(--primary-color);
+  border-radius: .3rem;
   overflow: hidden;
   display: block;
 }
@@ -131,8 +131,6 @@ mat-card-header{
   overflow-y: hidden;
   justify-content: center;
   max-width:80% !important; margin: 0; padding: 0; gap:20px;/*min-width:40% !important;*/
-
-  
   mat-card:nth-child(1){
     align-items: center;
     flex:6 !important; margin: 0; padding: 0;
@@ -158,16 +156,46 @@ mat-card-header{
   flex: 1;
 }
 
-.box-card{
-  width: 100px; cursor: move; height: 40px; background: lightgray; border: solid 1px black; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+.box-card {
+  width: 8rem;
+  height: 6rem;
+  cursor: pointer;
+  background: var(--mdc-circular-progress-active-indicator-color);
+  color: var(--primary-color);
+  overflow-y: auto;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 0.3rem;
+  position: relative;
 }
 
-.box-sprint{
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 10px;  
-  
-  overflow-y: scroll; scrollbar-width: none; justify-content: center; align-items: center; padding: 10px;
+.drag-handle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: grab;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+  z-index: 10; /* Asegura que quede siempre encima */
+}
+
+.drag-handle:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.box-sprint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
 }
 
 .cdk-drag-preview {
@@ -195,15 +223,20 @@ mat-card-header{
 }
 
 .nav-button {
-  background: white;
+  bottom: 1rem;
+  z-index: 999;
+  background: var(--primary-color);
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  border: 0.5px black solid;
   mat-icon{
     margin-left:-13px;
     margin-top: -10px;
   }
+
+
 }
 
 mat-card-actions{
@@ -231,5 +264,6 @@ mat-card-actions{
 .mat-mdc-card-content:first-child {
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 3rem;
+  padding: 2rem 0 !important;
+  /* padding-bottom: 3rem; */
 }

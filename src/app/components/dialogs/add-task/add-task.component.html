@@ -1,6 +1,6 @@
 <div class="container-principal">
     <h2 mat-dialog-title>
-        <button mat-button mat-dialog-close class="button-close">X</button>
+        <button  mat-button mat-dialog-close class="button-close">X</button>
         Agregar tarea</h2>
     <mat-dialog-content class="mat-typography">
         <mat-card appearance="outlined" >
@@ -17,9 +17,10 @@
                         @for (state of states; track $index) {
                             <div
                                 id="state-{{ state }}"
-                                class="circle"
+                                class="circle each-state"
                                 (click)="setState($index)"
                                 [class.active]="currentState === state"
+                                [ngClass]="getCircleClass(state)" 
                             >
                             </div>
                         }

@@ -1,15 +1,13 @@
 <div class="container">
+  <div class="avatar">
+    <mat-icon id="icon">account_circle</mat-icon>
+  </div>
     <mat-card class="login-card">
-      <div class="avatar">
-        <mat-icon>account_circle</mat-icon>
-      </div>
-    
       <mat-form-field appearance="fill" >
         <mat-label >Usuario</mat-label>
         <mat-icon  matPrefix>account_circle</mat-icon>
         <input  matInput type="text" [(ngModel)]="username" >
       </mat-form-field>
-      
       <mat-form-field appearance="fill">
         <mat-label >Contraseña</mat-label>
         <mat-icon matPrefix>lock</mat-icon >
@@ -19,9 +17,13 @@
     </mat-card>
     
     <mat-card class="register-card">
-      <p>¿No eres miembro de un equipo?</p>
-      <button mat-button color="primary" (click)="register()">
-        <p>Regístrate</p> <mat-icon>arrow_forward</mat-icon>
+      <p><b>¿No eres miembro de un equipo?</b></p>
+      <button mat-button color="primary" class="register-button" (click)="register()">
+        <div style="display:flex; justify-items: end !important; justify-content: center; align-items: center; padding:0;">
+          <p><b>Regístrate</b></p> 
+          <mat-icon  class="custom-icon"
+          >arrow_forward</mat-icon>
+        </div>
       </button>
     </mat-card>
   </div>

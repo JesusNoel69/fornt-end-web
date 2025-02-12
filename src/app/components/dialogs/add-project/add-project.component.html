@@ -1,0 +1,45 @@
+<div class="container-principal">
+
+
+  <h2 mat-dialog-title>
+    <button mat-button mat-dialog-close class="button-close">X</button>
+    Agregar Sprint
+  </h2>
+  <mat-dialog-content>
+    <mat-card>
+      <mat-card-title>Agregar Proyecto</mat-card-title>
+      <mat-card-content>
+        <div class="form-group">
+          <!-- <mat-label>Nombre del Proyecto</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="project.Name" placeholder="Ingrese el nombre del proyecto" /> -->
+    
+          <mat-label>Repositorio</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="project.Repository" placeholder="Ingrese el repositorio" />
+    
+          <mat-label>Servidor</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="project.ServerImage" placeholder="Ingrese el servidor" />
+    
+          <mat-label>Estado</mat-label>
+          <div class="states">
+              @for (state of states; track $index) {
+                <button mat-raised-button (click)="setState(state)">{{ state }}</button>
+              }
+          </div>
+    
+          <div>
+            <mat-label>Lista de tareas por hacer</mat-label>
+            @for (item of project.ProductBacklog.Tasks; track $index) {
+              <input type="text" [(ngModel)]="project.ProductBacklog.Tasks[$index]" placeholder="Descripción de la tarea" class="full-width" />
+            }
+            <button mat-raised-button color="primary" (click)="addTask()">Añadir Tarea</button>
+          </div>
+    
+          <div>
+            <mat-label>Responsable</mat-label>
+            <input type="text" class="full-width" [(ngModel)]="responsible" placeholder="Ingrese el nombre del responsable" />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+</div>

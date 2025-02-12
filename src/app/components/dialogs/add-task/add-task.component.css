@@ -17,6 +17,9 @@ p{
     margin:0;
     color:black;
 }
+.each-state{
+    cursor: pointer;
+}
 input{
     display:flex; 
     width:70%; 

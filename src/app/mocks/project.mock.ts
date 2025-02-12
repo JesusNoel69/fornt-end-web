@@ -22,7 +22,73 @@ let tasks1:Task[] =[
         Sprint: null as any,
         ProductBacklog: null as any,
       },
-]
+];
+let tasks3:Task[] =[
+  {
+      Id: 12,
+      Name: "Configurar servicios en Angular",
+      WeeklyScrum: "Servicios configurados parcialmente",
+      Description: "Configuración de servicios y conexión con la API.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+    {
+      Id: 13,
+      Name: "Implementar integración inicial",
+      WeeklyScrum: "API conectada correctamente",
+      Description: "Conexión de las llamadas iniciales a la API desde Angular.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+];
+let tasks4:Task[] =[
+  {
+      Id: 1001,
+      Name: "Configurar servicios en Angular",
+      WeeklyScrum: "Servicios configurados parcialmente",
+      Description: "Configuración de servicios y conexión con la API.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+    {
+      Id: 1002,
+      Name: "Implementar integración inicial",
+      WeeklyScrum: "API conectada correctamente",
+      Description: "Conexión de las llamadas iniciales a la API desde Angular.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+];
+let tasks5:Task[] =[
+  {
+      Id: 1003,
+      Name: "Configurar servicios en Angular task 5",
+      WeeklyScrum: "Servicios configurados parcialmente",
+      Description: "Configuración de servicios y conexión con la API.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+    {
+      Id: 1004,
+      Name: "Implementar integración inicial tasks 5",
+      WeeklyScrum: "API conectada correctamente",
+      Description: "Conexión de las llamadas iniciales a la API desde Angular.",
+      State: 2,
+      ChangeDetails: [],
+      Sprint: null as any,
+      ProductBacklog: null as any,
+    },
+];
 let project1: Project = {
     Id: 1,
     StartDate: new Date('2025-01-01'),
@@ -31,20 +97,20 @@ let project1: Project = {
     ServerImage: "https://example.com/server-image1.png",
     ProjectNumber: 101,
     Sprints: [
-      {
-        Id: 1,
-        StartDate: new Date('2025-01-02'),
-        EndDate: new Date('2025-01-10'),
-        Description:
-          "Lorem ipsumConsequat elit eiusmod aliqua ex proident commodo laboris amet. Aute incididunt minim irure ea proident non eiusmod fugiat adipisicing irure culpa eiusmod sit. In sunt reprehenderit incididunt quis nisi amet in elit veniam est nulla esse esse.",
-        State: 1,
-        Repository: "https://github.com/example/app-web/sprint1",
-        Goal: "Crear la estructura base de la aplicación",
-        ProjectNumber: 101,
-        ChangeDetails: [],
-        Tasks: tasks1,
-        Project: null as any,
-      },
+      // {
+      //   Id: 1,
+      //   StartDate: new Date('2025-01-02'),
+      //   EndDate: new Date('2025-01-10'),
+      //   Description:
+      //     "Lorem ipsumConsequat elit eiusmod aliqua ex proident commodo laboris amet. Aute incididunt minim irure ea proident non eiusmod fugiat adipisicing irure culpa eiusmod sit. In sunt reprehenderit incididunt quis nisi amet in elit veniam est nulla esse esse.",
+      //   State: 1,
+      //   Repository: "https://github.com/example/app-web/sprint1",
+      //   Goal: "Crear la estructura base de la aplicación",
+      //   ProjectNumber: 101,
+      //   ChangeDetails: [],
+      //   Tasks: tasks1,
+      //   Project: null as any,
+      // },
       {
         Id: 2,
         StartDate: new Date('2025-01-11'),
@@ -56,7 +122,21 @@ let project1: Project = {
         Goal: "Desarrollar la capa de servicios y conexión con la API",
         ProjectNumber: 101,
         ChangeDetails: [],
-        Tasks: tasks1,
+        Tasks: tasks3,
+        Project: null as any,
+      },
+      {
+        Id: 50,
+        StartDate: new Date('2025-01-11'),
+        EndDate: new Date('2025-01-20'),
+        Description:
+          "Sprint enfocado en el desarrollo de la capa de servicios y la integración inicial de la API 2.",
+        State: 2,
+        Repository: "https://github.com/example/app-web/sprint2",
+        Goal: "Desarrollar la capa de servicios y conexión con la API 2",
+        ProjectNumber: 101,
+        ChangeDetails: [],
+        Tasks: tasks5,
         Project: null as any,
       },
       {
@@ -178,7 +258,7 @@ let project1: Project = {
   };
 let tasks2:Task[]=[
     {
-        Id: 2,
+        Id: 22,
         Name: "Configurar base de datos",
         WeeklyScrum: "Finalizada integración inicial",
         Description: "Creación de tablas para usuarios y roles",
@@ -188,7 +268,7 @@ let tasks2:Task[]=[
         ProductBacklog: null as any,
     },
     {
-        Id: 4,
+        Id: 24,
         Name: "Configurar base de datos 2",
         WeeklyScrum: "Finaliza",
         Description: "Creación de tablas",
@@ -198,7 +278,7 @@ let tasks2:Task[]=[
         ProductBacklog: null as any,
     },
     {
-        Id: 6,
+        Id: 26,
         Name: "Configurar base de datos",
         WeeklyScrum: "Finalizada integración inicial",
         Description: "Creación de tablas para usuarios y roles",
@@ -208,7 +288,7 @@ let tasks2:Task[]=[
         ProductBacklog: null as any,
     },
     {
-        Id: 7,
+        Id: 27,
         Name: "Configurar base de datos 2",
         WeeklyScrum: "Finaliza",
         Description: "Creación de tablas",
@@ -262,7 +342,7 @@ let project2: Project = {
                 Name: "Equipo Fénix",
                 Code: "PHX001",
                 ProductOwner: {
-                    Id: 102,
+                    Id: 100,
                     Rol: true,
                     Name: "Alice Brown",
                     Account: "alice.brown",
@@ -275,7 +355,7 @@ let project2: Project = {
                 },
                 Developers: [
                     {
-                      Id: 202,
+                      Id: 305,
                       Rol: false,
                       Name: "Carlos Rivera",
                       Account: "carlos.rivera",
@@ -287,7 +367,7 @@ let project2: Project = {
                       ChangeDetails: null as any,
                       WeeklyScrum: null as any
                     },{
-                        Id: 202,
+                        Id: 305,
                         Rol: false,
                         Name: "Carlos Rivera",
                         Account: "carlos.rivera",
@@ -300,7 +380,7 @@ let project2: Project = {
                       WeeklyScrum: null as any
 
                     },{
-                      Id: 202,
+                      Id: 304,
                       Rol: false,
                       Name: "Carlos Rivera",
                       Account: "carlos.rivera",
@@ -312,7 +392,7 @@ let project2: Project = {
                       ChangeDetails: null as any,
                       WeeklyScrum: null
                     },{
-                      Id: 202,
+                      Id: 303,
                       Rol: false,
                       Name: "Carlos Rivera",
                       Account: "carlos.rivera",
@@ -324,7 +404,7 @@ let project2: Project = {
                       ChangeDetails: null as any,
                       WeeklyScrum: null
                     },{
-                      Id: 2,
+                      Id: 301,
                       Rol: false,
                       Name: "Carlos Rivera",
                       Account: "carlos.rivera",
@@ -336,7 +416,7 @@ let project2: Project = {
                       ChangeDetails: null as any,
                       WeeklyScrum: null
                     },{
-                      Id: 202,
+                      Id: 300,
                       Rol: false,
                       Name: "Joaquin",
                       Account: "carlos.rivera",
@@ -360,7 +440,7 @@ let project2: Project = {
         Comment: "Primera iteración del backlog",
         UpdatedBy: "Alice Brown",
         Project: null as any,
-        Tasks: tasks2
+        Tasks: tasks4
     }
 };
 project1.Sprints[0].ChangeDetails = [

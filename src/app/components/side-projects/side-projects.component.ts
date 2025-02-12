@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -19,7 +19,13 @@ export class SideProjectsComponent implements OnInit {
   projects: Project[] = [];
 
   constructor(private projectService: ProjectService) {}
+  ///
+  @Output() openDialog = new EventEmitter<void>();
 
+  openAddClick() {
+    this.openDialog.emit();
+  }
+////
   ngOnInit(): void {
     this.projectService.getProjects().subscribe((projects) => {
       this.projects = projects;

@@ -3,8 +3,6 @@
     Agregar Sprint
 </h2>
 <mat-dialog-content >
-  
-
     <div class="list-todo">
       <mat-card>
         <mat-card-header>
@@ -21,7 +19,9 @@
             @for (item of todo; track item) {
                 <mat-divider></mat-divider>
                   <div class="box" cdkDrag >
-                      <div class="circle"></div>
+                      <div [ngClass]="getCircleClass(item.State)" > 
+                        <!-- {{item.State}} -->     
+                      </div>
                       <div>{{item.Name}}</div>
                   </div>                
             }
@@ -29,7 +29,6 @@
         </mat-card-content>
       </mat-card>
     </div>
-    
     <div class="container-information">
         <h3>Nombre del Sprint:</h3>
         <input id="sprint-name" class="border" [(ngModel)]="name" >
@@ -39,16 +38,18 @@
         >
             @for (item of done; track $index) {
                 <div 
-                class="task-card"
+                class="box-card"
                     cdkDrag>
                     {{item.Name}}
+                    <div class="drag-handle" cdkDragHandle>
+                      <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                      </svg>
+                    </div>
                 </div>
-
-                <!-- style="background: blue; height: 4rem !important; width: 5rem; color: white; padding: 10px; border-radius: 5px; cursor: grab;" -->
             }
-            
         </div>
-        <!-- <div style="display: flex; flex-wrap: wrap; width: 100%; gap: .2rem; justify-content: center; align-items: center;"> -->
         <div class="container-goal-description">
             <h3 >Meta del Sprint</h3>
             <textarea class="border" [(ngModel)]="goal" 
@@ -59,9 +60,6 @@
             <textarea class="border" [(ngModel)]="description" 
                         ></textarea>    
         </div>
-        
-        <!-- </div> -->
-        <!-- <div style="display: flex; flex-wrap: wrap; width: 85%; gap: 1rem; justify-content: space-between;"> -->
             <mat-form-field >
                 <mat-label>Fecha de termino</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="date">
@@ -69,7 +67,6 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
-        <!-- </div> -->
         <div class="actions">
             <button mat-raised-button color="warn" (click)="deleteFields()"  mat-dialog-close>Cancelar</button>
             <button mat-raised-button color="primary" (click)="addSprint()" class="confirm"  mat-dialog-close>Confirmar</button>
