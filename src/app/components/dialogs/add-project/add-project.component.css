@@ -1,24 +1,83 @@
 .full-width {
-    width: 100%;
-    margin-bottom: 16px;
-  }
-  *{
-    padding:0;
-    box-sizing: border-box;
-  }
-  
-  .states {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-/*   
-  button {
-    margin-top: 8px;
-    border:none;
-    cursor: pointer;
-  } */
-  .container-principal{
-    background: var(--background-color-2); 
-    padding:0;
+  width: calc(100% - 18px) !important;
+  margin-bottom: 16px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.container-principal {
+  background: var(--background-color-2);
+  /* padding: 16px; */
+  border-radius: 8px;
+}
+
+.states {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.circle.active {
+  background-color: lightblue;
+  font-weight: bold;
+}
+
+.task-list {
+  margin-top: 16px;
+  /* border: 1px solid #ccc; */
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.task-item {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #ddd;
+}
+
+.button-responsable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 4px;
+  color:black;
+  margin-bottom: 16px;
+}
+
+.mat-mdc-button>.mat-icon{
+  font-size: 36px;
+}
+
+.background-task {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  padding: 0.5rem !important;
+  background: var(--background-color-3) !important;
+  margin-bottom: .5rem;
+  border-radius: .5rem;
+}
+.add-task-button{
+  color:var(--primary-color) !important;
+  background: var(--mdc-circular-progress-active-indicator-color) !important;
+}
+
+.actions{
+  padding: .7rem;
+  width:calc(100% - 1.4rem); display:flex; justify-items: center; justify-content: space-between; align-items: center; gap:20px;
 }

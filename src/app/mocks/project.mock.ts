@@ -11,6 +11,7 @@ let tasks1:Task[] =[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
+        Responsible: null as any
       },
       {
         Id: 3,
@@ -21,6 +22,7 @@ let tasks1:Task[] =[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
+        Responsible: null as any
       },
 ];
 let tasks3:Task[] =[
@@ -33,6 +35,7 @@ let tasks3:Task[] =[
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: null as any,
+      Responsible: null as any
     },
     {
       Id: 13,
@@ -43,6 +46,7 @@ let tasks3:Task[] =[
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: null as any,
+      Responsible: null as any
     },
 ];
 let tasks4:Task[] =[
@@ -55,6 +59,7 @@ let tasks4:Task[] =[
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: null as any,
+      Responsible: null as any
     },
     {
       Id: 1002,
@@ -65,19 +70,23 @@ let tasks4:Task[] =[
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: null as any,
+      Responsible: null as any
+
     },
 ];
 let tasks5:Task[] =[
   {
-      Id: 1003,
-      Name: "Configurar servicios en Angular task 5",
-      WeeklyScrum: "Servicios configurados parcialmente",
-      Description: "Configuración de servicios y conexión con la API.",
-      State: 2,
-      ChangeDetails: [],
-      Sprint: null as any,
-      ProductBacklog: null as any,
-    },
+    Id: 1003,
+    Name: "Configurar servicios en Angular task 5",
+    WeeklyScrum: "Servicios configurados parcialmente",
+    Description: "Configuración de servicios y conexión con la API.",
+    State: 2,
+    ChangeDetails: [],
+    Sprint: null as any,
+    ProductBacklog: null as any,
+    Responsible: null as any
+
+  },
     {
       Id: 1004,
       Name: "Implementar integración inicial tasks 5",
@@ -87,6 +96,8 @@ let tasks5:Task[] =[
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: null as any,
+      Responsible: null as any
+
     },
 ];
 let project1: Project = {
@@ -160,6 +171,7 @@ let project1: Project = {
             ChangeDetails: [],
             Sprint: null as any,
             ProductBacklog: null as any,
+            Responsible: null as any
           },
           {
             Id: 5,
@@ -170,6 +182,7 @@ let project1: Project = {
             ChangeDetails: [],
             Sprint: null as any,
             ProductBacklog: null as any,
+            Responsible: null as any
           },
           {
             Id: 6,
@@ -180,6 +193,7 @@ let project1: Project = {
             ChangeDetails: [],
             Sprint: null as any,
             ProductBacklog: null as any,
+            Responsible: null as any
           },
           {
             Id: 7,
@@ -190,6 +204,7 @@ let project1: Project = {
             ChangeDetails: [],
             Sprint: null as any,
             ProductBacklog: null as any,
+            Responsible: null as any
           },
           
         ],
@@ -252,6 +267,7 @@ let project1: Project = {
           ChangeDetails: [],
           Sprint: null as any,
           ProductBacklog: null as any,
+          Responsible: null as any
         },
       ],
     },
@@ -266,6 +282,7 @@ let tasks2:Task[]=[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
+        Responsible: null as any
     },
     {
         Id: 24,
@@ -276,7 +293,8 @@ let tasks2:Task[]=[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
-    },
+        Responsible: null as any
+      },
     {
         Id: 26,
         Name: "Configurar base de datos",
@@ -286,6 +304,7 @@ let tasks2:Task[]=[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
+        Responsible: null as any
     },
     {
         Id: 27,
@@ -296,6 +315,7 @@ let tasks2:Task[]=[
         ChangeDetails: [],
         Sprint: null as any,
         ProductBacklog: null as any,
+        Responsible: null as any
     }
 ]
 let project2: Project = {
@@ -624,19 +644,4 @@ project2.Sprints[1].Tasks[1].weeklyScrums = [
   }
 ];
 
-
 export let projects: Project[]=[project1, project2];
-
-// const project1: Project = {
-//     Id: 1,
-//     StartDate: new Date('2025-01-01'),
-//     State: 1, // Activo
-//     Repository: "https://github.com/example/app-web",
-//     ServerImage: "https://example.com/server-image1.png",
-//     ProjectNumber: 101,
-//     Sprints: [sprint1], // Vinculando el sprint al proyecto
-//     TeamProject: null as any,
-//     ProductBacklog: null as any,
-// };
-
-// sprint1.Project = project1;

@@ -8,7 +8,9 @@ import { ProjectService } from '../../../services/project.service';
 import { Project } from '../../../entities/project.entity';
 import { Task } from '../../../entities/Task.entity';
 import { FormsModule } from '@angular/forms';
-
+import { MatIconModule } from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import { Developer } from '../../../entities/developer.entity';
 @Component({
   selector: 'app-add-task',
   standalone: true,
@@ -19,6 +21,8 @@ import { FormsModule } from '@angular/forms';
     MatTableModule,
     CommonModule,
     FormsModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.css'],
@@ -28,6 +32,10 @@ export class AddTaskComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private project: Project | null = null;
 
+  selectResponsable(developer: Developer): void {
+    this.selectedResponsable = developer;
+    console.log(this.selectedResponsable);
+  }
   constructor(private projectService: ProjectService) {}
 
   states: number[] = [1, 2, 3, 4]; // Estados posibles
@@ -35,20 +43,33 @@ export class AddTaskComponent implements OnInit {
   public taskName: string = '';
   public taskInformation: string = '';
   public taskWeeklyScrum: string = '';
+  public selectedResponsable:Developer=null as any;
+  public developers: Developer[]=[];
 
   ngOnInit() {
     this.projectService.getSelectedProject().subscribe((project) => {
-      if (project?.ProductBacklog?.Tasks) {
+      if (project) {
         this.project = project;
+  
+        const relatedTeam = this.project.TeamProject?.Teams.find(
+          (team) => team.Id === this.project?.TeamProject?.TeamId
+        );
+  
+        if (relatedTeam) {
+          this.developers = relatedTeam.Developers;
+        } else {
+          console.warn('No se encontró un equipo relacionado con este proyecto.');
+        }
       }
     });
   }
+  
 
   setState(index: number): void {
     this.currentState = this.states[index];
   }
   getCircleClass(state: number): string {
-    console.log(state);
+    // console.log(state);
     switch (state) {
       case 1:
         return 'circle state-1';
@@ -83,6 +104,7 @@ export class AddTaskComponent implements OnInit {
       ChangeDetails: [],
       Sprint: null as any,
       ProductBacklog: this.project.ProductBacklog,
+      Responsible: this.selectedResponsable
     };
 
     // Agregar la tarea al backlog del proyecto

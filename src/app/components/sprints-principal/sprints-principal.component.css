@@ -39,7 +39,7 @@
     font-size: 48px; /* Tamaño del icono ajustado */
     line-height: 1; /* Corrige la alineación vertical */
     margin-top: -10px !important;
-    z-index: 9999;
+    /* z-index: 9999; */
 }
 
 .custom-arrow-button mat-icon {

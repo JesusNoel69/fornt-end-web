@@ -11,6 +11,16 @@
                 <input [(ngModel)]="taskInformation"/>
                 <p>Scrum Semanal:</p>
                 <input [(ngModel)]="taskWeeklyScrum"/>
+                <button mat-button [matMenuTriggerFor]="menu" class="button-responsable">
+                    {{ selectedResponsable ? selectedResponsable.Name : 'Seleccionar Responsable' }}
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let developer of developers" (click)="selectResponsable(developer)">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ developer.Name }}</span>
+                    </button>
+                </mat-menu>
                 <div class="container-states">
                     <P>Estado: </P>
                     <div class="states">

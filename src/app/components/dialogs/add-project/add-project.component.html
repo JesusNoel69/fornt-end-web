@@ -3,43 +3,81 @@
 
   <h2 mat-dialog-title>
     <button mat-button mat-dialog-close class="button-close">X</button>
-    Agregar Sprint
+    Agregar Proyecto
   </h2>
   <mat-dialog-content>
     <mat-card>
-      <mat-card-title>Agregar Proyecto</mat-card-title>
+      <!-- <mat-card-title>Agregar Proyecto</mat-card-title> -->
       <mat-card-content>
         <div class="form-group">
           <!-- <mat-label>Nombre del Proyecto</mat-label>
           <input type="text" class="full-width" [(ngModel)]="project.Name" placeholder="Ingrese el nombre del proyecto" /> -->
     
-          <mat-label>Repositorio</mat-label>
-          <input type="text" class="full-width" [(ngModel)]="project.Repository" placeholder="Ingrese el repositorio" />
-    
-          <mat-label>Servidor</mat-label>
-          <input type="text" class="full-width" [(ngModel)]="project.ServerImage" placeholder="Ingrese el servidor" />
-    
-          <mat-label>Estado</mat-label>
-          <div class="states">
-              @for (state of states; track $index) {
-                <button mat-raised-button (click)="setState(state)">{{ state }}</button>
-              }
-          </div>
-    
+          <mat-label>Repositorio:</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="repository" placeholder="Ingrese el repositorio" />
+          <mat-label>Servidor:</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="server" placeholder="Ingrese el servidor" />
+          <mat-label>Descripcion:</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="descriptionSprint" placeholder="Ingrese la descripción del sprint" />
+          <mat-label>Meta:</mat-label>
+          <input type="text" class="full-width" [(ngModel)]="goalSprint" placeholder="Ingrese la meta del sprint" />
+
+          <mat-form-field >
+            <mat-label>Fecha de termino</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="endDate">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
           <div>
-            <mat-label>Lista de tareas por hacer</mat-label>
-            @for (item of project.ProductBacklog.Tasks; track $index) {
-              <input type="text" [(ngModel)]="project.ProductBacklog.Tasks[$index]" placeholder="Descripción de la tarea" class="full-width" />
+            <mat-label>Lista de tareas por hacer:</mat-label>
+            <br>
+            <button mat-raised-button color="primary" class="add-task-button" (click)="addTask()">Añadir Tarea</button>
+            @for (task of project.ProductBacklog.Tasks; track task.Id;) {
+              <div class="background-task">
+                <mat-label>Nombre:</mat-label>
+                <input type="text" class="full-width" [(ngModel)]="task.Name"/>
+                <mat-label>Informacion:</mat-label>
+                <input class="full-width" [(ngModel)]="task.Description"/>
+                <mat-label>Scrum Semanal:</mat-label>
+                <input class="full-width" [(ngModel)]="task.WeeklyScrum"/>
+               
+                <button mat-button [matMenuTriggerFor]="menu" class="button-responsable">
+                   {{ task.Responsible ? task.Responsible.Name : 'Seleccionar Responsable' }}
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let developer of developers" (click)="selectResponsable(task, developer)">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ developer.Name }}</span>
+                    </button>
+                </mat-menu>
+
+                <div >
+                  <P>Estado: </P>
+                  <div class="states">
+                      @for (state of states; track state; let index=$index) {
+                        <div
+                            id="state-{{ state }}"
+                            class="circle each-state"
+                            (click)="setTaskState(task, states[index])"
+                            [class.active]="task.State === state"
+                            [ngClass]="getCircleClass(state)" 
+                        > 
+                        </div>
+                      }
+                  </div>           
+                </div>
+              </div>
             }
-            <button mat-raised-button color="primary" (click)="addTask()">Añadir Tarea</button>
-          </div>
-    
-          <div>
-            <mat-label>Responsable</mat-label>
-            <input type="text" class="full-width" [(ngModel)]="responsible" placeholder="Ingrese el nombre del responsable" />
           </div>
         </div>
       </mat-card-content>
+      <div class="actions">
+        <button mat-raised-button color="warn" (click)="cancel()"  mat-dialog-close>Cancelar</button>
+        <button mat-raised-button color="primary" (click)="confirm()" class="confirm"  mat-dialog-close>Confirmar</button>
+      </div>  
     </mat-card>
   </mat-dialog-content>
 </div>

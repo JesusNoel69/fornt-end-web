@@ -60,13 +60,13 @@
             <textarea class="border" [(ngModel)]="description" 
                         ></textarea>    
         </div>
-            <mat-form-field >
-                <mat-label>Fecha de termino</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="date">
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+        <mat-form-field >
+            <mat-label>Fecha de termino</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="date">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
         <div class="actions">
             <button mat-raised-button color="warn" (click)="deleteFields()"  mat-dialog-close>Cancelar</button>
             <button mat-raised-button color="primary" (click)="addSprint()" class="confirm"  mat-dialog-close>Confirmar</button>

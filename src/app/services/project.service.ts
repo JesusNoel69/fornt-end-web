@@ -48,4 +48,11 @@ export class ProjectService {
       this.projectsSubject.next([...allProjects]);
     }
   }
+
+  addProject(newProject: Project): void {
+    const allProjects = this.projectsSubject.getValue();
+    newProject.Id = allProjects.length > 0 ? Math.max(...allProjects.map(p => p.Id)) + 1 : 1;
+    this.projectsSubject.next([...allProjects, newProject]);
+    this.selectProject(newProject);
+  }
 }
