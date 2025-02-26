@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Project } from '../../entities/project.entity';
@@ -19,22 +19,35 @@ export class DataPrincipalComponent implements OnInit {
   repository: string = '';
   serverImage: string = '';
 
-
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
-    this.projectService.getSelectedProject().subscribe((project) => {
-      this.project = project;
-      if (this.project) {
-        this.name = `Proyecto ${this.project.ProjectNumber}`;
-        this.startDate = this.project.StartDate;
-        this.state = this.terminatedProject(this.project.State);
-        this.serverImage=this.project.ServerImage??"";
-        this.repository=this.project.Repository??"";
-      } else {
-        this.name = '';
-        this.startDate = null;
-        this.state = '';
+    this.projectService.getSelectedProject().subscribe({
+      next: (project) => {
+        // console.log("Proyecto seleccionado:", project);
+        this.project = project;
+        if (this.project!=null) {
+          // console.log("es:" +this.project)
+          this.name = `Proyecto ${this.project.ProjectNumber}`;
+          this.startDate = this.project.StartDate;
+          this.state = this.terminatedProject(this.project.State);
+          this.serverImage = this.project.ServerImage ?? "";
+          this.repository = this.project.Repository ?? "";
+
+        } else {
+          this.name = 'Sin proyecto seleccionado';
+          this.startDate = null;
+          this.state = '';
+          this.repository = '';
+          this.serverImage = '';
+
+        }
+        this.cdr.detectChanges();
+
+      },
+      error: (err) => {
+        console.error("Error al obtener el proyecto seleccionado:", err);
       }
     });
   }
@@ -47,8 +60,9 @@ export class DataPrincipalComponent implements OnInit {
     } else if (state === 3) {
       return 'Terminado';
     }
-    return '';
+    return 'Desconocido';
   }
+
   navigateTo(url: string): void {
     window.open(url, '_blank');
   }

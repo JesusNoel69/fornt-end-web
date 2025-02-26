@@ -1,19 +1,34 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Project } from '../entities/project.entity';
-import { projects } from '../mocks/project.mock';
+// import { projects } from '../mocks/project.mock';
+
 
 @Injectable({
   providedIn: 'root',
 })
+//endpoint que traiga el proyecto de la db
 export class ProjectService {
-  private projectsSubject = new BehaviorSubject<Project[]>(projects);
-  private selectedProjectSubject = new BehaviorSubject<Project | null>(
-    projects.length > 0 ? projects[0] : null
-  );
+  private apiUrl:string ="http://localhost:5038/Project/GetProjects";
+  private projectsSubject = new BehaviorSubject<Project[]>([]);
+  // private selectedProjectSubject = new BehaviorSubject<Project | null>(
+  //   projects.length > 0 ? projects[0] : null
+  // );
+  private selectedProjectSubject = new BehaviorSubject<Project | null>(null);
 
-  constructor() {}
-
+  constructor(private http: HttpClient ) {
+    this.loadProjects();
+  }
+  private loadProjects(): void {
+    this.http.get<Project[]>(`${this.apiUrl}`).subscribe((projects) => {
+      this.projectsSubject.next(projects);
+      // console.log(projects)
+      if (projects?.length > 0) {
+        this.selectedProjectSubject.next(projects[0]); // Selecciona el primer proyecto
+      }
+    });
+  }
   getProjects(): Observable<Project[]> {
     return this.projectsSubject.asObservable();
   }
@@ -48,11 +63,22 @@ export class ProjectService {
       this.projectsSubject.next([...allProjects]);
     }
   }
+  // addProject(newProject: Project): Observable<Project> {
+  //   return this.http.post<Project>(
+  //     'http://localhost:5038/Project/InsertProject', 
+  //     newProject
+  //   );
+  // }
+// ...
+addProject(newProject: Project): Observable<Project> {
+  return this.http.post<Project>('http://localhost:5038/Project/InsertProject', newProject)
+    .pipe(
+      tap((insertedProject: Project) => {
+        const currentProjects = this.projectsSubject.getValue();
+        // Se agrega el proyecto insertado a la lista
+        this.projectsSubject.next([...currentProjects, insertedProject]);
+      })
+    );
+}
 
-  addProject(newProject: Project): void {
-    const allProjects = this.projectsSubject.getValue();
-    newProject.Id = allProjects.length > 0 ? Math.max(...allProjects.map(p => p.Id)) + 1 : 1;
-    this.projectsSubject.next([...allProjects, newProject]);
-    this.selectProject(newProject);
-  }
 }

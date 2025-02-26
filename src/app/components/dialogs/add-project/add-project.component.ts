@@ -162,13 +162,21 @@ export class AddProjectComponent {
     task.Responsible = developer;
   }
   confirm() {
+    const projectCount = this.projects ? this.projects.length : 0;
+  
+    // Preparamos las tareas para que sean nuevas (Id = 0)
+    const newTasks = this.project.ProductBacklog.Tasks.map(task => ({
+      ...task,
+      Id: 0
+    }));
+  
     const newProject: Project = {
       Id: 0,
       StartDate: new Date(),
       State: this.projectState,
       Repository: this.repository,
       ServerImage: this.server,
-      ProjectNumber: this.projects.length + 1,
+      ProjectNumber: projectCount + 1,
       Sprints: [
         {
           Id: 0,
@@ -176,8 +184,8 @@ export class AddProjectComponent {
           Description: this.descriptionSprint,
           Goal: this.goalSprint,
           Project: null as any,
-          Tasks: [...this.project.ProductBacklog.Tasks], // Clona las tareas actuales
-          ProjectNumber: this.projects.length + 1,
+          Tasks: newTasks,//[], // Se elimina la duplicación de tareas aquí
+          ProjectNumber: projectCount + 1,
           State: 1,
           Repository: this.repository,
           StartDate: new Date(),
@@ -196,12 +204,22 @@ export class AddProjectComponent {
         Comment: '',
         UpdatedBy: '',
         Project: null!,
-        Tasks: [...this.project.ProductBacklog.Tasks],
+        Tasks: []//newTasks, // Aquí se incluyen las tareas
       },
     };
+  
     console.log('Proyecto confirmado:', newProject);
-  this.projectService.addProject(newProject);
-  }  
+    this.projectService.addProject(newProject).subscribe({
+      next: (response) => {
+        console.log("Proyecto agregado con éxito:", response);
+      },
+      error: (error) => {
+        console.error("Error al agregar proyecto:", error);
+      }
+    });
+  }
+  
+  
   cancel(){
 
   }

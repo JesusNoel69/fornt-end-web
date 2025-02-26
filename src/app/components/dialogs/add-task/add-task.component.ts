@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import { Developer } from '../../../entities/developer.entity';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-add-task',
   standalone: true,
@@ -36,7 +37,7 @@ export class AddTaskComponent implements OnInit {
     this.selectedResponsable = developer;
     console.log(this.selectedResponsable);
   }
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService, private http: HttpClient) {}
 
   states: number[] = [1, 2, 3, 4]; // Estados posibles
   currentState: number = 1;
@@ -84,39 +85,74 @@ export class AddTaskComponent implements OnInit {
     }
   }
 
+  // addTask() {
+  //   if (!this.project) {
+  //     console.warn('No hay un proyecto seleccionado.');
+  //     return;
+  //   }
+
+  //   const newTaskId =
+  //     this.project.ProductBacklog.Tasks.length > 0
+  //       ? Math.max(...this.project.ProductBacklog.Tasks.map((task) => task.Id)) + 1
+  //       : 1;
+
+  //   const newTask: Task = {
+  //     Id: newTaskId,
+  //     Name: this.taskName,
+  //     WeeklyScrum: this.taskWeeklyScrum,
+  //     Description: this.taskInformation,
+  //     State: this.currentState, // Usa el estado seleccionado
+  //     ChangeDetails: [],
+  //     Sprint: null as any,
+  //     ProductBacklog: this.project.ProductBacklog,
+  //     Responsible: this.selectedResponsable
+  //   };
+
+  //   // Agregar la tarea al backlog del proyecto
+  //   this.project.ProductBacklog.Tasks.push(newTask);
+
+  //   // Emitir el cambio al servicio
+  //   this.projectService.updateSelectedProject(this.project);
+
+  //   // Forzar la detección de cambios
+  //   this.cdr.detectChanges();
+  //   this.ngOnInit();
+
+  //   console.log('Tarea añadida:', newTask);
+  // }
   addTask() {
     if (!this.project) {
       console.warn('No hay un proyecto seleccionado.');
       return;
     }
-
-    const newTaskId =
-      this.project.ProductBacklog.Tasks.length > 0
-        ? Math.max(...this.project.ProductBacklog.Tasks.map((task) => task.Id)) + 1
-        : 1;
-
+  
+    // Crear nueva tarea
     const newTask: Task = {
-      Id: newTaskId,
+      Id: 0, 
       Name: this.taskName,
       WeeklyScrum: this.taskWeeklyScrum,
       Description: this.taskInformation,
-      State: this.currentState, // Usa el estado seleccionado
+      State: this.currentState,
       ChangeDetails: [],
-      Sprint: null as any,
+      Sprint: null as any, // Puede ser asignado después
       ProductBacklog: this.project.ProductBacklog,
-      Responsible: this.selectedResponsable
+      Responsible: this.selectedResponsable,
     };
-
-    // Agregar la tarea al backlog del proyecto
-    this.project.ProductBacklog.Tasks.push(newTask);
-
-    // Emitir el cambio al servicio
-    this.projectService.updateSelectedProject(this.project);
-
-    // Forzar la detección de cambios
-    this.cdr.detectChanges();
-    this.ngOnInit();
-
-    console.log('Tarea añadida:', newTask);
+  
+    // Definir la URL del endpoint
+    const apiUrl = 'http://localhost:5038/Task/AddTaskToProductBacklog';
+  
+    // Hacer la petición HTTP sin usar un servicio
+    this.http.post<Project>(apiUrl, newTask).subscribe({
+      next: (updatedProject) => {
+        console.log("Product Backlog actualizado:", updatedProject);
+        this.project = updatedProject; // Actualizamos el proyecto con el nuevo backlog
+        this.cdr.detectChanges(); // Forzar la actualización de la UI
+      },
+      error: (err) => {
+        console.error("Error al agregar la tarea:", err);
+      }
+    });
   }
+  
 }
