@@ -7,7 +7,7 @@
   </div>  
 
   <button class="invisible-button">
-    @if (productOwner) {
+    @if (!productOwner) {
       <mat-icon aria-hidden="false" aria-label="Settings icon" (click)="openGeneralConfigurationProductOwner()">
         settings
       </mat-icon>

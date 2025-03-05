@@ -1,6 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { ProjectService } from '../../services/project.service';
+import { Subject, of } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface User {
   label: string;
@@ -12,74 +14,92 @@ interface User {
   standalone: true,
   imports: [MatIcon],
   templateUrl: './slider-users.component.html',
-  styleUrl: './slider-users.component.css',
+  styleUrls: ['./slider-users.component.css'],
 })
-export class SliderUsersComponent implements OnInit {
+export class SliderUsersComponent implements OnInit, OnDestroy {
   users: User[] = [];
   visibleItems: User[] = []; 
   startIndex = 0;
+  private cdr = inject(ChangeDetectorRef);
   private projectService = inject(ProjectService);
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.projectService.getSelectedProject().subscribe((project) => {
-      this.startIndex=0;
-      if (project && project.TeamProject) {
-        this.users = project.TeamProject.Teams[0]?.Developers.map((dev) => ({
-          label: dev.Name,
-          color: this.generateColor(dev.Id),
-        })) || [];
-      } else {
-        this.users = [];
-      }
-      this.updateVisibleItems();
-    });
+    // Suscribirse al proyecto seleccionado
+    this.projectService.getSelectedProject()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((project) => {
+        console.log(project)
+        if (project) {
+          // Llamar al endpoint para obtener los developers usando getTeamProjectsByProjectId
+          this.projectService.getTeamProjectsByProjectId(project.Id)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (developers) => {
+                
+                this.users = developers.map(dev => ({
+                  label: dev.Name,
+                  color: this.generateColor(dev.Id)
+                }));
+                this.updateVisibleItems();
+                this.cdr.markForCheck();
+              },
+              error: (err) => {
+                console.error("Error al obtener los developers:", err);
+              }
+            });
+        } else {
+          this.users = [];
+          this.visibleItems = [];
+          this.cdr.markForCheck();
+        }
+      });
   }
 
-  nextSlide() {
+  nextSlide(): void {
     if (this.startIndex + 5 < this.users.length) {
       this.startIndex++;
       this.updateVisibleItems();
     }
   }
 
-  prevSlide() {
+  prevSlide(): void {
     if (this.startIndex > 0) {
       this.startIndex--;
       this.updateVisibleItems();
     }
   }
 
-  updateVisibleItems() {
+  updateVisibleItems(): void {
     this.visibleItems = this.users.slice(this.startIndex, this.startIndex + 5);
   }
 
   getScale(index: number): string {
-    let scale :number=1.0;
-    if(this.users.length>=5)
-    {
+    let scale = 1.0;
+    if (this.users.length >= 5) {
       if (index === 2) {
-        scale=1.3;
+        scale = 1.3;
       } else if (index === 1 || index === 3) {
-        scale=1.1;
+        scale = 1.1;
       } else {
-        scale=1;
+        scale = 1;
       }
-    }else if(this.users.length==4||this.users.length==2){
-      if (index === 2 || index ===1) {
-        scale=1.3;
-      }else{
-        scale=1.1;
+    } else if (this.users.length === 4 || this.users.length === 2) {
+      if (index === 1 || index === 2) {
+        scale = 1.3;
+      } else {
+        scale = 1.1;
       } 
-    }else if(this.users.length==3){
-      if (index ===1) {
-        scale=1.3;
-      }else{
-        scale=1.1;
+    } else if (this.users.length === 3) {
+      if (index === 1) {
+        scale = 1.3;
+      } else {
+        scale = 1.1;
       } 
-    }else{
-      scale=1.3;
+    } else {
+      scale = 1.3;
     }
-    return 'scale('+scale+')';
+    return 'scale(' + scale + ')';
   }
 
   getZIndex(index: number): number {
@@ -96,6 +116,11 @@ export class SliderUsersComponent implements OnInit {
   generateColor(id: number): string {
     const colors = ['#8BC34A', '#81C784', '#FFEB3B', '#9575CD', '#F06292', '#4DB6AC', '#FF7043'];
     return colors[id % colors.length];
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 

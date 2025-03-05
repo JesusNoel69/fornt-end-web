@@ -27,10 +27,12 @@
                     [rowspan]="3"
                     >
                         <div class="input-container">
-                            <p>Rol: <input/></p>
-                            <p>Nombre: <input/></p>
-                            <p>Cuenta: <input/></p>
-                            <button mat-raised-button class="button" id="add-product-owner-configuration">Agregar</button>
+                            <!-- <p>Rol: <input [(ngModel)]="rol"/></p> -->
+                            <p>Nombre: <input [(ngModel)]="name"/></p>
+                            <p>Epecialización: <input [(ngModel)]="nameSpecialization"/></p>
+                            <p>Cuenta: <input [(ngModel)]="account"/></p>
+                            <p>Equipo: <input [(ngModel)]="teamCode"/></p>
+                            <button mat-raised-button class="button" id="add-product-owner-configuration" (click)="addNewUser()">Agregar</button>
                         </div>
                 </mat-grid-tile>
                 <mat-grid-tile

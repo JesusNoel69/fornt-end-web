@@ -8,5 +8,5 @@ export interface Team{
     Code: string;
     ProductOwner: ProductOwner
     Developers: Developer[];
-    TeamProject: TeamProject;
+    TeamProject: TeamProject[];
 }

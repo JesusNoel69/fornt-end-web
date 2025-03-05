@@ -21,7 +21,15 @@
           <input type="text" class="full-width" [(ngModel)]="descriptionSprint" placeholder="Ingrese la descripción del sprint" />
           <mat-label>Meta:</mat-label>
           <input type="text" class="full-width" [(ngModel)]="goalSprint" placeholder="Ingrese la meta del sprint" />
-
+          <!--todo: ponerle un diseño-->
+          <br>
+          @for(team of teams; track team.Id){
+            <button 
+              (click)="selectTeam(team)"
+              [ngClass]="{'selected': selectedTeam.Id === team.Id}">>{{team.Name}}</button>
+          }
+          <br>
+          
           <mat-form-field >
             <mat-label>Fecha de termino</mat-label>
             <input matInput [matDatepicker]="picker" [(ngModel)]="endDate">

@@ -60,6 +60,10 @@
 .mat-mdc-button>.mat-icon{
   font-size: 36px;
 }
+button.selected {
+  background-color: #007bff; /* Por ejemplo, un fondo azul */
+  color: white;
+}
 
 .background-task {
   display: flex;
