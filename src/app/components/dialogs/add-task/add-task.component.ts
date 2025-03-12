@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ProjectService } from '../../../services/project.service';
 import { Project } from '../../../entities/project.entity';
@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Developer } from '../../../entities/developer.entity';
 import { HttpClient } from '@angular/common/http';
 import { ProductBacklog } from '../../../entities/productbacklog.entity';
-import { Subject, of } from 'rxjs';
+import { Subject, firstValueFrom, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -28,6 +28,7 @@ import { takeUntil } from 'rxjs/operators';
     FormsModule,
     MatIconModule,
     MatMenuModule,
+    
   ],
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.css'],
@@ -47,7 +48,7 @@ export class AddTaskComponent implements OnInit, OnDestroy {
   public developers: Developer[] = [];
   productBacklog: ProductBacklog = null as any;
 
-  constructor(private projectService: ProjectService, private http: HttpClient) {}
+  constructor(private projectService: ProjectService, private http: HttpClient,   private dialogRef: MatDialogRef<AddTaskComponent>) {}
 
   ngOnInit(): void {
     // Suscribirse al proyecto seleccionado
@@ -108,44 +109,47 @@ export class AddTaskComponent implements OnInit, OnDestroy {
     // console.log('Responsable seleccionado:', this.selectedResponsable);
   }
 
-  addTask(): void {
-    if (!this.project) {
-      console.warn('No hay un proyecto seleccionado.');
-      return;
-    }
-    // Crear la nueva tarea usando el DTO esperado
-    const newTask = {
-      // No se envía "Id" ya que es una tarea nueva
-      Name: this.taskName,
-      WeeklyScrum: this.taskWeeklyScrum,
-      Description: this.taskInformation,
-      State: this.currentState,
-      Order: 0, // Asigna el valor correspondiente
-      ChangeDetails: [],
-      // Enviar únicamente el Id del ProductBacklog
-      ProductBacklogId: this.productBacklog.Id,
-      // Enviar únicamente el Id del Developer (Responsable)
-      DeveloperId: this.selectedResponsable.Id
-    };
-  
-    console.log("productBack:", newTask);
-    const apiUrl = 'http://localhost:5038/Task/AddTaskToProductBacklog';
-  
-    // Nota: Se elimina takeUntil para que la llamada HTTP no se cancele
-    this.http.post<Task>(apiUrl, newTask)
-      .subscribe({
-        next: (addTask) => {
-          console.log("Product Backlog actualizado:", addTask);
-          // Aquí puedes realizar cualquier acción adicional, por ejemplo, notificar al usuario
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error("Error al agregar la tarea:", err);
-        }
-      });
-  }
-  
 
+async addTask(): Promise<void> {
+  if (!this.project) {
+    console.warn('No hay un proyecto seleccionado.');
+    return;
+  }
+
+  const newTask = {
+    Name: this.taskName,
+    WeeklyScrum: this.taskWeeklyScrum,
+    Description: this.taskInformation,
+    State: this.currentState,
+    Order: 0,
+    ChangeDetails: [],
+    ProductBacklogId: this.productBacklog.Id,
+    DeveloperId: this.selectedResponsable.Id
+  };
+
+  const apiUrl = 'http://localhost:5038/Task/AddTaskToProductBacklog';
+
+  try {
+    // 1️⃣ Espera a que la tarea se agregue antes de continuar
+    const addedTask = await firstValueFrom(this.http.post<Task>(apiUrl, newTask));
+    console.log("Tarea agregada:", addedTask);
+
+    // 2️⃣ Espera a que se obtenga el backlog actualizado antes de cerrar el diálogo
+    const updatedBacklog = await firstValueFrom(this.projectService.getProductBacklogById(this.project!.Id));
+    console.log("Backlog actualizado que se enviará al cerrar el diálogo:", updatedBacklog);
+
+    // 3️⃣ Cerrar el diálogo solo cuando el backlog actualizado esté listo
+    this.dialogRef.close(updatedBacklog);
+  } catch (error) {
+    console.error("Error al agregar la tarea o actualizar el backlog:", error);
+  }
+}
+
+  
+  
+  
+  
+  
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

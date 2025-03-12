@@ -15,9 +15,10 @@ import { Project } from '../../entities/project.entity';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { of, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDivider } from '@angular/material/divider';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-sprint-board',
@@ -30,13 +31,14 @@ import { MatDivider } from '@angular/material/divider';
 export class SprintBoardComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private sprintService = inject(SprintService);
+  private taskService = inject(TaskService);
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
   readonly dialog = inject(MatDialog);
 
   // Subject para cancelar las suscripciones cuando el componente se destruye
   private destroy$ = new Subject<void>();
-
+  sprints: Sprint[] = [];
   selectedProject: Project | null = null;
   currentSprint: Sprint | null = null;
   todo: Task[] = [];
@@ -44,6 +46,8 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   description: string = "";
   goal: string = "";
   sprintNumber: number = 0;
+  sprintId:number=0;
+  backlogId:number=0;
   indexSprint: number = 0;
   taskState: number = 0;
 
@@ -52,12 +56,14 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
     this.projectService.getSelectedProject().pipe(
       takeUntil(this.destroy$)
     ).subscribe((project) => {
-      this.selectedProject = project;
       if (project) {
-        // Llamar al método que obtiene los sprints para el proyecto
+        this.selectedProject = project;
+
+        // Obtener los sprints para el proyecto y guardarlos en la propiedad "sprints"
         this.sprintService.getSprintsByProjectId(project.Id).pipe(
           takeUntil(this.destroy$)
         ).subscribe((sprints) => {
+          this.sprints = sprints; // Asignar los sprints a la propiedad local
           if (sprints.length > 0) {
             this.indexSprint = sprints.length - 1; // Seleccionamos, por ejemplo, el último sprint
             this.sprintService.selectSprint(sprints[this.indexSprint]);
@@ -92,46 +98,58 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   }
 
   backSprint() {
-    if (this.selectedProject?.Sprints && this.indexSprint > 0) {
+    if (this.sprints && this.indexSprint > 0) {
       this.indexSprint--;
-      this.currentSprint = this.selectedProject.Sprints[this.indexSprint];
+      this.currentSprint = this.sprints[this.indexSprint];
+      this.sprintService.selectSprint(this.currentSprint);
       this.updateSprintData();
     }
     console.log(this.currentSprint);
   }
 
   forwardSprint() {
-    if (this.selectedProject?.Sprints && this.indexSprint < this.selectedProject.Sprints.length - 1) {
+    if (this.sprints && this.indexSprint < this.sprints.length - 1) {
       this.indexSprint++;
-      this.currentSprint = this.selectedProject.Sprints[this.indexSprint];
+      this.currentSprint = this.sprints[this.indexSprint];
+      this.sprintService.selectSprint(this.currentSprint);
       this.updateSprintData();
     }
     console.log(this.currentSprint);
   }
 
+
   private updateSprintData() {
     if (!this.currentSprint || !this.selectedProject) return;
-
-    // Obtener las tareas del sprint actual usando el SprintId
+  
+    // Obtener las tareas del sprint actual
     this.http.get<Task[]>(`http://localhost:5038/Task/GetTasksBySprintId/${this.currentSprint.Id}`)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (tasks: Task[]) => {
-          // Actualizar la lista "done" con las tareas del sprint
+          // Actualizamos las tareas del sprint
           this.done = tasks;
-          // Actualizar "todo" con las tareas del ProductBacklog
+          
+          // Obtenemos el Product Backlog mediante el servicio (basado en el id del proyecto)
           if(!this.selectedProject)return;
-          this.projectService.getProductBacklogById(this.selectedProject.Id).pipe(
-            takeUntil(this.destroy$)
-          ).subscribe({
-            next: (backlog: ProductBacklog) => {
-              this.todo = backlog.Tasks || [];
-              this.cdr.markForCheck();
-            }
-          });
+          this.projectService.getProductBacklogById(this.selectedProject.Id)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (backlog: ProductBacklog) => {
+                // Ordenamos las tareas del backlog y las asignamos a 'todo'
+                this.todo = (backlog.Tasks || []).sort((a, b) => a.Order - b.Order);
+                this.backlogId=backlog.Id;
+                this.cdr.markForCheck();
+              },
+              error: (err) => {
+                console.error("Error al obtener el Product Backlog:", err);
+              }
+            });
+  
+          // Actualizamos otros datos del sprint
           if(!this.currentSprint)return;
           this.goal = this.currentSprint.Goal || "";
           this.sprintNumber = this.currentSprint.Id;
+          this.sprintId=this.currentSprint.Id;
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -139,6 +157,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
         }
       });
   }
+  
 
   showDetails(task: Task) {
     this.description = task.Description;
@@ -146,24 +165,41 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<Task[]>) {
+    // Obtener los datos con un fallback a un array vacío, en caso de que sean null
+    const prevData: Task[] = event.previousContainer.data || [];
+    const currData: Task[] = event.container.data || [];
+    
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      // Solo si el contenedor tiene datos
+      if (currData) {
+        moveItemInArray(currData, event.previousIndex, event.currentIndex);
+      }
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      if (prevData && currData) {
+        transferArrayItem(prevData, currData, event.previousIndex, event.currentIndex);
+      }
     }
-
-    if (this.selectedProject?.ProductBacklog) {
-      this.selectedProject.ProductBacklog.Tasks = this.todo;
-    }
-    if (this.currentSprint) {
-      this.currentSprint.Tasks = this.done;
-    }
+    
+    // Construir el payload para actualizar las tareas
+    const payload = {
+      backlog: { tasks: this.todo, backlogId: this.backlogId },
+      sprint: { tasks: this.done, sprintId: this.sprintId }
+    };
+  
+    console.log("Payload:", payload);
+    
+    this.taskService.updateTasksSprint(payload)
+      .subscribe({
+        next: (response) => {
+          console.log("Tareas actualizadas correctamente", response);
+        },
+        error: (error) => {
+          console.error("Error al actualizar las tareas", error);
+        }
+      });
   }
+  
+  
 
   openGeneralInformation() {
     if (!this.currentSprint) return;

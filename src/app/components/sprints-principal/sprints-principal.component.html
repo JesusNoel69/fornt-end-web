@@ -10,7 +10,7 @@
         </button>
         <div class=slider-container>
             <div [style.transform]="'translateX(' + (-currentIndex * 260) + 'px)'">
-                @for (sprint of sprints; track $index) {
+                @for (sprint of sprints; track sprint) {
                     <mat-card class="card" >
                         <mat-card-header>
                             <mat-card-title>Sprint #{{sprint.Id}}</mat-card-title>

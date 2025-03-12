@@ -49,7 +49,7 @@ export class AddProjectComponent {
   teams: Team[]=[];
   selectedTeam:Team=null as any;
   //debo cambiarlo a una sesion usando el login
-  porductOwnerIdFutureService:number=43;
+  porductOwnerIdFutureService:number=48;
 
   constructor(private projectService: ProjectService, private http: HttpClient) {}
 
@@ -166,7 +166,8 @@ export class AddProjectComponent {
       ChangeDetails: [],
       Sprint: null!,
       ProductBacklog: null!,
-      Responsible: null as any
+      Responsible: null as any,
+      Order:0
     });
   }
 
@@ -249,6 +250,12 @@ export class AddProjectComponent {
     this.projectService.addProject(newProject).subscribe({
       next: (response) => {
         console.log("Proyecto agregado con éxito:", response);
+        this.projectService.getProjects().subscribe({
+          next: (response_r)=>{
+            this.projects=response_r;
+            
+          }
+        })
       },
       error: (error) => {
         console.error("Error al agregar proyecto:", error);

@@ -9,7 +9,7 @@ import { catchError, shareReplay } from 'rxjs/operators';
 })
 export class SprintService {
   private selectedSprintSubject = new BehaviorSubject<Sprint | null>(null);
-  private sprintsCache: { [projectId: number]: Observable<Sprint[]> } = {};
+  // private sprintsCache: { [projectId: number]: Observable<Sprint[]> } = {};
 
   constructor(private http: HttpClient) {}
 
@@ -22,9 +22,10 @@ export class SprintService {
   }
 
   getSprintsByProjectId(projectId: number): Observable<Sprint[]> {
-    if (!this.sprintsCache[projectId]) {
+    // if (!this.sprintsCache[projectId]) {
       const url = `http://localhost:5038/Sprint/GetSprintsByProjectId?projectId=${projectId}`;
-      this.sprintsCache[projectId] = this.http.get<Sprint[]>(url)
+      // this.sprintsCache[projectId] = 
+      return this.http.get<Sprint[]>(url)
         .pipe(
           catchError(err => {
             console.error("Error al obtener sprints:", err);
@@ -32,7 +33,14 @@ export class SprintService {
           }),
           shareReplay(1)
         );
-    }
-    return this.sprintsCache[projectId];
+    // }
+    // return this.sprintsCache[projectId];
   }
+  
+
+  getSprintById(sprintId: number): Observable<Sprint> {
+    const url = `http://localhost:5038/Sprint/GetSprintBy/${sprintId}`;
+    return this.http.get<Sprint>(url);
+  }
+  
 }

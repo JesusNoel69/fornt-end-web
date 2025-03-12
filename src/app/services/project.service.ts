@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
 import { Project } from '../entities/project.entity';
 import { ProductBacklog } from '../entities/productbacklog.entity';
 import { Developer } from '../entities/developer.entity';
@@ -22,6 +22,36 @@ export class ProjectService {
   constructor(private http: HttpClient) {
     this.loadProjects();
   }
+
+  getProjectById(id: number): Observable<Project> {
+    const url = `http://localhost:5038/Project/GetProjectById/${id}`;
+    return this.http.get<Project>(url)
+      .pipe(
+        tap(project => {
+          console.log("Proyecto obtenido:", project);
+        }),
+        catchError(err => {
+          console.error("Error al obtener el proyecto:", err);
+          throw err;
+        })
+      );
+  }
+
+  refreshProjectById(projectId: number): Observable<Project> {
+    const url = `http://localhost:5038/Project/GetProjectById/${projectId}`;
+    return this.http.get<Project>(url).pipe(
+      tap((project) => {
+        this.selectedProjectSubject.next(project);
+      }),
+      catchError(err => {
+        console.error("Error refrescando el proyecto:", err);
+        throw err;
+      })
+    );
+  }
+  
+  
+  
 
   private loadProjects(): void {
     this.http.get<Project[]>(`${this.apiUrl}`).subscribe({
@@ -66,16 +96,18 @@ export class ProjectService {
       this.selectedProjectSubject.next(projects[0]);
     }
   }
-
+  
   updateSelectedProject(updatedProject: Project): void {
-    this.selectedProjectSubject.next(updatedProject);
     const allProjects = this.projectsSubject.getValue();
     const index = allProjects.findIndex((p) => p.Id === updatedProject.Id);
     if (index !== -1) {
       allProjects[index] = updatedProject;
       this.projectsSubject.next([...allProjects]);
     }
+    
+    this.selectedProjectSubject.next({ ...updatedProject, Sprints: updatedProject.Sprints || [] });
   }
+  
 
   getTeamProjectsByProjectId(projectId: number): Observable<Developer[]> {
     const url = `http://localhost:5038/User/GetDevelopersByProjectId/${projectId}`;
@@ -83,8 +115,15 @@ export class ProjectService {
   }
 
   addProject(newProject: Project): Observable<Project> {
-    return this.http.post<Project>('http://localhost:5038/Project/InsertProject', newProject);
+    return this.http.post<Project>('http://localhost:5038/Project/InsertProject', newProject)
+      .pipe(
+        tap((insertedProject: Project) => {
+          const currentProjects = this.projectsSubject.getValue();
+          this.projectsSubject.next([...currentProjects, insertedProject]);
+        })
+      );
   }
+  
 
   
   updateSprintTasks(sprintId: number): void {
@@ -105,7 +144,6 @@ export class ProjectService {
       }
     });
   }
-
   // Observable para que otros componentes se suscriban a las tareas del sprint
   getSprintTasks(): Observable<Task[]> {
     return this.sprintTasksSubject.asObservable();

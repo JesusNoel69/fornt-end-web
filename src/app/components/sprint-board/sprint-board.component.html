@@ -38,7 +38,7 @@
 
             <mat-card-content class="container-sprint"  >
                 <mat-card >
-                    <mat-card-content  >
+                    <mat-card-content  style="height:100% !important; width:100%!important; border: solid red 1px !important;">
                             
                         <div class="container" >
                             <div
@@ -49,7 +49,9 @@
                                 #doneList="cdkDropList"
                                 [cdkDropListData]="done"
                                 [cdkDropListConnectedTo]="[todoList]"
-                                (cdkDropListDropped)="drop($event)">
+                                (cdkDropListDropped)="drop($event)"
+                                style="min-height:100px !important; width:100%!important; border: solid blue 1px !important;"
+                                >
                                 @for (item of done; track $index) {
                                     <div (dblclick)="showDetails(item)"
                                         class="box-card"
@@ -79,6 +81,7 @@
                     <mat-card-header id="goal">
                         <mat-card-title>Meta</mat-card-title>
                     </mat-card-header>
+                    <mat-divider></mat-divider>
                     <mat-card-content id="goal-info">
                       {{goal}}
                     </mat-card-content>

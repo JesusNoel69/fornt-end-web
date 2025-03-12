@@ -113,7 +113,7 @@ export class SideProjectsComponent implements OnInit, OnDestroy {
     this.projectService.getProjects()
       .pipe(takeUntil(this.destroy$))
       .subscribe((projects) => {
-        this.projects = projects;
+        this.projects = projects.sort((a, b) => b.Id - a.Id);;
         this.cdr.markForCheck();
       });
 

@@ -99,7 +99,6 @@
 //     });
 //   }
 // }
-
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -110,6 +109,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
 import { SprintService } from '../../services/sprint.service';
 import { Sprint } from '../../entities/sprint.entity';
+import { Project } from '../../entities/project.entity';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -126,19 +126,23 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private sprintService = inject(SprintService);
   private cdr = inject(ChangeDetectorRef);
-
-  // Subject para cancelar suscripciones cuando el componente se destruya
+  
+  // Propiedad para almacenar el proyecto seleccionado
+  selectedProject: Project | null = null;
+  
+  // Subject para cancelar suscripciones al destruir el componente
   private destroy$ = new Subject<void>();
 
   currentIndex = 0;
   sprints: Sprint[] = [];
 
   ngOnInit(): void {
-    // Cada vez que cambia el proyecto, se obtienen (o reutilizan en caché) los sprints correspondientes
+    // Cada vez que cambia el proyecto, obtenemos (o reutilizamos en caché) los sprints correspondientes
     this.projectService.getSelectedProject().pipe(
       switchMap(project => {
+        this.selectedProject = project;
         if (project) {
-          // Limpiamos la selección anterior
+          // Limpiamos la selección anterior de sprint
           this.sprintService.selectSprint(null);
           return this.sprintService.getSprintsByProjectId(project.Id);
         } else {
@@ -178,37 +182,44 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
   openAddSprint(): void {
     const dialogRef = this.dialog.open(AddSprintComponent, { width: '70%' });
   
-    dialogRef.afterClosed().pipe(takeUntil(this.destroy$))
-      .subscribe(result => {
-        if (result) {
-          // Al agregar un sprint nuevo, volvemos a cargar los sprints del proyecto
-          this.projectService.getSelectedProject().pipe(
-            switchMap(project => {
-              if (project) {
-                return this.sprintService.getSprintsByProjectId(project.Id);
-              } else {
-                return of([]);
-              }
-            }),
-            takeUntil(this.destroy$)
-          ).subscribe(sprints => {
-            this.sprints = sprints;
-            this.currentIndex = 0;
-            if (this.sprints.length > 0) {
-              this.sprintService.selectSprint(this.sprints[0]);
-            } else {
-              this.sprintService.selectSprint(null);
-            }
-            this.cdr.markForCheck();
-          });
+    dialogRef.afterClosed().pipe(
+      takeUntil(this.destroy$),
+      switchMap(result => {
+        if (result && this.selectedProject) {
+          return this.projectService.refreshProjectById(this.selectedProject.Id);
+        } else {
+          return of(null);
         }
-      });
+      }),
+      switchMap(updatedProject => {
+        if (updatedProject) {
+          this.projectService.updateSelectedProject(updatedProject);
+          return this.sprintService.getSprintsByProjectId(updatedProject.Id);
+        }
+        return of([]);
+      })
+    ).subscribe({
+      next: (sprints) => {
+        console.log("Sprints actualizados:", sprints);
+        this.sprints = sprints;
+        this.currentIndex = 0;
+        if (this.sprints.length > 0) {
+          this.sprintService.selectSprint(this.sprints[0]);
+        } else {
+          this.sprintService.selectSprint(null);
+        }
+        this.cdr.markForCheck(); // 🚀 Forzar la actualización del componente
+      },
+      error: (err) => {
+        console.error("Error refrescando los sprints:", err);
+      }
+    });
   }
+  
+  
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 }
-
-

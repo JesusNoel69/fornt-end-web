@@ -15,4 +15,5 @@ export interface Task{
     ProductBacklog: ProductBacklog;
     weeklyScrums?: WeeklyScrum[];
     Responsible: Developer;
+    Order: number;
 }
