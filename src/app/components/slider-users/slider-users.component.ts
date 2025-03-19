@@ -1,3 +1,5 @@
+//ToDo: cambiara a solo los proyectos relacionados con quien este logueado 
+
 import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { ProjectService } from '../../services/project.service';

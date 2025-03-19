@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
+import { AuthService } from '../../authentication/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +17,24 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  constructor(private router:Router){}
+  constructor(private router:Router, private auth: AuthService){}
   login() {
     console.log('Usuario:', this.username);
     console.log('Contraseña:', this.password);
+    
+    // Llamada al método login del AuthService
+    this.auth.login({ username: this.username, password: this.password }).subscribe({
+      next: (response) => {
+        // Guarda el token recibido
+        this.auth.setToken(response.token);
+        // Redirige a la ruta principal (por ejemplo, dashboard o sprint board)
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        console.error('Error en login:', err);
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    });
   }
   
   register() {

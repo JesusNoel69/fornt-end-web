@@ -49,7 +49,7 @@ export class AddProjectComponent {
   teams: Team[]=[];
   selectedTeam:Team=null as any;
   //debo cambiarlo a una sesion usando el login
-  porductOwnerIdFutureService:number=48;
+  porductOwnerIdFutureService:number=50;
 
   constructor(private projectService: ProjectService, private http: HttpClient) {}
 
@@ -90,34 +90,6 @@ export class AddProjectComponent {
   };
   
   developers: Developer[] = [];
-  // Developer[] = [
-  //   {
-  //     Id: 1,
-  //     Rol: false,
-  //     Name: 'John Smith',
-  //     Account: 'john.smith',
-  //     Password: 'password123',
-  //     NameSpecialization: 'Frontend Developer',
-  //     Team: null,
-  //     WeeklyScrum: null,
-  //     ProductOwner: null as any,
-  //     Developer: null as any,
-  //     ChangeDetails: null as any,
-  //   },
-  //   {
-  //     Id: 2,
-  //     Rol: false,
-  //     Name: 'Emily Clark',
-  //     Account: 'emily.clark',
-  //     Password: 'password456',
-  //     NameSpecialization: 'Backend Developer',
-  //     Team: null,
-  //     WeeklyScrum: null,
-  //     ProductOwner: null as any,
-  //     Developer: null as any,
-  //     ChangeDetails: null as any,
-  //   },
-  // ];
 
   ngOnInit() {
    
@@ -153,7 +125,6 @@ export class AddProjectComponent {
     this.selectedTeam = team;
     console.log('Equipo seleccionado:', this.selectedTeam);
     this.getDevelopers(team.Id);
-    // Aquí puedes asignar selectedTeam a la propiedad correspondiente del proyecto.
   }
 
   addTask(): void {

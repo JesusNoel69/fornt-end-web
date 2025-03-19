@@ -53,6 +53,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Suscribirse al proyecto seleccionado
+    this.done=[];
     this.projectService.getSelectedProject().pipe(
       takeUntil(this.destroy$)
     ).subscribe((project) => {
@@ -127,7 +128,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (tasks: Task[]) => {
           // Actualizamos las tareas del sprint
-          this.done = tasks;
+          this.done = tasks || [];
           
           // Obtenemos el Product Backlog mediante el servicio (basado en el id del proyecto)
           if(!this.selectedProject)return;
@@ -166,19 +167,43 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<Task[]>) {
     // Obtener los datos con un fallback a un array vacío, en caso de que sean null
-    const prevData: Task[] = event.previousContainer.data || [];
-    const currData: Task[] = event.container.data || [];
-    
-    if (event.previousContainer === event.container) {
-      // Solo si el contenedor tiene datos
-      if (currData) {
-        moveItemInArray(currData, event.previousIndex, event.currentIndex);
-      }
-    } else {
-      if (prevData && currData) {
-        transferArrayItem(prevData, currData, event.previousIndex, event.currentIndex);
-      }
+    let prevData: Task[] = event.previousContainer.data;
+    console.log(event.container.data);
+    let currData: Task[] = event.container.data;
+
+
+    // if (!prevData || !currData) {
+    //   console.error('Uno de los contenedores no tiene datos inicializados');
+    //   return;
+    // }
+    if (!currData) {
+      currData = [];
+      event.container.data = []; // Actualiza la referencia en el contenedor
     }
+    // if (event.previousContainer === event.container) {
+    //   // Solo si el contenedor tiene datos
+    //   // if (currData) {
+    //     console.log("entro ")
+    //     moveItemInArray(currData, event.previousIndex, event.currentIndex);
+    //   // }
+    // } else {
+      // if (prevData && currData) {
+      console.log("no entro")
+        transferArrayItem(prevData, currData, event.previousIndex, event.currentIndex);
+      // }
+    // }
+    // if (event.previousContainer === event.container) {
+    //   if (currData) 
+    //   moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    // } else {
+    //   if(prevData && currData)
+    //   transferArrayItem(
+    //     event.previousContainer.data, 
+    //     event.container.data, 
+    //     event.previousIndex, 
+    //     event.currentIndex
+    //   );
+    // }
     
     // Construir el payload para actualizar las tareas
     const payload = {

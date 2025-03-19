@@ -4,12 +4,13 @@ import { ScrumBoardComponent } from './components/scrum-board/scrum-board.compon
 import { SprintBoardComponent } from './components/sprint-board/sprint-board.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthGuard } from './authentication/auth.guard';
 
 export const routes: Routes = [
-    {path: 'home', component: PrincipalBoardComponent},
-    {path: 'sprints', component: SprintBoardComponent},
-    {path: 'scrum', component: ScrumBoardComponent},
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
+    { path: 'home', component: PrincipalBoardComponent, canActivate: [AuthGuard] },
+    { path: 'sprints', component: SprintBoardComponent, canActivate: [AuthGuard] },
+    { path: 'scrum', component: ScrumBoardComponent, canActivate: [AuthGuard] },
+    { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegisterComponent },
     { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

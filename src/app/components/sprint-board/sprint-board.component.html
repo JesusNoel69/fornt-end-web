@@ -38,9 +38,15 @@
 
             <mat-card-content class="container-sprint"  >
                 <mat-card >
-                    <mat-card-content  style="height:100% !important; width:100%!important; border: solid red 1px !important;">
+                    <mat-card-content
+                    style="min-height:9rem !important; min-width:100%!important; border: solid green 1px !important;"
+                    
+                    >
                             
-                        <div class="container" >
+                        <div class="container" 
+                        style="min-height:100px !important; min-width:100%!important; border: solid red 1px !important;"
+                        
+                        >
                             <div
                             
                             class="box-sprint"
@@ -50,7 +56,7 @@
                                 [cdkDropListData]="done"
                                 [cdkDropListConnectedTo]="[todoList]"
                                 (cdkDropListDropped)="drop($event)"
-                                style="min-height:100px !important; width:100%!important; border: solid blue 1px !important;"
+                                style="min-height:100px !important; min-width:100%!important; border: solid blue 1px !important;"
                                 >
                                 @for (item of done; track $index) {
                                     <div (dblclick)="showDetails(item)"

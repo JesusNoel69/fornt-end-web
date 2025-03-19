@@ -50,9 +50,6 @@ export class ProjectService {
     );
   }
   
-  
-  
-
   private loadProjects(): void {
     this.http.get<Project[]>(`${this.apiUrl}`).subscribe({
       next: (projects) => {
