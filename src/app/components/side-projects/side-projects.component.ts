@@ -9,6 +9,7 @@ import { Sprint } from '../../entities/sprint.entity';
 import { ProjectService } from '../../services/project.service';
 import { Subject, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-side-projects',
@@ -25,13 +26,14 @@ export class SideProjectsComponent implements OnInit, OnDestroy {
 
   @Output() openDialog = new EventEmitter<void>();
 
-  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {}
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef, private user: UserService) {}
 
   openAddClick(): void {
     this.openDialog.emit();
   }
 
   ngOnInit(): void {
+    
     // Suscribirse a la lista de proyectos
     this.projectService.getProjects()
       .pipe(takeUntil(this.destroy$))
