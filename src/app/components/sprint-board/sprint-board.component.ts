@@ -19,7 +19,14 @@ import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDivider } from '@angular/material/divider';
 import { TaskService } from '../../services/task.service';
+import { AddSprintComponent } from '../dialogs/add-sprint/add-sprint.component';
+import { UserService } from '../../services/user.service';
+import { Developer } from '../../entities/developer.entity';
 
+interface DeveloperTask {
+  DeveloperName: string;
+  TaskId: number;
+}
 @Component({
   selector: 'app-sprint-board',
   standalone: true,
@@ -34,6 +41,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
+  private userService = inject(UserService);
   readonly dialog = inject(MatDialog);
 
   // Subject para cancelar las suscripciones cuando el componente se destruye
@@ -43,16 +51,31 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   currentSprint: Sprint | null = null;
   todo: Task[] = [];
   done: Task[] = [];
+  devs:  [string, number][]=[];
   description: string = "";
   goal: string = "";
+  ids: number[] = [];
+  responsibleName: string = "";
   sprintNumber: number = 0;
   sprintId:number=0;
   backlogId:number=0;
   indexSprint: number = 0;
   taskState: number = 0;
+  userId: number = 0;
+  userRol: boolean = false;
 
   ngOnInit() {
     // Suscribirse al proyecto seleccionado
+    this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+      console.log(id)
+      this.userId = id;
+    });
+
+    this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+      this.userRol = rol;
+      this.cdr.markForCheck();
+    });
+
     this.done=[];
     this.projectService.getSelectedProject().pipe(
       takeUntil(this.destroy$)
@@ -121,7 +144,6 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
 
   private updateSprintData() {
     if (!this.currentSprint || !this.selectedProject) return;
-  
     // Obtener las tareas del sprint actual
     this.http.get<Task[]>(`http://localhost:5038/Task/GetTasksBySprintId/${this.currentSprint.Id}`)
       .pipe(takeUntil(this.destroy$))
@@ -129,7 +151,9 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
         next: (tasks: Task[]) => {
           // Actualizamos las tareas del sprint
           this.done = tasks || [];
-          
+          // console.log(this.done);
+          this.ids=this.done.map(x=>x.Id);
+          console.log(this.ids);
           // Obtenemos el Product Backlog mediante el servicio (basado en el id del proyecto)
           if(!this.selectedProject)return;
           this.projectService.getProductBacklogById(this.selectedProject.Id)
@@ -145,24 +169,45 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
                 console.error("Error al obtener el Product Backlog:", err);
               }
             });
-  
           // Actualizamos otros datos del sprint
           if(!this.currentSprint)return;
           this.goal = this.currentSprint.Goal || "";
           this.sprintNumber = this.currentSprint.Id;
           this.sprintId=this.currentSprint.Id;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error("Error al obtener tareas del sprint:", err);
-        }
+          if(this.ids.length>0){//puede ir vacio si no hay tareas en el sprint 
+            // console.log(JSON.stringify(ids));
+            this.http.post<DeveloperTask[]>(`http://localhost:5038/User/GetDevelopersByTasksIds`, this.ids)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (developers: DeveloperTask[]) => {
+                console.log('Desarrolladores obtenidos:', developers);
+                
+                // Guardar la respuesta en `devs`
+                this.devs= developers.map(dev => [dev.DeveloperName, dev.TaskId]);
+
+                console.log('Lista de desarrolladores y tareas:', this.devs);
+              },
+              error: (err) => {
+                console.error('Error al obtener desarrolladores:', err);
+              }
+            });
+          }
+
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error("Error al obtener tareas del sprint:", err);
+      }
       });
+    
   }
   
 
   showDetails(task: Task) {
     this.description = task.Description;
     this.taskState = task.State;
+    this.responsibleName=this.devs.find(dev=>task.Id==dev[1])?.[0]??"";
+    // this.responsibleName = "";
   }
 
   drop(event: CdkDragDrop<Task[]>) {
@@ -247,6 +292,43 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       });
   }
+
+  openAddSprint(): void {
+      const dialogRef = this.dialog.open(AddSprintComponent, { width: '70%' });
+    
+      dialogRef.afterClosed().pipe(
+        takeUntil(this.destroy$),
+        switchMap(result => {
+          if (result && this.selectedProject) {
+            return this.projectService.refreshProjectById(this.selectedProject.Id);
+          } else {
+            return of(null);
+          }
+        }),
+        switchMap(updatedProject => {
+          if (updatedProject) {
+            this.projectService.updateSelectedProject(updatedProject);
+            return this.sprintService.getSprintsByProjectId(updatedProject.Id);
+          }
+          return of([]);
+        })
+      ).subscribe({
+        next: (sprints) => {
+          console.log("Sprints actualizados:", sprints);
+          this.sprints = sprints;
+          // this.currentIndex = 0;
+          if (this.sprints.length > 0) {
+            this.sprintService.selectSprint(this.sprints[0]);
+          } else {
+            this.sprintService.selectSprint(null);
+          }
+          this.cdr.markForCheck(); 
+        },
+        error: (err) => {
+          console.error("Error refrescando los sprints:", err);
+        }
+      });
+    }
 
   ngOnDestroy(): void {
     this.destroy$.next();

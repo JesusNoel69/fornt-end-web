@@ -31,14 +31,13 @@ export class LoginComponent {
         console.log(response);
         // Guarda el token recibido
         this.auth.setToken(response.token);
+        this.auth.setUser(response.user);
         this.user.setUser(response.user.Id, response.user.Rol);
-
         // Redirige a la ruta principal (por ejemplo, dashboard o sprint board)
         this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error('Error en login:', err);
-        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
   }

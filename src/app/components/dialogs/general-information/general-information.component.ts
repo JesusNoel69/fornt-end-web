@@ -1,31 +1,5 @@
-// import { CommonModule } from '@angular/common';
-// import { ChangeDetectionStrategy, Component } from '@angular/core';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatCardModule } from '@angular/material/card';
-// import {MatDialogModule} from '@angular/material/dialog';
-// import { MatDivider } from '@angular/material/divider';
-// import { MatTableModule } from '@angular/material/table';
-
-
-// @Component({
-//   selector: 'app-general-information',
-//   standalone: true,
-//   imports: [MatDialogModule, MatCardModule, MatButtonModule, MatTableModule, CommonModule, MatDivider],
-//   templateUrl: './general-information.component.html',
-//   styleUrl: './general-information.component.css',
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
-// export class GeneralInformationComponent {
-//   columns = [
-//     { initials: 'AJ', color: '#E57373', content: 'Información del Scrum semanal' },
-//     { initials: 'AJ', color: '#9575CD', content: '' },
-//     { initials: 'AJ', color: '#4DD0E1', content: '' },
-//     { initials: 'AJ', color: '#81C784', content: '' },
-//     { initials: 'AJ', color: '#FFF176', content: '' }
-//   ];
-// }
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -33,55 +7,175 @@ import { MatDivider } from '@angular/material/divider';
 // import { MatTableModule } from '@angular/material/table';
 import { Sprint } from '../../../../../src/app/entities/sprint.entity';
 import { WeeklyScrum } from '../../../../../src/app/entities/weeklyscrum.entity';
+import { HttpClient } from '@angular/common/http';
+import { Task } from '../../../entities/Task.entity';
+import { Developer } from '../../../entities/developer.entity';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { UserService } from '../../../services/user.service';
+import {  MatMenuModule } from '@angular/material/menu';
+import {  MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+
+interface DeveloperTask {
+  DeveloperName: string;
+  TaskId: number;
+}
 
 @Component({
   selector: 'app-general-information',
   standalone: true,
-  imports: [MatDialogModule, MatCardModule, MatButtonModule, CommonModule, MatDivider],
+  imports: [MatDialogModule, FormsModule ,MatCardModule, MatButtonModule, CommonModule, MatDivider, MatButtonModule, MatMenuModule, MatIconModule],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.css',
 })
-export class GeneralInformationComponent implements OnChanges {
+export class GeneralInformationComponent implements OnChanges, OnInit {
   sprint: Sprint;
   columns: { initials: string; color: string; content: string }[] = [];
+  tasks: Task[]=[];
+  content: string ="";
+  tasksDeveloper : Task[]=[];
+  scrums: WeeklyScrum[] = []; // Añadido para almacenar los scrums
+  developers:  Developer[]=[];
+  selectedTask?: Task;
+  userId!: number;
+  userRol!: boolean;
+  private destroy$ = new Subject<void>();
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { sprint: Sprint }) {
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { sprint: Sprint }, private http: HttpClient, private userService: UserService, private cdr: ChangeDetectorRef ) {
     this.sprint = data.sprint;
-    this.generateScrumData();
+    console.log("sprint",this.sprint);
+    const url = `http://localhost:5038/Task/GetTasksBySprintId/${this.sprint.Id}`;
+        this.http.get<Task[]>(url).subscribe({
+          next: (tasks: Task[]) => {
+            this.tasks=tasks;
+            console.log("es:",this.tasks);
+            this.fetchScrumsByTaskIds();
+          },
+          error: (err) => {
+            console.error("Error al obtener tareas del sprint:", err);
+          }
+        });
   }
+  ngOnInit(){
+    this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+      this.userId = id;
+      console.log("el usuario es", this.userId)
+      this.http.get<Task[]>(`http://localhost:5038/Task/GetTasksByDeveloperId/${this.userId}`).subscribe({
+        next: (tasks) => {
+          this.tasksDeveloper = tasks;
+          console.log('Tasks recibidas:', this.tasksDeveloper);
+        },
+        error: (err) => {
+          console.error('Error al obtener las tasks', err);
+        }
+      });
+
+    });
+    this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+      this.userRol = rol;
+      this.cdr.markForCheck();
+    });
+  }
+
+  selectTask(task: Task): void {
+    this.selectedTask = task;
+  }
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['sprint']) {
       this.generateScrumData();
     }
   }
+  private fetchScrumsByTaskIds(): void {
+    const taskIds = this.tasks.map(task => task.Id);
+    console.log(taskIds);
+    // Llamada al endpoint para obtener los scrums, enviando taskIds en el cuerpo como JSON
+    const url = `http://localhost:5038/Sprint/GetScrumsWeeklyByTaskIds`;
+    
+    this.http.post<WeeklyScrum[]>(url, taskIds).subscribe({
+      next: (scrums: WeeklyScrum[]) => {
+        this.scrums = scrums;
+        let ids = this.scrums.map(dev=>dev.DeveloperId);
+        this.FetchDevelopersByIds(ids);
+        console.log("Scrums obtenidos:", this.scrums);
+        // this.generateScrumData();
+      },
+      error: (err) => {
+        console.error("Error al obtener scrums:", err);
+      }
+    });
+  }
+  addScrumWeeklyToTask(): void {
+    // developerId: number, content: string, taskId: number
+    const body = { DeveloperId:this.userId, Content:this.content, TaskId:this.selectedTask?.Id };
+    console.log(body);
+    this.http.post<boolean>('http://localhost:5038/Task/AddScrumWeeklyToTask', body)
+    .subscribe({
+      next: (response: boolean) => {
+        console.log(response);
+      },
+      error: (err) => {
+        console.error('Error al insertar scrum semanal', err);
+      }
+    });
+  }
+  
+  private FetchDevelopersByIds(ids: number[]){
+    console.log("Los ids son: ", ids)
+    this.http.post<Developer[]>(`http://localhost:5038/User/GetDevelopersByIds`, ids)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (developers: Developer[]) => {
+          console.log('Desarrolladores obtenidos:', developers);
+          
+          // Guardar la respuesta en `devs`
+          this.developers= developers;///.map(dev => [dev.DeveloperName, dev.TaskId]);
+          this.generateScrumData();
+          console.log('Lista de desarrolladores y tareas:', this.developers);
+        },
+        error: (err) => {
+          console.error('Error al obtener desarrolladores:', err);
+        }
+      });
+  }
 
   private generateScrumData(): void {
-    if (!this.sprint?.Tasks) {
-        this.columns = [];
-        return;
+    // Verifica que tengamos scrums disponibles
+    if (!this.scrums || this.scrums.length === 0) {
+      this.columns = [];
+      return;
     }
-
-    // Extraer todos los WeeklyScrum de las tareas
-    const scrumEntries: WeeklyScrum[] = this.sprint.Tasks.flatMap(task => task.weeklyScrums || []);
-
     const colors = ['#E57373', '#9575CD', '#4DD0E1', '#81C784', '#FFF176'];
+    // Mapea los scrums para crear las columnas
+    console.log(this.scrums);
+    this.columns = this.scrums.map((scrum, index) => {
+      // Usamos "Information" para la columna
+      console.log(scrum.DeveloperId+"  l"+this.developers);
+      const developer = this.developers.find(x => x.Id === scrum.DeveloperId);
+      const developerName = developer?.Name || "Anónimo";
+      
 
-    this.columns = scrumEntries.map((scrum, index) => {
-        const developerName = scrum.Developer?.Name || "Anonimo"; // Asegurar que haya un nombre
-        console.log(scrum.Developer);
-        const initials = developerName
-            .split(' ')
-            .map(n => n.charAt(0))
-            .join('')
-            .toUpperCase();
+      const initials = developerName
+        .split(' ')
+        .map(n => n.charAt(0))
+        .join('')
+        .toUpperCase();
 
-        return {
-            initials: initials.length > 1 ? initials : initials + initials, 
-            color: colors[index % colors.length], 
-            content: scrum.Information 
-        };
+      return {
+        initials: initials.length > 1 ? initials : initials + initials, // Garantiza que haya al menos dos iniciales
+        color: colors[index % colors.length], // Asigna colores cíclicamente
+        content: scrum.Information, // El contenido será la información del Scrum
+        createdAt: scrum.CreatedAt // También puedes agregar la fecha de creación si lo necesitas
+      };
     });
-}
+
+    console.log("Columnas generadas:", this.columns);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 }

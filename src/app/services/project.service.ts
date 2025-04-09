@@ -25,6 +25,8 @@ export class ProjectService {
     combineLatest([this.user.userId$, this.user.userRol$]).subscribe(
       ([userId, userRol]) => {
         // Solo carga si el userId ya fue actualizado (distinto de 0)
+        console.log("User ID recibido:", userId);
+        console.log("User Role recibido:", userRol);
         if (userId !== 0) {
           this.loadProjects(userId, userRol);
         }
@@ -72,9 +74,10 @@ export class ProjectService {
       })
     );
   }
-  
+//  http://localhost:5038/Project/GetProjects?userId=48&role=true
   private loadProjects(userId: number, userRol: boolean): void {
-    const url = `${this.apiUrl}?userId=${userId}&userRol=${userRol}`;
+    const url = `${this.apiUrl}?userId=${userId}&role=${userRol}`;
+    console.log("url generada: ", url)
     this.http.get<Project[]>(url).subscribe({
       next: (projects) => {
         const projectsArray = Array.isArray(projects) ? projects : [];
@@ -133,8 +136,8 @@ export class ProjectService {
     return this.http.get<Developer[]>(url);
   }
 
-  addProject(newProject: Project): Observable<Project> {
-    return this.http.post<Project>('http://localhost:5038/Project/InsertProject', newProject)
+  addProject(newProject: Project, userId: number): Observable<Project> {
+    return this.http.post<Project>('http://localhost:5038/Project/InsertProject', { project: newProject, userId: userId })
       .pipe(
         tap((insertedProject: Project) => {
           const currentProjects = this.projectsSubject.getValue();

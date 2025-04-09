@@ -7,10 +7,10 @@ import { Task } from '../entities/Task.entity';
   providedIn: 'root'
 })
 export class TaskService {
-
+  
   constructor(private http: HttpClient) { }
-  updateTasksState(tasks: Task[]): Observable<boolean> {
-    const url = 'http://localhost:5038/Task/UpdateTaksState';
+  updateTasksState(userId: number, tasks: Task[]): Observable<boolean> {
+    const url = 'http://localhost:5038/Task/UpdateTaksState/'+userId;
     return this.http.patch<boolean>(url, tasks)
       .pipe(
         catchError(err => {
@@ -19,8 +19,8 @@ export class TaskService {
         })
       );
   }
-  updateTasksOrder(tasks: Task[]): Observable<boolean>{
-    const url = 'http://localhost:5038/Task/UpdateTaksOrder';
+  updateTasksOrder(userId: number, tasks: Task[]): Observable<boolean>{
+    const url = 'http://localhost:5038/Task/UpdateTaksOrder/'+userId;
     return this.http.patch<boolean>(url, tasks)
       .pipe(
         catchError(err => {

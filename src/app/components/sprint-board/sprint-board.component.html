@@ -39,14 +39,16 @@
             <mat-card-content class="container-sprint"  >
                 <mat-card >
                     <mat-card-content
-                    style="min-height:9rem !important; min-width:100%!important; border: solid green 1px !important;"
+                    style="min-height:9rem !important; min-width:100%!important; "
                     
                     >
+                    <!-- border: solid green 1px !important; -->
                             
                         <div class="container" 
-                        style="min-height:100px !important; min-width:100%!important; border: solid red 1px !important;"
+                        style="min-height:9rem !important; min-width:100%!important; "
                         
                         >
+                        <!-- border: solid red 1px !important; -->
                             <div
                             
                             class="box-sprint"
@@ -56,8 +58,9 @@
                                 [cdkDropListData]="done"
                                 [cdkDropListConnectedTo]="[todoList]"
                                 (cdkDropListDropped)="drop($event)"
-                                style="min-height:100px !important; min-width:100%!important; border: solid blue 1px !important;"
+                                style="min-height:100px !important; min-width:100%!important; "
                                 >
+                                <!-- border: solid blue 1px !important; -->
                                 @for (item of done; track $index) {
                                     <div (dblclick)="showDetails(item)"
                                         class="box-card"
@@ -78,6 +81,12 @@
                         <button (click)="backSprint()"   mat-icon-button class="nav-button">
                             <mat-icon >chevron_left</mat-icon>
                         </button>
+                        @if (userRol) {
+                            <button mat-raised-button 
+                                class="add-sprint-button" (click)="openAddSprint()">
+                                Agregar
+                            </button>
+                        }
                         <button (click)="forwardSprint()"  mat-icon-button class="nav-button">
                             <mat-icon>chevron_right</mat-icon>
                         </button>
@@ -105,7 +114,7 @@
             </mat-card-header>
             <mat-card-content  >
                 <div >
-                    <div>Responsable: </div>
+                    <div>Responsable: {{responsibleName}}</div>
                     <div > Estado:  
                         <div [ngClass]="getCircleClass(taskState)"
                         [class.circle]="description !== ''"></div>

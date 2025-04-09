@@ -7,7 +7,9 @@
     <div class="slider">
         @for (item of  visibleItems; track $index) {
             <button
-            
+                matTooltip="{{ item.tooltipInfo }}"
+                matTooltipPosition="above"
+                matTooltipClass="custom-tooltip"
                 class="slider-item"
                 [style.background-color]="item.color"
                 [style]="{

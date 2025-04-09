@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgModule, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
@@ -18,7 +18,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { Team } from '../../../entities/team.entity';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-add-project',
@@ -49,9 +50,11 @@ export class AddProjectComponent {
   teams: Team[]=[];
   selectedTeam:Team=null as any;
   //debo cambiarlo a una sesion usando el login
-  porductOwnerIdFutureService:number=50;
-
-  constructor(private projectService: ProjectService, private http: HttpClient) {}
+  // porductOwnerIdFutureService:number=50;
+  userId!: number;
+  userRol!: boolean;
+  private destroy$ = new Subject<void>();
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef, private http: HttpClient, private userService: UserService) {}
 
   project: Project = {
     Id: 0,
@@ -92,11 +95,22 @@ export class AddProjectComponent {
   developers: Developer[] = [];
 
   ngOnInit() {
-   
+
+    this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+      this.userId = id;
+      // this.loadProjects(); // Recargar proyectos al cambiar el usuario
+
+    });
+
+    this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+      this.userRol = rol;
+      this.cdr.markForCheck();
+    });
+
     this.projectService.getProjects().subscribe((projects) => {
       this.projects = projects;
     });
-    const url = `http://localhost:5038/User/GetTeamsByProductOwnerId/${this.porductOwnerIdFutureService}`;
+    const url = `http://localhost:5038/User/GetTeamsByProductOwnerId/${this.userId}`;
     this.http.get<Team[]>(url).subscribe({
       next: (data) => {
         this.teams = data;
@@ -218,7 +232,7 @@ export class AddProjectComponent {
     
   
     console.log('Proyecto confirmado:', newProject);
-    this.projectService.addProject(newProject).subscribe({
+    this.projectService.addProject(newProject, this.userId).subscribe({
       next: (response) => {
         console.log("Proyecto agregado con éxito:", response);
         this.projectService.getProjects().subscribe({
@@ -235,6 +249,10 @@ export class AddProjectComponent {
     console.log(newProject)
   }
   
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   
   cancel(){
 

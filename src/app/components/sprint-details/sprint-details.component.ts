@@ -99,6 +99,7 @@ import { SprintService } from '../../services/sprint.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Subject, of } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
+import { UserService } from '../../services/user.service';
 
 interface Content {
   goal: string | null;
@@ -119,16 +120,27 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
   content: Content | null = null;
   value: number = 0;
   sprint: Sprint | null = null;
-
+  userRol!: boolean;
+  userId!: number;
   private sprintService = inject(SprintService);
   private cdr = inject(ChangeDetectorRef);
   readonly dialog = inject(MatDialog);
   private http = inject(HttpClient);
 
+  constructor(private userService: UserService){}
   // Subject para cancelar suscripciones al destruir el componente
   private destroy$ = new Subject<void>();
 
   async ngOnInit(): Promise<void> {
+    this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+      console.log(id)
+      this.userId = id;
+    });
+
+    this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+      this.userRol = rol;
+      this.cdr.markForCheck();
+    });
     this.sprintService.getSelectedSprint()
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (sprint) => {
@@ -171,14 +183,15 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   openChangeDetails(): void {
-    this.cdr.detectChanges();
-    const dialogRef = this.dialog.open(ChangesDetailsComponent, { width: '70%' });
+    const dialogRef = this.dialog.open(ChangesDetailsComponent, {width: '70%'});//, autoFocus: true
     dialogRef.afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        console.log(`Dialog result: ${result}`);
-      });
-  }
+      // .pipe(takeUntil(this.destroy$))
+      // .subscribe((result) => {
+      //   console.log(`Dialog result: ${result}`);
+      // });
+    this.cdr.detectChanges();
+
+    }
 
   ngOnDestroy(): void {
     this.destroy$.next();

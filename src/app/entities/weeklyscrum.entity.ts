@@ -6,5 +6,6 @@ export interface WeeklyScrum{
     CreatedAt:Date;
     Task:Task;
     Information:string;
-    Developer:Developer;   
+    Developer:Developer;
+    DeveloperId: number;
 }

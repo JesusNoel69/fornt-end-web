@@ -1,17 +1,22 @@
 <section class="container">
     <app-slider-users ></app-slider-users>
-    <button mat-raised-button 
-        class="add-button" (click)="openAddSprint()">
-        Agregar
-    </button>
-    <div class="align-sprints-container">
-        <button mat-raised-button class="custom-arrow-button"  (click)="prevSlide()">
-            <mat-icon aria-hidden="false" class="icon-overwrite-height">arrow_left</mat-icon>
+    @if (userRol) {
+        <button mat-raised-button 
+            class="add-button" (click)="openAddSprint()">
+            Agregar
         </button>
-        <div class=slider-container>
-            <div [style.transform]="'translateX(' + (-currentIndex * 260) + 'px)'">
+    }
+    <div class="align-sprints-container" >
+        @if(sprints.length>=2){
+            <button mat-raised-button class="custom-arrow-button"  (click)="prevSlide()">
+                <mat-icon aria-hidden="false" class="icon-overwrite-height">arrow_left</mat-icon>
+            </button>
+        }
+        <div class=slider-container >
+
+            <div [style.transform]="'translateX(' + ((-currentIndex * cardWidth +5)) + 'px)'" #slider>
                 @for (sprint of sprints; track sprint) {
-                    <mat-card class="card" >
+                    <mat-card class="card">
                         <mat-card-header>
                             <mat-card-title>Sprint #{{sprint.Id}}</mat-card-title>
                         </mat-card-header>
@@ -25,8 +30,10 @@
                 }
             </div>
         </div>
-        <button mat-raised-button class="custom-arrow-button" (click)="nextSlide()">
-            <mat-icon aria-hidden="false" class="icon-overwrite-height">arrow_right</mat-icon>
-        </button>
+        @if(sprints.length>=2){
+            <button mat-raised-button class="custom-arrow-button" (click)="nextSlide()">
+                <mat-icon aria-hidden="false" class="icon-overwrite-height">arrow_right</mat-icon>
+            </button>
+        }
     </div>
 </section>

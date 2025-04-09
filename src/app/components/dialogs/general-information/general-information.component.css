@@ -16,6 +16,29 @@
   /* border:solid 1px red; */
   box-sizing: border-box; 
 }
+.add-scrum{
+  background: var(--success-color) !important;
+  color: var(--primary-color);
+}
+.mat-icon{
+  margin-top: 5px !important ;
+}
+.button-task{
+  background: var(--primary-color);
+}
+.full-width-white {
+  background-color: white;
+  width: 70%;
+  /* padding: 1rem; opcional, para que no se vea tan pegado */
+  box-sizing: border-box; /* asegura que el padding no rompa el ancho */
+  border-radius: 8px; /* opcional, para esquinas redondeadas */
+}
+.full-width-white button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Alinea a la izquierda */
+  width: 100%;
+}
 .scrum-column {
   width: 150px;
   min-height: 200px;

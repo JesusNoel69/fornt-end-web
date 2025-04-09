@@ -1,20 +1,24 @@
-//ToDo: cambiara a solo los proyectos relacionados con quien este logueado 
-
 import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon} from '@angular/material/icon';
 import { ProjectService } from '../../services/project.service';
 import { Subject, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface User {
+  fullName: string;    // Nombre completo
+  id: number;          // ID del usuario
+  role: string;        // Rol del usuario
+  tooltipInfo: string; // Información para el tooltip
   label: string;
   color: string;
+  especialization: string;
 }
 
 @Component({
   selector: 'app-slider-users',
   standalone: true,
-  imports: [MatIcon],
+  imports: [MatIcon,  MatTooltipModule],
   templateUrl: './slider-users.component.html',
   styleUrls: ['./slider-users.component.css'],
 })
@@ -38,10 +42,14 @@ export class SliderUsersComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (developers) => {
-                
                 this.users = developers.map(dev => ({
-                  label: dev.Name,
-                  color: this.generateColor(dev.Id)
+                  label: this.initialsObtain(dev.Name),
+                  fullName: dev.Name,
+                  especialization: dev.NameSpecialization??"Especializacion desconocida",
+                  id: dev.Id,
+                  role: dev.Rol ? "Product Owner" : "Desarrollador", 
+                  color: this.generateColor(dev.Id),
+                  tooltipInfo: this.createTooltipInfo(dev)
                 }));
                 this.updateVisibleItems();
                 this.cdr.markForCheck();
@@ -64,6 +72,18 @@ export class SliderUsersComponent implements OnInit, OnDestroy {
       this.updateVisibleItems();
     }
   }
+
+  initialsObtain(name: string): string {
+    return name.split(" ").map(n => n[0]).join("").toUpperCase();
+  }
+
+  // Genera el contenido del tooltip con ID, Nombre, Fecha de Creación y Rol
+  createTooltipInfo(dev: any): string {
+    return `ID: ${dev.Id.toLocaleString()}
+    Nombre: ${dev.Name.toLocaleString()}
+    Especialización: ${dev.NameSpecialization ? dev.NameSpecialization.toLocaleString() : "Especialización desconocida"}
+    Rol: ${dev.Rol ? "Desarrollador".toLocaleString() : "Product Owner".toLocaleString()}`;
+  }  
 
   prevSlide(): void {
     if (this.startIndex > 0) {

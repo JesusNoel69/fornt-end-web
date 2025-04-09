@@ -12,6 +12,7 @@ import { ProductOwner } from '../../entities/productowner.entity';
 import { Team } from '../../entities/team.entity';
 import { Router } from '@angular/router';
 import { AuthService } from '../../authentication/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -43,7 +44,8 @@ export class RegisterComponent {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   register() {
@@ -149,13 +151,30 @@ export class RegisterComponent {
     }
   }
   
+  // autoLogin() {
+  //   const loginPayload = { username: this.account, password: this.password };
+  //   // Suponiendo que el endpoint de login es este:
+  //   const loginUrl = 'http://localhost:5038/auth/login';
+  //   this.authService.login(loginPayload).subscribe({
+  //     next: (loginResponse) => {
+  //       this.authService.setToken(loginResponse.token);
+  //       console.log("Login automático exitoso, token:", loginResponse.token);
+  //       this.router.navigate(['/home']);
+  //     },
+  //     error: (err) => {
+  //       console.error("Error en el login automático:", err);
+  //     }
+  //   });
+  // }
   autoLogin() {
     const loginPayload = { username: this.account, password: this.password };
-    // Suponiendo que el endpoint de login es este:
-    const loginUrl = 'http://localhost:5038/auth/login';
+    
     this.authService.login(loginPayload).subscribe({
       next: (loginResponse) => {
         this.authService.setToken(loginResponse.token);
+        this.authService.setUser(loginResponse.user);
+        this.userService.setUser(loginResponse.user.Id, loginResponse.user.Rol); // Asegurar coherencia en los datos
+        
         console.log("Login automático exitoso, token:", loginResponse.token);
         this.router.navigate(['/home']);
       },
@@ -164,12 +183,13 @@ export class RegisterComponent {
       }
     });
   }
-
+  
   cancel() {
     console.log('Registro cancelado');
     this.name = '';
     this.account = '';
     this.password = '';
     this.teamId = 0;
+    this.router.navigate(['/login']);
   }
 }

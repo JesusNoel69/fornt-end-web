@@ -57,7 +57,7 @@
                 </button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item *ngFor="let developer of developers" (click)="selectResponsable(task, developer)">
-                    <mat-icon>person</mat-icon>
+                    <mat-icon class="mat-icon">person</mat-icon>
                     <span>{{ developer.Name }}</span>
                     </button>
                 </mat-menu>

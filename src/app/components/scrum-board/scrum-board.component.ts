@@ -17,6 +17,7 @@ import { Subject, firstValueFrom, of } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { ProductBacklog } from '../../entities/productbacklog.entity';
 import { TaskService } from '../../services/task.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-scrum-board',
@@ -39,13 +40,14 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
   // Subject para cancelar las suscripciones cuando el componente se destruya
   private destroy$ = new Subject<void>();
   private taskService = inject(TaskService);
-
+  userId!: number;
+  userRol!: boolean;
   todo: (Task | null)[] = [];
   progress: (Task | null)[] = [];
   review: (Task | null)[] = [];
   done: (Task | null)[] = [];
   columns: (Task | null)[][] = [this.todo, this.progress, this.review, this.done];
-
+  constructor(private userService: UserService){}
   ngOnInit() {
     // Suscribirse al proyecto seleccionado y obtener el ProductBacklog actualizado
     this.projectService.getSelectedProject()
@@ -65,6 +67,17 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
 
           this.loadTasks(backlog.Tasks);
         }
+        this.cdr.markForCheck();
+      });
+
+      this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+        this.userId = id;
+        // this.loadProjects(); // Recargar proyectos al cambiar el usuario
+  
+      });
+  
+      this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+        this.userRol = rol;
         this.cdr.markForCheck();
       });
   }
@@ -171,7 +184,7 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
       ...this.done.filter((task): task is Task => task !== null),
     ];
     const tasksToUpdate = allTasks.filter(allTasks => allTasks !== null) as Task[];
-    this.taskService.updateTasksOrder(tasksToUpdate)
+    this.taskService.updateTasksOrder(this.userId,tasksToUpdate)
       .subscribe((result:any) => {
         console.log(result);
         // if (result) {
@@ -208,7 +221,7 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
     console.log(currList[currIndex]?.State);
     let listTasksToUpdate =this.mergeTasks();
     console.log("terminados?", listTasksToUpdate);
-    this.taskService.updateTasksState(listTasksToUpdate)
+    this.taskService.updateTasksState(this.userId,listTasksToUpdate)
       .subscribe((result) => {//manejar bien los errores
         console.log(result);
         // if (result) {

@@ -22,18 +22,30 @@ import { UserService } from '../../services/user.service';
 export class SideProjectsComponent implements OnInit, OnDestroy {
   selectedProjectIndex: number = 0;
   projects: Project[] = [];
+  userId!: number;
+  userRol!: boolean;
   private destroy$ = new Subject<void>();
 
   @Output() openDialog = new EventEmitter<void>();
 
-  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef, private user: UserService) {}
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef, private userService: UserService) {}
 
   openAddClick(): void {
     this.openDialog.emit();
   }
 
   ngOnInit(): void {
-    
+    this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
+      console.log(id)
+      this.userId = id;
+      // this.loadProjects(); // Recargar proyectos al cambiar el usuario
+    });
+
+    this.userService.userRol$.pipe(takeUntil(this.destroy$)).subscribe((rol) => {
+      this.userRol = rol;
+      this.cdr.markForCheck();
+    });
+
     // Suscribirse a la lista de proyectos
     this.projectService.getProjects()
       .pipe(takeUntil(this.destroy$))

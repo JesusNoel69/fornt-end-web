@@ -1,23 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+import { User } from '../entities/User.entity';
 
 interface LoginResponse {
   token: string;
-  // Otros datos que el backend envíe, como información del usuario
+  user: User
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5038/auth'; // Ajusta la URL según tu backend
+  private apiUrl = 'http://localhost:5038/auth';
 
   constructor(private http: HttpClient) {}
 
-  // Método de login: espera credenciales y retorna la respuesta del backend
+  // // Método de login: espera credenciales y retorna la respuesta del backend
+  // login(credentials: { username: string; password: string }): Observable<LoginResponse> {
+  //   return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials);
+  // }
   login(credentials: { username: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials);
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(response => {
+        this.setToken(response.token);
+        this.setUser(response.user);
+      })
+    );
   }
 
   // Método de registro: envía los datos del usuario y retorna la respuesta del backend
@@ -30,9 +39,18 @@ export class AuthService {
     localStorage.setItem('token', token);
   }
 
+  setUser(user: any): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
   // Obtiene el token
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getUser(): any {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
   }
 
   // Remueve el token para cerrar sesión
