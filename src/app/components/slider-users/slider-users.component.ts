@@ -79,11 +79,9 @@ export class SliderUsersComponent implements OnInit, OnDestroy {
 
   // Genera el contenido del tooltip con ID, Nombre, Fecha de Creación y Rol
   createTooltipInfo(dev: any): string {
-    return `ID: ${dev.Id.toLocaleString()}
-    Nombre: ${dev.Name.toLocaleString()}
-    Especialización: ${dev.NameSpecialization ? dev.NameSpecialization.toLocaleString() : "Especialización desconocida"}
-    Rol: ${dev.Rol ? "Desarrollador".toLocaleString() : "Product Owner".toLocaleString()}`;
-  }  
+    return `${dev.Id} ${dev.Name} ${dev.NameSpecialization ?? 'ProductOwner'}`;
+  }
+  
 
   prevSlide(): void {
     if (this.startIndex > 0) {
@@ -145,23 +143,3 @@ export class SliderUsersComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 }
-
-/* ngOnInit(): void {
-    this.sprintService.getSelectedSprint().subscribe((sprint) => {
-      if (sprint) {
-        this.content = {
-          goal: sprint.Goal,
-          description: sprint.Description,
-          startDate: sprint.StartDate,
-          endDate: sprint.EndDate,
-        };
-        this.value=this.progressValue(sprint);
-      } else {
-        this.content = null;
-        this.value=0;
-      }
-
-      //forzar que se detecten los cambios
-      this.cdr.detectChanges();
-    });
-  }*/

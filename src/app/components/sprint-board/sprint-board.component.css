@@ -141,6 +141,10 @@ mat-card-header{
   }
 }
 
+.left-elements{
+  display: flex;
+}
+
 .box {
   padding: 20px 10px;
   border-bottom: solid 1px #ccc;
@@ -148,7 +152,7 @@ mat-card-header{
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: none;
+  justify-content: space-between !important;
   box-sizing: border-box;
   cursor: move;
   background: white;
@@ -173,6 +177,40 @@ mat-card-header{
   position: relative;
 }
 
+.delete-handle {
+  position: absolute;
+  top: 5px;
+  right: calc(100% - 54px);
+  color: #ccc;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.edit-handle {
+  position: absolute;
+  top: 5px;
+  right: calc(100% - 28px);
+  color: white;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.delete-button{
+  padding:0 !important;
+  border: none;
+  color:white;
+  background: red !important;
+  border-radius: 15%;
+}
+
+.edit-button{
+  padding:0 !important;
+  border: none;
+  background:var(--success-color);
+  border-radius: 15%;
+}
 .drag-handle {
   position: absolute;
   top: 5px;

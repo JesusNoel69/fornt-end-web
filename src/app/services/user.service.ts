@@ -47,4 +47,8 @@ export class UserService {
     localStorage.removeItem('userId');
     localStorage.removeItem('userRole');
   }
+
+  public getUser(){
+    
+  }
 }

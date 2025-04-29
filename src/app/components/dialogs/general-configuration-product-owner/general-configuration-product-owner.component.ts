@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Developer } from '../../../entities/developer.entity';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
 
 // export interface Tile {
 //   color: string;
@@ -58,7 +59,7 @@ export class GeneralConfigurationProductOwnerComponent {
     };
 
     // Llama a un endpoint que se encargue de insertar el Developer sin equipo asignado
-    const url = 'http://localhost:5038/Project/AddDeveloperWithoutProject'; // Asegúrate de que este endpoint exista en el backend
+    const url = ENVIROMENT+'Project/AddDeveloperWithoutProject'; // Asegúrate de que este endpoint exista en el backend
     this.http.post(url, newDeveloper).subscribe({
       next: (res) => {
         console.log("Usuario agregado con éxito:", res);

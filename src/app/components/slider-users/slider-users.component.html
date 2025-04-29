@@ -7,19 +7,15 @@
     <div class="slider">
         @for (item of  visibleItems; track $index) {
             <button
-                matTooltip="{{ item.tooltipInfo }}"
                 matTooltipPosition="above"
+                [matTooltip]="item.tooltipInfo"
                 matTooltipClass="custom-tooltip"
                 class="slider-item"
-                [style.background-color]="item.color"
-                [style]="{
-                    'transform': getScale($index),
-                    'background-color': item.color
-                }"
-                 [style.z-index]="getZIndex($index)"
-            >
+                [style.transform]="getScale($index)"
+                [style.z-index]="getZIndex($index)"
+                [style.backgroundColor]="item.color">
                 {{ item.label }}
-            </button>
+                </button>
         }
         <!-- {{startIndex+5}}
         {{users.length}} -->

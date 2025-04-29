@@ -1,0 +1,30 @@
+
+.dialog-content {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .dialog-field {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+
+        .label {
+        font-weight: 600;
+        }
+        .value {
+        opacity: 0.85;
+        }
+    }
+}
+
+.mat-dialog-actions {
+    padding: 1rem 1.5rem;
+}
+button{
+    border:none;
+}
+/* .btn-confirm {
+    min-width: 200px;
+} */

@@ -46,6 +46,49 @@ h3{
   height:80%; 
 }
 
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ccc;
+  cursor: move;
+  width: 24px;
+  height: 24px;
+}
+.delete-handle {
+  position: absolute;
+  top: 28px;
+  right: calc(100% - 24px);
+  color: #ccc;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.edit-handle {
+  position: absolute;
+  top: 2px;
+  right: calc(100% - 24px);
+  color: #ccc;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.delete-button{
+  padding:0 !important;
+  border: none;
+  background: red !important;
+  border-radius: 15%;
+}
+
+.edit-button{
+  padding:0 !important;
+  border: none;
+  border-radius: 15%;
+}
+
 .list {
   border: solid 1px #ccc;
   /* min-height: 60px; */
@@ -55,6 +98,8 @@ h3{
   display: block;
 }
 
+
+
 .box {
   /* padding: 20px 10px; */
   height:3.5rem;
@@ -62,6 +107,7 @@ h3{
   color: rgba(0, 0, 0, 0.87);
   display: flex;
   flex-direction: row;
+  position:relative;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
@@ -74,6 +120,10 @@ h3{
   margin-top:-3rem; 
   position:absolute;
 }
+/* .background-color-1{
+  background-color: ;
+} */
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 0px;
@@ -81,6 +131,8 @@ h3{
               0 8px 10px 1px rgba(0, 0, 0, 0.14),
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
+
+
 
 .cdk-drag-placeholder {
   opacity: 0;

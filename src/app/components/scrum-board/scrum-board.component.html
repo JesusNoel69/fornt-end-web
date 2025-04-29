@@ -2,7 +2,7 @@
   <div class="table">
     <div class="container">
       <h3 >Por hacer
-        <div class="circle state-position" ></div>
+        <div class="circle state-position" [ngClass]="getCircleClass(1)" ></div>
       </h3>
       <div
         cdkDropList
@@ -10,15 +10,64 @@
         class="list"
         (cdkDropListDropped)="drop($event)">
         @for (item of todo; track item) {
-          <div class="box" cdkDrag>{{item?.Name}} {{item?.Order}}</div>
+          <div class="box"   cdkDrag>
+            @if (item) {
+
+              <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
+              position: absolute;
+              top: 0;
+              right: 0; height:24px;">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="5" r="2"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+              </button>
+              <!-- <div class="drag-handle" cdkDragHandle >
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+              </div> -->
+              <ng-template #menu>
+                
+                <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+                <button
+                  class="edit-button edit-handle" 
+                  (click)="onEdit(item); $event.stopPropagation()"
+                  aria-label="Editar"
+                >
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <!-- lápiz / edit icon -->
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+              </ng-template>
+
+              <div style="margin-top: 24px !important;">{{item?.Name}}</div>
+             
+            }
+          </div>
         }
       </div>
     </div>
 
     <div class="container">
       <h3>En progreso
-        <div class="circle state-position" ></div>
-
+        <div class="circle state-position" [ngClass]="getCircleClass(2)"></div>
       </h3>
       <div
         cdkDropList
@@ -26,14 +75,63 @@
         class="list"
         (cdkDropListDropped)="drop($event)">
         @for (item of progress; track item) {
-          <div class="box" cdkDrag>{{item?.Name}} {{item?.Order}}</div>
+          <div class="box" cdkDrag>
+            @if (item) {
+
+              <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
+              position: absolute;
+              top: 0;
+              right: 0; height:24px;">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="5" r="2"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+              </button>
+              <!-- <div class="drag-handle" cdkDragHandle >
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+              </div> -->
+              <ng-template #menu>
+                
+                <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+                <button
+                  class="edit-button edit-handle" 
+                  (click)="onEdit(item); $event.stopPropagation()"
+                  aria-label="Editar"
+                >
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <!-- lápiz / edit icon -->
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+              </ng-template>
+
+              <div style="margin-top: 24px !important;">{{item?.Name}}</div>
+             
+            }
+          </div>
         }
       </div>
     </div>
     <div class="container">
       <h3>Revision
-        <div class="circle state-position" ></div>
-
+        <div class="circle state-position" [ngClass]="getCircleClass(3)"></div>
       </h3>
       <div
         cdkDropList
@@ -41,14 +139,57 @@
         class="list"
         (cdkDropListDropped)="drop($event)">
         @for (item of review; track item) {
-          <div class="box" cdkDrag>{{item?.Name}} {{item?.Order}}</div>
+          <div class="box" cdkDrag>
+            @if (item) {
+
+              <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
+              position: absolute;
+              top: 0;
+              right: 0; height:24px;">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="5" r="2"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+              </button>
+              <ng-template #menu>
+                
+                <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+                <button
+                  class="edit-button edit-handle" 
+                  (click)="onEdit(item); $event.stopPropagation()"
+                  aria-label="Editar"
+                >
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <!-- lápiz / edit icon -->
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+              </ng-template>
+
+              <div style="margin-top: 24px !important;">{{item?.Name}}</div>
+             
+            }
+          </div>
         }
       </div>
     </div>
     <div class="container last">
       <h3>Terminado
-        <div class="circle state-position" ></div>
-
+        <div class="circle state-position" [ngClass]="getCircleClass(4)"></div>
       </h3>
       <div
         cdkDropList
@@ -56,7 +197,59 @@
         class="list"
         (cdkDropListDropped)="drop($event)">
         @for (item of done; track item) {
-          <div class="box" cdkDrag>{{item?.Name}} {{item?.Order}}</div>
+          
+          <div class="box" cdkDrag>
+            @if (item) {
+
+              <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
+              position: absolute;
+              top: 0;
+              right: 0; height:24px;">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="5" r="2"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+              </button>
+              <!-- <div class="drag-handle" cdkDragHandle >
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+              </div> -->
+              <ng-template #menu>
+                
+                <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+                <button
+                  class="edit-button edit-handle" 
+                  (click)="onEdit(item); $event.stopPropagation()"
+                  aria-label="Editar"
+                >
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                    <!-- lápiz / edit icon -->
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                  </svg>
+                </button>
+              </ng-template>
+
+              <div style="margin-top: 24px !important;">{{item?.Name}}</div>
+             
+            }
+          
+          </div>
         }
       </div>
     </div>

@@ -15,6 +15,7 @@ import { UserService } from '../../../services/user.service';
 import {  MatMenuModule } from '@angular/material/menu';
 import {  MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
 
 interface DeveloperTask {
   DeveloperName: string;
@@ -45,7 +46,7 @@ export class GeneralInformationComponent implements OnChanges, OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { sprint: Sprint }, private http: HttpClient, private userService: UserService, private cdr: ChangeDetectorRef ) {
     this.sprint = data.sprint;
     console.log("sprint",this.sprint);
-    const url = `http://localhost:5038/Task/GetTasksBySprintId/${this.sprint.Id}`;
+    const url = `${ENVIROMENT}Task/GetTasksBySprintId/${this.sprint.Id}`;
         this.http.get<Task[]>(url).subscribe({
           next: (tasks: Task[]) => {
             this.tasks=tasks;
@@ -61,7 +62,7 @@ export class GeneralInformationComponent implements OnChanges, OnInit {
     this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;
       console.log("el usuario es", this.userId)
-      this.http.get<Task[]>(`http://localhost:5038/Task/GetTasksByDeveloperId/${this.userId}`).subscribe({
+      this.http.get<Task[]>(`${ENVIROMENT}Task/GetTasksByDeveloperId/${this.userId}`).subscribe({
         next: (tasks) => {
           this.tasksDeveloper = tasks;
           console.log('Tasks recibidas:', this.tasksDeveloper);
@@ -92,7 +93,7 @@ export class GeneralInformationComponent implements OnChanges, OnInit {
     const taskIds = this.tasks.map(task => task.Id);
     console.log(taskIds);
     // Llamada al endpoint para obtener los scrums, enviando taskIds en el cuerpo como JSON
-    const url = `http://localhost:5038/Sprint/GetScrumsWeeklyByTaskIds`;
+    const url = `${ENVIROMENT}Sprint/GetScrumsWeeklyByTaskIds`;
     
     this.http.post<WeeklyScrum[]>(url, taskIds).subscribe({
       next: (scrums: WeeklyScrum[]) => {
@@ -111,7 +112,7 @@ export class GeneralInformationComponent implements OnChanges, OnInit {
     // developerId: number, content: string, taskId: number
     const body = { DeveloperId:this.userId, Content:this.content, TaskId:this.selectedTask?.Id };
     console.log(body);
-    this.http.post<boolean>('http://localhost:5038/Task/AddScrumWeeklyToTask', body)
+    this.http.post<boolean>(ENVIROMENT+'Task/AddScrumWeeklyToTask', body)
     .subscribe({
       next: (response: boolean) => {
         console.log(response);
@@ -124,7 +125,7 @@ export class GeneralInformationComponent implements OnChanges, OnInit {
   
   private FetchDevelopersByIds(ids: number[]){
     console.log("Los ids son: ", ids)
-    this.http.post<Developer[]>(`http://localhost:5038/User/GetDevelopersByIds`, ids)
+    this.http.post<Developer[]>(`${ENVIROMENT}User/GetDevelopersByIds`, ids)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (developers: Developer[]) => {

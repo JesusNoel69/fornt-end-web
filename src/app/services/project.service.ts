@@ -6,12 +6,14 @@ import { ProductBacklog } from '../entities/productbacklog.entity';
 import { Developer } from '../entities/developer.entity';
 import { Task } from '../entities/Task.entity';
 import { UserService } from './user.service';
+import { ENVIROMENT } from "../../enviroments/enviroment.prod";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl: string = "http://localhost:5038/Project/GetProjects";
+  private apiUrl: string = ENVIROMENT+"Project/GetProjects";
+  
   private projectsSubject = new BehaviorSubject<Project[]>([]);
   private selectedProjectSubject = new BehaviorSubject<Project | null>(null);
 
@@ -35,7 +37,7 @@ export class ProjectService {
   }
 
   getProjectById(id: number): Observable<Project> {
-    const url = `http://localhost:5038/Project/GetProjectById/${id}`;
+    const url = `${ENVIROMENT}Project/GetProjectById/${id}`;
     return this.http.get<Project>(url)
       .pipe(
         tap(project => {
@@ -63,7 +65,7 @@ export class ProjectService {
   // }
 
   refreshProjectById(projectId: number): Observable<Project> {
-    const url = `http://localhost:5038/Project/GetProjectById/${projectId}`;
+    const url = `${ENVIROMENT}Project/GetProjectById/${projectId}`;
     return this.http.get<Project>(url).pipe(
       tap((project) => {
         this.selectedProjectSubject.next(project);
@@ -96,7 +98,7 @@ export class ProjectService {
   
   getProductBacklogById(projectId: number): Observable<ProductBacklog> {
     console.log("productbacklogID: " + projectId);
-    const url = `http://localhost:5038/Project/GetProductBacklogById/${projectId}`;
+    const url = `${ENVIROMENT}Project/GetProductBacklogById/${projectId}`;
     return this.http.get<ProductBacklog>(url);
   }
   
@@ -132,12 +134,12 @@ export class ProjectService {
   
 
   getTeamProjectsByProjectId(projectId: number): Observable<Developer[]> {
-    const url = `http://localhost:5038/User/GetDevelopersByProjectId/${projectId}`;
+    const url = `${ENVIROMENT}User/GetDevelopersByProjectId/${projectId}`;
     return this.http.get<Developer[]>(url);
   }
 
   addProject(newProject: Project, userId: number): Observable<Project> {
-    return this.http.post<Project>('http://localhost:5038/Project/InsertProject', { project: newProject, userId: userId })
+    return this.http.post<Project>(ENVIROMENT+'Project/InsertProject', { project: newProject, userId: userId })
       .pipe(
         tap((insertedProject: Project) => {
           const currentProjects = this.projectsSubject.getValue();
@@ -154,7 +156,7 @@ export class ProjectService {
       return;
     }
 
-    const url = `http://localhost:5038/Task/GetTasksBySprintId/${sprintId}`;
+    const url = `${ENVIROMENT}Task/GetTasksBySprintId/${sprintId}`;
     this.http.get<Task[]>(url).subscribe({
       next: (tasks: Task[]) => {
         this.sprintTasksLoaded[sprintId] = true; // Marcamos que ya se cargaron las tareas para este sprint

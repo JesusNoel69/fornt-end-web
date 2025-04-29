@@ -1,54 +1,64 @@
-<div class="principal-container">
+    <div class="principal-container">
     <h2 mat-dialog-title>
       <button mat-button mat-dialog-close class="button-close">X</button>
       Detalles de cambios
     </h2>
-  
+
     <mat-dialog-content>
       <mat-card appearance="outlined">
         <mat-card-content>
-          <!-- @if (ids) {
-            @for (id of ids; track id) { -->
-              @if (changeDetails && changeDetails.length > 0) {
-                <div class="projects-container">
-                  <div class="all-width">
-                    <p class="sprint-title"><strong>Proyecto {{ selectedProject?.ProjectNumber }}</strong></p>
-                  </div>
-                    <div class="all-width">
-                        @for (change of changeDetails; track change.Id) {
-                            <div class="each-sprint">
-                            <div class="sprint-display">
-                                <div class="perfil-changes">
-                                <p>{{ 
-                                    replaceValues(change.UserData!)
-                                  }}</p>
-                                </div>
-                                <p>{{ change.UserData || 'Usuario desconocido' }}</p>
-                            </div>
-                            <input class="sprint first-input" [value]="change.SprintNumber ? 'Sprint #' + change.SprintNumber : 'Listado'"/>
-                            <input class="flex-space-1"
-                                id="changes-task-{{change.Id}}"
-                                placeholder="Tarea"
-                                value="{{ change.Task?.Name || 'Sin tarea' }}"
-                            />
-                            <input class="flex-space-2 last-input"
-                                id="changes-details-{{change.Id}}"
-                                placeholder="Detalles del cambio"
-                                value="{{ change.TaskInformation || 'Sin detalles' }}"
-                            />
-                            </div>
-                        }   
+          @if (changeDetails.length > 0) {
+            <div class="projects-container">
+              <div class="all-width">
+                <p class="sprint-title">
+                  <strong>Proyecto {{ selectedProject?.ProjectNumber }}</strong>
+                </p>
+              </div>
+              <div class="all-width">
+                <!-- {{changeDetails}} -->
+                @for (change of changeDetails; track change) {
+                  <div class="each-sprint">
+                    <div class="sprint-display">
+                      <div class="perfil-changes">
+                        <p>{{ replaceValues(change.UserData!) }}</p>
+                      </div>
+                      <p>{{ change.UserData || 'Usuario desconocido' }}</p>
                     </div>
-                </div>
-              }
-            <!-- }
-          } -->
+
+                    <input
+                      class="sprint first-input"
+                      [value]="change.SprintNumber ? 'Sprint #' + change.SprintNumber : 'Listado'"
+                      readonly
+                    />
+
+                    <input
+                      class="flex-space-1"
+                      id="changes-task-{{change.Id}}"
+                      placeholder="Tarea"
+                      [value]="change.TaskName"
+                      readonly
+                    />
+
+                    <input
+                      class="flex-space-2 last-input"
+                      id="changes-details-{{change.Id}}"
+                      placeholder="Detalles del cambio"
+                      [value]="change.TaskInformation || 'Sin detalles'"
+                      readonly
+                    />
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @else {
+            <p>No hay cambios registrados para este proyecto.</p>
+          }
         </mat-card-content>
       </mat-card>
     </mat-dialog-content>
-  
+
     <div class="button-dialog-close-display">
       <button mat-button mat-dialog-close class="button-dialog-close">Cerrar</button>
     </div>
-  </div>
-  
+    </div>

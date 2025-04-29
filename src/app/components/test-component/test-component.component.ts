@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
 
 // Definimos la interfaz para el tipo de respuesta esperado
 interface TestResponse {
@@ -14,7 +15,7 @@ interface TestResponse {
   styleUrls: ['./test-component.component.css']
 })
 export class TestComponent {
-  url: string = "http://localhost:5038/Test/";
+  url: string = ENVIROMENT+"Test/";
   valueBackendTest: string = "";
 
   constructor(private client: HttpClient) {}

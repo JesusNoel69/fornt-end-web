@@ -33,7 +33,7 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
   userRol!: boolean;
   initialized: boolean = false;
   constructor(private userService: UserService){}
-  
+  selectedSprint: Sprint | null = null;    // <— nuevo
   // Propiedad para almacenar el proyecto seleccionado
   selectedProject: Project | null = null;
   
@@ -67,10 +67,11 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroy$)
     ).subscribe(sprints => {
-      this.sprints = sprints;
+      this.sprints = sprints.sort((a, b) => b.Id - a.Id);
       this.currentIndex = 0;
       if (this.sprints.length > 0) {
         this.sprintService.selectSprint(this.sprints[0]);
+        this.selectedSprint=this.sprints[0];
       } else {
         this.sprintService.selectSprint(null);
       }
@@ -81,6 +82,7 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
 
   // Método para seleccionar un sprint manualmente
   selectSprint(sprint: Sprint): void {
+    this.selectedSprint = sprint;
     this.sprintService.selectSprint(sprint);
   }
 

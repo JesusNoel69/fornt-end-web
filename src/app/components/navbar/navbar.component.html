@@ -3,11 +3,11 @@
     <mat-icon aria-hidden="false" class="perfil" aria-label="Perfil icon">
       account_circle
     </mat-icon>
-    <button mat-raised-button routerLink="/perfil">Perfil</button>
+    <button mat-raised-button (click)="openPerfilInformation()">Perfil</button>
   </div>  
 
   <button class="invisible-button">
-    @if (!productOwner) {
+    @if (productOwner) {
       <mat-icon aria-hidden="false" aria-label="Settings icon" (click)="openGeneralConfigurationProductOwner()">
         settings
       </mat-icon>

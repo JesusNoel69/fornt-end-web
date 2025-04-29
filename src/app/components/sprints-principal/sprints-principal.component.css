@@ -82,6 +82,10 @@ mat-card-header{
     justify-content: center; 
     align-items: center;
 }
+.selected-card {
+    background-color: #e3f2fd; /* color suave para destacar */
+    /* border: 2px solid #90caf9; */
+  }
 mat-card-content{
     flex:1;
     background: white;

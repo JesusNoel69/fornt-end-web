@@ -1,0 +1,47 @@
+<h2 mat-dialog-title >
+    <button mat-button mat-dialog-close class="button-close">X</button>
+    Perfil</h2>
+
+    <mat-dialog-content class="dialog-content">
+        <div class="dialog-field">
+          <span class="label">Rol:</span>
+          <span class="value">
+            @if (userRol) {
+                Propietario del producto
+            }@else {
+                Desarrollador
+            }
+          </span>
+        </div>
+        <div class="dialog-field">
+          <span class="label">Nombre:</span>
+          <span class="value">{{perfilData?.UserName}}</span>
+        </div>
+        <div class="dialog-field">
+          <span class="label">Cuenta:</span>
+          <span class="value">{{perfilData?.UserAccount}}</span>
+        </div>
+      
+        @if (userRol)
+        {
+            <div class="dialog-field">
+              <span class="label">Contacto de cliente actual:</span>
+              <span class="value">{{perfilData?.InformationAditional}}</span>
+            </div>
+        }
+        @else
+        {
+            <div class="dialog-field">
+              <span class="label">Especialización:</span>
+              <span class="value">{{perfilData?.InformationAditional}}</span>
+            </div>
+        }
+      </mat-dialog-content>
+      
+      <mat-dialog-actions align="center">
+        <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial class="confirm">
+          Confirmar
+        </button>
+      </mat-dialog-actions>
+      
+      

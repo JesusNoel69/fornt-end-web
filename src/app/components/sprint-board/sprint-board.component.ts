@@ -22,6 +22,10 @@ import { TaskService } from '../../services/task.service';
 import { AddSprintComponent } from '../dialogs/add-sprint/add-sprint.component';
 import { UserService } from '../../services/user.service';
 import { Developer } from '../../entities/developer.entity';
+import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
+import { DeleteConfirmComponent } from '../dialogs/delete-confirm/delete-confirm.component';
+import { EditTaskComponent } from '../dialogs/edit-task/edit-task.component';
+import { CdkMenuModule, CdkMenuTrigger } from '@angular/cdk/menu';
 
 interface DeveloperTask {
   DeveloperName: string;
@@ -30,7 +34,9 @@ interface DeveloperTask {
 @Component({
   selector: 'app-sprint-board',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatIconModule, CommonModule, CdkDrag, CdkDropList, MatGridListModule, MatDivider],
+  imports: [MatCardModule, MatButtonModule, MatIconModule, CommonModule, CdkDrag, CdkDropList, MatGridListModule, MatDivider,
+    CdkMenuTrigger, CdkMenuModule
+  ],
   templateUrl: './sprint-board.component.html',
   styleUrls: ['./sprint-board.component.css'],
 })
@@ -111,6 +117,41 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
     });
   }
 
+  async onEdit(task: Task) {
+    const ref = this.dialog.open<EditTaskComponent, Task, Task>(
+      EditTaskComponent,
+      { width: '70%', data: task }
+    );
+
+    ref.afterClosed().subscribe(confirm => {
+      this.ngOnInit();
+      console.log("ya")
+    });
+  }
+
+  onDelete(task: Task | null) {
+    if (!task) return;
+  
+    const dialogRef = this.dialog.open(DeleteConfirmComponent, {
+      width: '320px',
+      data: { name: task?.Name }
+    });
+  
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+  
+      this.taskService.deleteTaskById(task.Id).subscribe({
+        next: () => {
+          // Vuelve a ejecutar ngOnInit para recargar todo
+          this.ngOnInit();
+        },
+        error: err => {
+          console.error('Error al borrar la tarea:', err);
+        }
+      });
+    });
+  }
+
   getCircleClass(state: number): string {
     switch (state) {
       case 1: return 'circle state-1';
@@ -145,7 +186,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   private updateSprintData() {
     if (!this.currentSprint || !this.selectedProject) return;
     // Obtener las tareas del sprint actual
-    this.http.get<Task[]>(`http://localhost:5038/Task/GetTasksBySprintId/${this.currentSprint.Id}`)
+    this.http.get<Task[]>(`${ENVIROMENT}Task/GetTasksBySprintId/${this.currentSprint.Id}`)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (tasks: Task[]) => {
@@ -176,7 +217,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
           this.sprintId=this.currentSprint.Id;
           if(this.ids.length>0){//puede ir vacio si no hay tareas en el sprint 
             // console.log(JSON.stringify(ids));
-            this.http.post<DeveloperTask[]>(`http://localhost:5038/User/GetDevelopersByTasksIds`, this.ids)
+            this.http.post<DeveloperTask[]>(`${ENVIROMENT}User/GetDevelopersByTasksIds`, this.ids)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (developers: DeveloperTask[]) => {

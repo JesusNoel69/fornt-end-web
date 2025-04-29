@@ -20,6 +20,7 @@ import { Team } from '../../../entities/team.entity';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { UserService } from '../../../services/user.service';
+import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
 
 @Component({
   selector: 'app-add-project',
@@ -110,7 +111,7 @@ export class AddProjectComponent {
     this.projectService.getProjects().subscribe((projects) => {
       this.projects = projects;
     });
-    const url = `http://localhost:5038/User/GetTeamsByProductOwnerId/${this.userId}`;
+    const url = `${ENVIROMENT}User/GetTeamsByProductOwnerId/${this.userId}`;
     this.http.get<Team[]>(url).subscribe({
       next: (data) => {
         this.teams = data;
@@ -123,7 +124,7 @@ export class AddProjectComponent {
 
   }
   getDevelopers(id:number){
-    const url = `http://localhost:5038/User/GetDeveloperByTeamId/${id}`;
+    const url = `${ENVIROMENT}User/GetDeveloperByTeamId/${id}`;
     this.http.get<Developer[]>(url).subscribe({
       next: (data) => {
         this.developers = data;

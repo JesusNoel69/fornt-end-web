@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Sprint } from '../entities/sprint.entity';
 import { HttpClient } from '@angular/common/http';
 import { catchError, shareReplay } from 'rxjs/operators';
+import { ENVIROMENT } from '../../enviroments/enviroment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class SprintService {
 
   getSprintsByProjectId(projectId: number): Observable<Sprint[]> {
     // if (!this.sprintsCache[projectId]) {
-      const url = `http://localhost:5038/Sprint/GetSprintsByProjectId?projectId=${projectId}`;
+      const url = `${ENVIROMENT}Sprint/GetSprintsByProjectId?projectId=${projectId}`;
       // this.sprintsCache[projectId] = 
       return this.http.get<Sprint[]>(url)
         .pipe(
@@ -39,7 +40,7 @@ export class SprintService {
   
 
   getSprintById(sprintId: number): Observable<Sprint> {
-    const url = `http://localhost:5038/Sprint/GetSprintBy/${sprintId}`;
+    const url = `${ENVIROMENT}Sprint/GetSprintBy/${sprintId}`;
     return this.http.get<Sprint>(url);
   }
   

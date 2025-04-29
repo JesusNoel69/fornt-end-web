@@ -13,6 +13,7 @@ import { Team } from '../../entities/team.entity';
 import { Router } from '@angular/router';
 import { AuthService } from '../../authentication/auth.service';
 import { UserService } from '../../services/user.service';
+import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
 
 @Component({
   selector: 'app-register',
@@ -62,7 +63,7 @@ export class RegisterComponent {
         TeamProject: null as any
       };
 
-      const addTeamUrl = 'http://localhost:5038/User/AddTeam';
+      const addTeamUrl = ENVIROMENT+'User/AddTeam';
       this.http.post<Team>(addTeamUrl, newTeam).subscribe({
         next: (teamResponse) => {
           this.team = teamResponse;
@@ -86,7 +87,7 @@ export class RegisterComponent {
         Developer: null as any,
         ChangeDetails: null as any
       };
-      const addOwnerUrl = 'http://localhost:5038/User/AddProductOwner';
+      const addOwnerUrl = ENVIROMENT+'User/AddProductOwner';
       this.http.post<ProductOwner>(addOwnerUrl, newProductOwner).subscribe({
         next: (ownerResponse) => {
           console.log("Product Owner registrado exitosamente:", ownerResponse);
@@ -100,14 +101,14 @@ export class RegisterComponent {
       console.log("DEVELOPER")
       // Registro para Developer:
       // Se espera que el usuario ingrese un teamId para buscar el equipo existente.
-      const teamUrl = 'http://localhost:5038/User/GetTeamById/' + this.teamId;
+      const teamUrl = ENVIROMENT+'User/GetTeamById/' + this.teamId;
       this.http.get<Team>(teamUrl).subscribe({
         next: (teamResponse) => {
           this.team = teamResponse;
           console.log("Equipo obtenido:", this.team);
 
           // Obtener el ProductOwner asociado al equipo (usando teamId).
-          const urlOwner = 'http://localhost:5038/User/GetProductOwner/' + this.teamId;
+          const urlOwner = ENVIROMENT+'User/GetProductOwner/' + this.teamId;
           this.http.get<ProductOwner>(urlOwner).subscribe({
             next: (ownerResponse) => {
               this.productOwner = ownerResponse;
@@ -128,7 +129,7 @@ export class RegisterComponent {
                 WeeklyScrum: null
               };
 
-              const addDevUrl = 'http://localhost:5038/User/AddDeveloper';
+              const addDevUrl = ENVIROMENT+'User/AddDeveloper';
               this.http.post(addDevUrl, newDeveloper).subscribe({
                 next: (devResponse) => {
                   console.log("Desarrollador registrado exitosamente:", devResponse);

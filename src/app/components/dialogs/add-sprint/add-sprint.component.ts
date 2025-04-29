@@ -21,6 +21,7 @@ import { Project } from '../../../entities/project.entity';
 import { Task } from '../../../entities/Task.entity';
 import { Sprint } from '../../../entities/sprint.entity';
 import { ProjectService } from '../../../services/project.service';
+import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
 
 @Component({
   selector: 'app-add-sprint',
@@ -119,7 +120,7 @@ export class AddSprintComponent implements OnInit, OnDestroy {
     };
   
     console.log("Sprint a agregar:", sprintToAdd);
-    const url = 'http://localhost:5038/Sprint/AddSprint/' + this.selectedProject.Id;
+    const url = ENVIROMENT+'Sprint/AddSprint/' + this.selectedProject.Id;
   
     // Realizamos la llamada POST para insertar el sprint y luego refrescamos el proyecto
     this.projectService.getSelectedProject()

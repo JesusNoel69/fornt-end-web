@@ -6,6 +6,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { GeneralConfigurationProductOwnerComponent } from "../dialogs/general-configuration-product-owner/general-configuration-product-owner.component";
 import { GeneralConfigurationComponent } from "../dialogs/general-configuration/general-configuration.component";
+import { PerfilComponentComponent } from "../dialogs/perfil-component/perfil-component.component";
 
 
 @Component({
@@ -30,5 +31,11 @@ export class NavbarComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });    
+  }
+  openPerfilInformation(){
+    const dialogRef = this.dialog.open(PerfilComponentComponent, {width: '70%'});
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

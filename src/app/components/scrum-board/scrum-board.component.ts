@@ -18,6 +18,12 @@ import { takeUntil, switchMap } from 'rxjs/operators';
 import { ProductBacklog } from '../../entities/productbacklog.entity';
 import { TaskService } from '../../services/task.service';
 import { UserService } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import {CdkMenu, CdkMenuItem, CdkMenuModule, CdkMenuTrigger} from '@angular/cdk/menu';
+import { DeleteConfirmComponent } from '../dialogs/delete-confirm/delete-confirm.component';
+import { EditTaskComponent } from '../dialogs/edit-task/edit-task.component';
+
 
 @Component({
   selector: 'app-scrum-board',
@@ -27,7 +33,8 @@ import { UserService } from '../../services/user.service';
     MatButtonModule,
     CdkDropListGroup,
     CdkDropList,
-    CdkDrag
+    CdkDrag, CommonModule,
+    MatIconModule, CdkMenuTrigger, CdkMenuModule, CdkMenuItem, DeleteConfirmComponent
   ],
   templateUrl: './scrum-board.component.html',
   styleUrls: ['./scrum-board.component.css'],
@@ -49,26 +56,27 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
   columns: (Task | null)[][] = [this.todo, this.progress, this.review, this.done];
   constructor(private userService: UserService){}
   ngOnInit() {
+    this.reloadBoard();
     // Suscribirse al proyecto seleccionado y obtener el ProductBacklog actualizado
-    this.projectService.getSelectedProject()
-      .pipe(
-        takeUntil(this.destroy$),
-        switchMap(project => {
-          if (project) {
-            return this.projectService.getProductBacklogById(project.Id);
-          } else {
-            return of(null);
-          }
-        })
-      )
-      .subscribe(backlog => {
-        if (backlog && backlog.Tasks) {
-          console.log("i enter");
+    // this.projectService.getSelectedProject()
+    //   .pipe(
+    //     takeUntil(this.destroy$),
+    //     switchMap(project => {
+    //       if (project) {
+    //         return this.projectService.getProductBacklogById(project.Id);
+    //       } else {
+    //         return of(null);
+    //       }
+    //     })
+    //   )
+    //   .subscribe(backlog => {
+    //     if (backlog && backlog.Tasks) {
+    //       console.log("i enter");
 
-          this.loadTasks(backlog.Tasks);
-        }
-        this.cdr.markForCheck();
-      });
+    //       this.loadTasks(backlog.Tasks);
+    //     }
+    //     this.cdr.markForCheck();
+    //   });
 
       this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
         this.userId = id;
@@ -80,6 +88,16 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
         this.userRol = rol;
         this.cdr.markForCheck();
       });
+  }
+
+  private reloadBoard() {
+    this.projectService.getSelectedProject().pipe(
+      takeUntil(this.destroy$),
+      switchMap(proj => proj
+        ? this.projectService.getProductBacklogById(proj.Id)
+        : of(null)
+      )
+    ).subscribe(backlog => this.loadTasks(backlog?.Tasks ?? []));
   }
 
   loadTasks(tasks: Task[]) {
@@ -153,6 +171,16 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
       });
     }
     this.updateGlobalOrder();
+  }
+
+  getCircleClass(state: number): string {
+    switch (state) {
+      case 1: return 'circle state-1';
+      case 2: return 'circle state-2';
+      case 3: return 'circle state-3';
+      case 4: return 'circle state-4';
+      default: return '';
+    }
   }
 
   updateGlobalOrder(){
@@ -325,5 +353,71 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // onEdit(task: Task) {
+  //   const ref = this.dialog.open(EditTaskComponent, {
+  //     width: '70%',
+  //     data: task
+  //   });
+  
+  //   ref.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((updatedTask: Task ) => {
+  //     if (!updatedTask){
+  //       console.log("nada"); 
+  //       return;}
+
+  
+  //     // 1) Aplano todas las columnas a un Task[] puro
+  //     const tasks = this.mergeTasks();
+  
+  //     // 2) Reemplazo la tarea editada
+  //     const newTasks = tasks.map(t => t.Id === updatedTask.Id ? updatedTask : t);
+  
+  //     // 3) Vuelvo a cargar el board con el array limpio
+  //     this.loadTasks(newTasks);
+  //   });
+  // }
+  
+  async onEdit(task: Task) {
+    const ref = this.dialog.open<EditTaskComponent, Task, Task>(
+      EditTaskComponent,
+      { width: '70%', data: task }
+    );
+
+    ref.afterClosed().subscribe(confirm => {
+      this.reloadBoard();
+
+      this.ngOnInit();
+      console.log("ya")
+      // updatedTask es undefined si el usuario cerró sin confirmar
+      
+      // if (updatedTask) {
+      //   // recargamos TODO el backlog desde el servidor
+      //   this.reloadBoard();
+      // }
+    });
+  }
+
+  onDelete(task: Task | null) {
+    if (!task) return;
+  
+    const dialogRef = this.dialog.open(DeleteConfirmComponent, {
+      width: '320px',
+      data: { name: task?.Name }
+    });
+  
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+  
+      this.taskService.deleteTaskById(task.Id).subscribe({
+        next: () => {
+          // Vuelve a ejecutar ngOnInit para recargar todo
+          this.ngOnInit();
+        },
+        error: err => {
+          console.error('Error al borrar la tarea:', err);
+        }
+      });
+    });
   }
 }
