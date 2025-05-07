@@ -6,6 +6,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface UserData {
   UserName: string;
@@ -18,7 +20,7 @@ interface UserData {
 @Component({
   selector: 'app-general-configuration',
   standalone: true,
-  imports:[MatDialogModule, MatCardModule, MatButtonModule],
+  imports:[MatDialogModule, MatCardModule, MatButtonModule, CommonModule],
   templateUrl: './general-configuration.component.html',
   styleUrl: './general-configuration.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,11 +29,12 @@ export class GeneralConfigurationComponent implements OnInit, OnDestroy {
     userId!: number;
     userRol!: boolean;
     perfilData?: UserData;
-    private cdr = inject(ChangeDetectorRef);
+    public data?: { Message: string; Secrets: any[] };
+    // private cdr = inject(ChangeDetectorRef);
     private destroy$ = new Subject<void>();
 
   
-    constructor(private http: HttpClient, private userService: UserService) {}
+    constructor(private http: HttpClient, private userService: UserService,  private cdr: ChangeDetectorRef) {}
 
       ngOnInit(): void {
         // Esperamos a tener userId y userRol
@@ -112,8 +115,10 @@ export class GeneralConfigurationComponent implements OnInit, OnDestroy {
         files.forEach(file => {
           formData.append('files', file, file.webkitRelativePath);
         });
-        this.http.post(ENVIROMENT+'Integrations/AnalizeProject', formData)
+        this.http.post<{ Message: string; Secrets: any[] }>(ENVIROMENT+'Integrations/AnalizeProject', formData)
           .subscribe(response => {
+            this.data=response;
+            this.cdr.markForCheck();
             console.log('Análisis enviado con éxito:', response);
           });
       }

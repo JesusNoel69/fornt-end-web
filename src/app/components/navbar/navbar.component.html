@@ -16,21 +16,68 @@
         settings
       </mat-icon>
     }
-    
   </button>
+
+    <!-- Botón de logout agregado -->
+     <!-- @if (isLoggedIn$) { -->
+      <button
+        mat-icon-button
+        aria-label="Cerrar sesión"
+        class="invisible-button"
+        (click)="logout()"
+      >
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    <!-- } -->
+  <mat-toolbar color="primary">
+    <span class="spacer"></span>
+
+    <!-- Desktop: enlaces visibles -->
+    <div class="nav-links">
+      <a
+        routerLink="/sprints"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Sprints</a
+      >
+      <a
+        routerLink="/scrum"
+        routerLinkActive="active-link"
+        >Tablero de Scrum</a
+      >
+      <a
+        routerLink="/home"
+        routerLinkActive="active-link"
+        >Tablero principal</a
+      >
+    </div>
+
+    <!-- Mobile: botón hamburguesa -->
+    <button
+      mat-icon-button
+      class="mobile-menu-button"
+      [matMenuTriggerFor]="navMenu"
+      aria-label="Abrir menú">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 12h18M3 6h18M3 18h18"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </mat-toolbar>
   
-  <div class="button-row">
-    <button mat-raised-button 
-            routerLink="/sprints" 
-            routerLinkActive="activebutton" 
-            aria-current="page">Sprints</button>
-    <button mat-raised-button 
-            routerLink="/scrum" 
-            routerLinkActive="activebutton" 
-            aria-current="page">Tablero de Scrum</button>
-    <button mat-raised-button 
-            routerLink="/home" 
-            routerLinkActive="activebutton" 
-            aria-current="page">Tablero principal</button>
-  </div>
+  <mat-menu #navMenu="matMenu">
+    <button mat-menu-item routerLink="/sprints">Sprints</button>
+    <button mat-menu-item routerLink="/scrum">Tablero de Scrum</button>
+    <button mat-menu-item routerLink="/home">Tablero principal</button>
+  </mat-menu>
 </section>

@@ -7,15 +7,15 @@
         </mat-card-content>
     </mat-card>
     <mat-card appearance="outlined" style="margin: 5px; flex:1; border-radius: 7px; display: flex; flex-direction: column; height: 100%;">
-        <mat-card-content style="flex: 1; margin: 0 auto;">
+        <mat-card-content style=" flex: 1; margin: 0 auto; max-height:30%;">
             <mat-card-title>Integración:</mat-card-title>
         </mat-card-content>
-        <mat-card-actions >
+        <mat-card-actions style=" width:100%; display:flex; align-items:center; justify-content:center; flex-wrap: wrap; height:100%;" >
             <button (click)="navigateTo(serverImage)" mat-raised-button style="background:#CBE8F0;">Servidor</button>
             <button (click)="navigateTo(repository)" mat-raised-button style="background:#CBE8F0;">Repositorio</button>
-            <button mat-raised-button style="background:#CBE8F0;">Asuntos</button>
+            <button mat-raised-button style="background:#CBE8F0;" (click)="openIssues()">Asuntos</button>
         </mat-card-actions>
-    </mat-card>    
+    </mat-card>
 </section>
 
   

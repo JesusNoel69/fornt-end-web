@@ -38,6 +38,7 @@ h2 {
   align-items: center;
   justify-content: center; 
   position: relative; 
+  color: white !important;
 }
 
 .mdc-dialog__title{

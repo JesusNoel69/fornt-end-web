@@ -5,10 +5,11 @@
     <mat-card appearance="outlined" class="without-border">
         <mat-card-content class="card-content">
             <div class="display-content">
-                <button mat-raised-button class="revision-background" (click)="fileInput.click()" >revision del proyecto</button>
+                <button mat-raised-button class="revision-background" (click)="fileInput.click()" >Revision</button>
                 <input #fileInput type="file" webkitdirectory style="display: none;" (change)="onFolderSelected($event)" />
-                <div id="revision-succes"
-                   class="circle" >
+                <div
+                    class="circle"
+                    [ngClass]="data?.Secrets?.length ? 'pending' : 'confirm'" >
                 </div>
             </div>
             <div class="developer-information">

@@ -1,8 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Project } from '../../entities/project.entity';
 import { ProjectService } from '../../services/project.service';
+import { MatDialog } from '@angular/material/dialog';
+import { takeUntil } from 'rxjs';
+import { IssuesComponent } from '../dialogs/issues/issues.component';
 
 @Component({
   selector: 'app-data-principal',
@@ -19,6 +22,9 @@ export class DataPrincipalComponent implements OnInit {
   repository: string = '';
   serverImage: string = '';
 
+  readonly dialog = inject(MatDialog);
+    
+
   constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {
   }
 
@@ -28,7 +34,8 @@ export class DataPrincipalComponent implements OnInit {
         // console.log("Proyecto seleccionado:", project);
         this.project = project;
         if (this.project!=null) {
-          // console.log("es:" +this.project)
+          console.log("es:" +this.project.ServerImage)
+
           this.name = `Proyecto ${this.project.ProjectNumber}`;
           this.startDate = this.project.StartDate;
           this.state = this.terminatedProject(this.project.State);
@@ -51,6 +58,42 @@ export class DataPrincipalComponent implements OnInit {
       }
     });
   }
+
+  openIssues() {
+      // Simulamos la respuesta del escaneo
+      // const response = {
+      //   Message: 'Archivos analizados',
+      //   Secrets: [
+      //     {
+      //       Description: 'Valor por defecto de URL hardcodeado',
+      //       FilePath: 'C:\\...\\Program.cs',
+      //       LineNumber: 21,
+      //       RuleId: 'HardcodedUrlFallback',
+      //       Snippet: 'string url = Environment.GetEnvironmentVariable("URL")??"AllowAll";'
+      //     },
+      //     {
+      //       Description: 'Orígenes CORS definidos directamente en código...',
+      //       FilePath: 'C:\\...\\Program.cs',
+      //       LineNumber: 51,
+      //       RuleId: 'HardcodedCorsOrigins',
+      //       Snippet: '.WithOrigins(["https://lucky-cendol..."])'
+      //     },
+      //     {
+      //       Description: 'Cadena de conexión MySQL hardcodeada en el código',
+      //       FilePath: 'C:\\...\\Program.cs',
+      //       LineNumber: 59,
+      //       RuleId: 'HardcodedConnectionString',
+      //       Snippet: 'options.UseMySql("server=185.42.105.187;...")'
+      //     },
+      //   ]
+      // };
+  
+      this.dialog.open(IssuesComponent, {
+        width: '70%',
+        // height: '70%',
+        // data: response
+      });
+    }
 
   terminatedProject(state: number | undefined): string {
     if (state === 1) {

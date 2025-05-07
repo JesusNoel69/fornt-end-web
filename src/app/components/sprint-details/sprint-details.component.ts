@@ -14,6 +14,8 @@ import { takeUntil, switchMap } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
 
+import { CommonModule } from '@angular/common';
+
 interface Content {
   goal: string | null;
   description: string | null;
@@ -24,7 +26,7 @@ interface Content {
 @Component({
   selector: 'app-sprint-details',
   standalone: true,
-  imports: [MatCardModule, MatProgressSpinnerModule, MatButtonModule, MatDivider, MatIcon],
+  imports: [MatCardModule, CommonModule ,MatProgressSpinnerModule, MatButtonModule, MatDivider, MatIcon],
   templateUrl: './sprint-details.component.html',
   styleUrls: ['./sprint-details.component.css'], // Asegúrate de que sea styleUrls
 })
@@ -82,7 +84,6 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       });
   }
-
   async progressValue(sprint: Sprint): Promise<number> {
     console.log("Obteniendo progreso de sprint:", sprint);
     try {

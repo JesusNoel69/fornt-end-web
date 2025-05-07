@@ -1,0 +1,58 @@
+<h2 mat-dialog-title >
+    <button mat-button mat-dialog-close class="button-close">X</button>
+    Asuntos</h2>
+<mat-dialog-content>
+    <div class="display-content">
+        <button
+        mat-raised-button
+        color="accent"
+        class="revision-button"
+        (click)="fileInput.click()">
+        <mat-icon [style.margin-top]="'15px'"  [style.color]="'white'">refresh</mat-icon>
+        <span [style.color]="'white'">Revisión</span>
+        </button>
+        <input
+        #fileInput
+        type="file"
+        webkitdirectory
+        directory
+        style="display: none;"
+        (change)="onFolderSelected($event)" />
+    
+        <div
+        id="revision-success"
+        class="status-indicator"
+        [ngClass]="data.Secrets.length ? 'pending' : 'confirm'">
+        </div>
+    </div>
+    
+    <p class="message">{{ data.Message }}</p>
+    
+    <mat-accordion *ngIf="data?.Secrets?.length">
+        <mat-expansion-panel *ngFor="let sec of data.Secrets">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+            {{ sec.RuleId }} (Línea {{ sec.LineNumber }})
+            </mat-panel-title>
+            <mat-panel-description>
+            {{ sec.Description }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="secret-detail">
+            <p><strong>Archivo:</strong> {{ sec.FilePath }}</p>
+            <p><strong>Snippet:</strong></p>
+            <pre>{{ sec.Snippet }}</pre>
+        </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+    
+    <p *ngIf="!data?.Secrets?.length" class="no-secrets">
+        No se encontraron secretos.
+    </p>
+
+
+</mat-dialog-content>
+    
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>Cerrar</button>
+  </mat-dialog-actions> 

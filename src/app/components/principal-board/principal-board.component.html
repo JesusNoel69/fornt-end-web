@@ -1,24 +1,50 @@
-<mat-grid-list  cols="12" rowHeight="9.8dvh" style="margin-top:5px;">
-    <mat-grid-tile
-    [colspan]=2
-    [rowspan]=9
-    class="first-tile"
-    >
-    <app-side-projects (openDialog)="openDialog()"></app-side-projects>
-    </mat-grid-tile>
-    <mat-grid-tile
-    [colspan]=4
-    [rowspan]=4>
-        <app-data-principal></app-data-principal>
-    </mat-grid-tile>
-    <mat-grid-tile
-    [colspan]=6
-    [rowspan]=4>
-        <app-sprint-details ></app-sprint-details>
-    </mat-grid-tile>
-    <mat-grid-tile
-    [colspan]=10
-    [rowspan]=5 class="right-bottom-rounded">
-        <app-sprints-principal></app-sprints-principal>
-    </mat-grid-tile>
-</mat-grid-list>
+@if(!isSmallScreen()){
+    <mat-grid-list  cols="12" rowHeight="9.8dvh" style="margin-top:5px;">
+        <mat-grid-tile
+        [colspan]=2
+        [rowspan]=9
+        class="first-tile"
+        >
+        <app-side-projects (openDialog)="openDialog()"></app-side-projects>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=4
+        [rowspan]=4>
+            <app-data-principal></app-data-principal>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=6
+        [rowspan]=4>
+            <app-sprint-details ></app-sprint-details>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=10
+        [rowspan]=5 class="right-bottom-rounded">
+            <app-sprints-principal></app-sprints-principal>
+        </mat-grid-tile>
+    </mat-grid-list>
+}@else {
+    <mat-grid-list  cols="12" rowHeight="9.8dvh" style="margin-top:5px;">
+        <mat-grid-tile
+        [colspan]=12
+        [rowspan]=2
+        >
+        <app-side-projects (openDialog)="openDialog()"></app-side-projects>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=12
+        [rowspan]=4>
+            <app-data-principal></app-data-principal>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=12
+        [rowspan]=4>
+            <app-sprint-details ></app-sprint-details>
+        </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]=12
+        [rowspan]=5 class="right-bottom-rounded" style="border-radius: 0 0 7px 7px !important;">
+            <app-sprints-principal></app-sprints-principal>
+        </mat-grid-tile>
+    </mat-grid-list>
+}

@@ -112,3 +112,11 @@ mat-card-actions{
     width:100%;
     align-items: center; justify-content: center; gap: 10px;
 }
+
+@media (max-width:767px) {
+    
+    .container{
+        border-radius: 0 0 7px 7px !important;
+    }
+    
+}

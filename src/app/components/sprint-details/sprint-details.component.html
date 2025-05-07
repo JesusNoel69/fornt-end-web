@@ -14,10 +14,15 @@
         </mat-card>
         <mat-card class="card" appearance="outlined" >
             <mat-card-content>
-              <mat-progress-spinner
-                  [mode]="mode"
-                  [value]="value">
-              </mat-progress-spinner>
+                <div class="spinner-container">
+                    <mat-progress-spinner
+                      [mode]="mode"
+                      [value]="value"
+                      [diameter]="100"
+                      [strokeWidth]="8">
+                    </mat-progress-spinner>
+                    <div class="spinner-label">{{ value }}%</div>
+                </div>
             </mat-card-content>
             @if (userRol) {
                 <mat-card-actions class="center-text">

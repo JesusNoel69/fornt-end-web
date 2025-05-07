@@ -1,30 +1,251 @@
-<mat-grid-list cols="12" rowHeight="9.8vh">
-    <mat-grid-tile
-        [colspan]=4
-        [rowspan]=9
-        [style.background]="'var(--background-color-2)'"
-        >
-        <div class="container to-do-list">
-            <mat-card-header id="header-to-do" >
-                <mat-card-title>Listado de tareas por hacer</mat-card-title>
-            </mat-card-header>
+<!-- @if(!isSmall){ -->
+<ng-container *ngIf="!isSmallScreen(); else mobileGrid">
+    <mat-grid-list cols="12" rowHeight="9.8vh">
+        <mat-grid-tile
+            [colspan]=4
+            [rowspan]=9
+            [style.background]="'var(--background-color-2)'"
+            >
+            <div class="container to-do-list">
+                <mat-card-header id="header-to-do" >
+                    <mat-card-title>Listado de tareas por hacer</mat-card-title>
+                </mat-card-header>
+                <div
+                cdkDropList
+                #todoList="cdkDropList"
+                [cdkDropListData]="todo"
+                [cdkDropListConnectedTo]="[doneList]"
+                class="list to-do-content"
+                (cdkDropListDropped)="drop($event)">
+                @for (item of todo; track item) {
+                        <div class="box" cdkDrag>
+                            <div class="left-elements">
+                                <div [ngClass]="getCircleClass(item.State)" ></div>
+                                <div>{{item.Name}}</div>
+                            </div>
+                            <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
+                                top: 0;
+                                right: 0; height:24px;">
+                                    <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                    <circle cx="12" cy="5" r="2"></circle>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                    <circle cx="12" cy="19" r="2"></circle>
+                                    </svg>
+                            </button>
+
+                            <ng-template #menu>
+                                
+                                <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                </svg>
+                                </button>
+                                <button
+                                class="edit-button edit-handle" 
+                                (click)="onEdit(item); $event.stopPropagation()"
+                                aria-label="Editar"
+                                >
+                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                    <!-- lápiz / edit icon -->
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                </svg>
+                                </button>
+                            </ng-template>
+                        </div>                
+                }
+                </div>
+                <button mat-raised-button (click)="openAddTask()" class="button-add">Agregar</button>
+            </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            [colspan]=8
+            [rowspan]=5
+            [style.background]="'var(--background-color-2)'"
+            >
+            <mat-card appearance="raised" class="principal-card" >
+                <mat-card-header id="header-sprint">
+                    <mat-card-title>
+                        <div class="card-title-container">
+                          <span>Sprint #{{ sprintNumber }}</span>
+                            @if(userRol){
+                                <button
+                                    mat-raised-button
+                                    color="accent"
+                                    class="complete-button"
+                                    (click)="onCompleteSprint()">
+                                    <span>Completar</span>
+                                </button>
+                            }
+                        </div>
+                      </mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content class="container-sprint"  >
+                    <mat-card >
+                        <mat-card-content
+                        style="min-height:9rem !important; min-width:100%!important; "
+                        
+                        >
+                                
+                            <div class="container" 
+                            style="min-height:9rem !important; min-width:100%!important; "
+                            
+                            >
+                                <div
+                                
+                                class="box-sprint"
+
+                                    cdkDropList
+                                    #doneList="cdkDropList"
+                                    [cdkDropListData]="done"
+                                    [cdkDropListConnectedTo]="[todoList]"
+                                    (cdkDropListDropped)="drop($event)"
+                                    style="min-height:100px !important; min-width:100%!important; "
+                                    >
+                                    @for (item of done; track $index) {
+                                        <div (dblclick)="showDetails(item)"
+                                            class="box-card"
+                                            cdkDrag>
+                                            {{item.Name}}
+                                            <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                </svg>
+                                                </button>
+                                                <button
+                                                class="edit-button edit-handle" 
+                                                (click)="onEdit(item); $event.stopPropagation()"
+                                                aria-label="Editar"
+                                                >
+                                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                                    <!-- lápiz / edit icon -->
+                                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                                                    <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                </svg>
+                                                </button>
+                                            <!-- </ng-template> -->
+
+                                            <div class="drag-handle" cdkDragHandle>
+                                                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-actions >
+                            <button (click)="backSprint()"   mat-icon-button class="nav-button">
+                                <mat-icon >chevron_left</mat-icon>
+                            </button>
+                            @if (userRol) {
+                                <button mat-raised-button 
+                                    class="add-sprint-button" (click)="openAddSprint()">
+                                    Agregar
+                                </button>
+                            }
+                            <button (click)="forwardSprint()"  mat-icon-button class="nav-button">
+                                <mat-icon>chevron_right</mat-icon>
+                            </button>
+                        </mat-card-actions>
+                    </mat-card>
+                    <mat-card appearance="raised">
+                        <mat-card-header id="goal">
+                            <mat-card-title>Meta</mat-card-title>
+                        </mat-card-header>
+                        <mat-divider></mat-divider>
+                        <mat-card-content id="goal-info">
+                        {{goal}}
+                        </mat-card-content>
+                    </mat-card>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [style.background]="'var(--background-color-2)'"
+            [colspan]=8
+            [rowspan]=4>
+            <mat-card appearance="raised" class="principal-card" id="card-task-details">
+                <mat-card-header >
+                    <mat-card-title>Detalles de tarea</mat-card-title>
+                </mat-card-header>
+                <mat-card-content  >
+                    <div >
+                        <div>Responsable: {{responsibleName}}</div>
+                        <div > Estado:  
+                            <div [ngClass]="getCircleClass(taskState)"
+                            [class.circle]="description !== ''"></div>
+                        </div>
+                    </div>
+                    <div id="description" >
+                        <p>Descripción:</p>
+                        <mat-divider></mat-divider>
+                        {{description}}
+                        <button mat-icon-button class="icon-button" (click)="openGeneralInformation()">
+                        <mat-icon>message</mat-icon>
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+</ng-container>
+<!-- }@else { -->
+<ng-template #mobileGrid>
+    <mat-grid-list cols="12" rowHeight="9.8vh" class="responsive">
+        <!-- To-do list -->
+        <mat-grid-tile
+          [style.margin-top]="'.5rem'"
+          [colspan]="12"
+          [rowspan]="1">
+          <button mat-raised-button class="button-add confirm"
+
+                [style.border-radius]="'.25rem 0 0 0 !important'"
+                style="display: absolute; left: 0; min-height: 100%;"
+                (click)="openAddTask()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 30 30" width="30" fill="white">
+                    <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                </svg>    
+            </button>
+          <div 
+            [style.padding-left]="'.5rem'"
+            class="todo-responsive">
             <div
+            class="todo-list"
               cdkDropList
               #todoList="cdkDropList"
               [cdkDropListData]="todo"
               [cdkDropListConnectedTo]="[doneList]"
-              class="list to-do-content"
-              (cdkDropListDropped)="drop($event)">
+              class="todo__list" style="display: flex; flex-direction: row">
               @for (item of todo; track item) {
-                    <div class="box" cdkDrag>
-                        <div class="left-elements">
-                            <div [ngClass]="getCircleClass(item.State)" ></div>
-                            <div>{{item.Name}}</div>
+                <div class="box" style="display: flex; flex-direction: row;" cdkDrag>
+                    <div [ngClass]="getCircleClass(item.State)" style="position: absolute; left:0; top:0;"></div>
+                    <div>{{ item.Name }}</div>
+                    <div>
+                        <div style="cursor:move;"
+                            cdkDragHandle
+                            (click)="$event.stopPropagation()">
+                                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                </svg>
                         </div>
-                        <button [cdkMenuTriggerFor]="menu" style="padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;
-                            top: 0;
-                            right: 0; height:24px;">
-                                <svg
+                        <button [cdkMenuTriggerFor]="menu" style="width: 24px !important; padding: 0!important; border-radius: 50%; border: none; color: #ccc !important; background: transparent !important; cursor: pointer !important; margin-top: 0 !important;top: 0;
+                            right: 0; height:24px;"> <svg
                                 width="24"
                                 height="24"
                                 viewBox="0 0 24 24"
@@ -34,59 +255,77 @@
                                 <circle cx="12" cy="5" r="2"></circle>
                                 <circle cx="12" cy="12" r="2"></circle>
                                 <circle cx="12" cy="19" r="2"></circle>
-                                </svg>
+                            </svg>
                         </button>
-                        <ng-template #menu>
-                            
-                            <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                            </svg>
-                            </button>
-                            <button
-                            class="edit-button edit-handle" 
-                            (click)="onEdit(item); $event.stopPropagation()"
-                            aria-label="Editar"
-                            >
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <!-- lápiz / edit icon -->
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
-                                <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                            </svg>
-                            </button>
-                        </ng-template>
-                    </div>                
+                       
+                    </div>
+                
+                </div>
+              
+                <ng-template #menu>
+                                
+                    <button class="delete-button delete-handle" (click)="onDelete(item); $event.stopPropagation()">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.7-.7 1.2-1.4 1.2H7.9c-.7 0-1.3-.5-1.4-1.2L5 9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                    </svg>
+                    </button>
+                    <button
+                    class="edit-button edit-handle" 
+                    (click)="onEdit(item); $event.stopPropagation()"
+                    aria-label="Editar"
+                    >
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <!-- lápiz / edit icon -->
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+                        <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                    </svg>
+                    </button>
+                </ng-template>
               }
             </div>
-            <button mat-raised-button (click)="openAddTask()" class="button-add">Agregar</button>
-        </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile
-        [colspan]=8
-        [rowspan]=5
+       
+          </div>
+        </mat-grid-tile>
+      
+        <!-- Sprint + Meta -->
+        <mat-grid-tile
+        [colspan]=12
+        [rowspan]=4
+        [style.margin-top]="'.5rem'"
+        
         [style.background]="'var(--background-color-2)'"
         >
-        <mat-card appearance="raised" class="principal-card" >
+        <mat-card appearance="raised" class="principal-card" style="min-height:90% !important;">
             <mat-card-header id="header-sprint" >
-                <mat-card-title>Sprint #{{sprintNumber}}</mat-card-title>
+                <mat-card-title>
+                    <div class="card-title-container">
+                        <span>Sprint #{{ sprintNumber }}</span>
+                        @if(userRol){
+                            <button
+                                mat-raised-button
+                                color="accent"
+                                class="complete-button"
+                                (click)="onCompleteSprint()">
+                                <span>Completar</span>
+                            </button>
+                        }
+                    </div>
+                  </mat-card-title>
             </mat-card-header>
 
-            <mat-card-content class="container-sprint"  >
+            <mat-card-content class="container-sprint" style="height:100%;" >
                 <mat-card >
                     <mat-card-content
                     style="min-height:9rem !important; min-width:100%!important; "
                     
                     >
-                    <!-- border: solid green 1px !important; -->
                             
                         <div class="container" 
                         style="min-height:9rem !important; min-width:100%!important; "
                         
                         >
-                        <!-- border: solid red 1px !important; -->
                             <div
                             
                             class="box-sprint"
@@ -98,7 +337,6 @@
                                 (cdkDropListDropped)="drop($event)"
                                 style="min-height:100px !important; min-width:100%!important; "
                                 >
-                                <!-- border: solid blue 1px !important; -->
                                 @for (item of done; track $index) {
                                     <div (dblclick)="showDetails(item)"
                                         class="box-card"
@@ -126,10 +364,10 @@
 
                                         <div class="drag-handle" cdkDragHandle>
                                             <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-                                              <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-                                              <path d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                            <path d="M0 0h24v24H0z" fill="none"></path>
                                             </svg>
-                                          </div>
+                                        </div>
                                     </div>
                                 }
                             </div>
@@ -156,17 +394,23 @@
                     </mat-card-header>
                     <mat-divider></mat-divider>
                     <mat-card-content id="goal-info">
-                      {{goal}}
+                    {{goal}}
                     </mat-card-content>
                 </mat-card>
             </mat-card-content>
         </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile
-        [style.background]="'var(--background-color-2)'"
-        [colspan]=8
-        [rowspan]=4>
-        <mat-card appearance="raised" class="principal-card" id="card-task-details">
+      
+        <!-- Detalles de tarea -->
+        <mat-grid-tile
+          class="tile tile--details"
+          [colspan]="12"
+          [rowspan]="4"
+          [style.margin-top]="'.5rem'"
+          [style.background]="'var(--background-color-2)'"
+          [style.border-radius]="'0 0 7px 7px'"
+          >
+          <mat-card appearance="raised" class="principal-card" id="card-task-details">
             <mat-card-header >
                 <mat-card-title>Detalles de tarea</mat-card-title>
             </mat-card-header>
@@ -183,10 +427,12 @@
                     <mat-divider></mat-divider>
                     {{description}}
                     <button mat-icon-button class="icon-button" (click)="openGeneralInformation()">
-                      <mat-icon>message</mat-icon>
+                    <mat-icon>message</mat-icon>
                     </button>
-                  </div>
+                </div>
             </mat-card-content>
         </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+        </mat-grid-tile>
+      </mat-grid-list>
+</ng-template>
+<!-- } -->

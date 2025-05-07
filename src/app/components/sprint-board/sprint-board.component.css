@@ -70,6 +70,25 @@
     
   }
 }
+
+.card-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.complete-button {
+  position: absolute;
+  right:1rem;
+  display: flex;
+  align-items: center;
+}
+
+.complete-button mat-icon {
+  margin-right: 0.25rem;
+}
+
 .mat-mdc-card-content:last-child {
   min-width:100% !important;
 
@@ -311,4 +330,40 @@ mat-card-actions{
   scrollbar-width: none;
   padding: 2rem 0 !important;
   /* padding-bottom: 3rem; */
+}
+
+@media (max-width: 767px) {
+  /* 2.3) Opcional: ajusta el botón “Agregar” */
+  .tile--todo {
+
+    display:flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: start !important;
+    box-sizing: border-box;
+  }
+  .todo-responsive{
+    background: var(--background-color-2);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: auto;
+    mat-card-header{
+      width:150px;
+    }
+  }
+  .box {
+    max-height: 100px;
+    min-width: 150px;;
+    position: relative;
+    display: flex;
+    align-items: center;   /* centra el círculo, texto y botón … */
+    height: auto !important;
+    padding: 0.5rem;       /* un pequeño padding para dar algo de espacio */
+    border-bottom: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+    cursor: default;
+  }
 }

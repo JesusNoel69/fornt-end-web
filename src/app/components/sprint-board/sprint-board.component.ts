@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, inject, OnDestroy } from '@angula
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDropList, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { GeneralInformationComponent } from '../dialogs/general-information/general-information.component';
 import { AddTaskComponent } from '../dialogs/add-task/add-task.component';
@@ -15,7 +15,7 @@ import { Project } from '../../entities/project.entity';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { of, Subject } from 'rxjs';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDivider } from '@angular/material/divider';
 import { TaskService } from '../../services/task.service';
@@ -26,6 +26,8 @@ import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
 import { DeleteConfirmComponent } from '../dialogs/delete-confirm/delete-confirm.component';
 import { EditTaskComponent } from '../dialogs/edit-task/edit-task.component';
 import { CdkMenuModule, CdkMenuTrigger } from '@angular/cdk/menu';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ConfirmUpdateComponent } from '../dialogs/confirm-update/confirm-update.component';
 
 interface DeveloperTask {
   DeveloperName: string;
@@ -35,7 +37,7 @@ interface DeveloperTask {
   selector: 'app-sprint-board',
   standalone: true,
   imports: [MatCardModule, MatButtonModule, MatIconModule, CommonModule, CdkDrag, CdkDropList, MatGridListModule, MatDivider,
-    CdkMenuTrigger, CdkMenuModule
+    CdkMenuTrigger, CdkMenuModule, CdkDragHandle
   ],
   templateUrl: './sprint-board.component.html',
   styleUrls: ['./sprint-board.component.css'],
@@ -45,10 +47,15 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private sprintService = inject(SprintService);
   private taskService = inject(TaskService);
-  private cdr = inject(ChangeDetectorRef);
+  // private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
   private userService = inject(UserService);
   readonly dialog = inject(MatDialog);
+   isSmall = false;
+   constructor(private bo:BreakpointObserver, private cdr: ChangeDetectorRef,){}
+   isSmallScreen(): boolean {
+    return this.bo.isMatched('(max-width: 767px)');
+  }
 
   // Subject para cancelar las suscripciones cuando el componente se destruye
   private destroy$ = new Subject<void>();
@@ -71,6 +78,12 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   userRol: boolean = false;
 
   ngOnInit() {
+    this.bo
+    .observe('(max-width: 767px)')
+    .subscribe(state => {
+      this.isSmall = state.matches;
+      this.cdr.markForCheck();  // fuerza re-render
+    });
     // Suscribirse al proyecto seleccionado
     this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       console.log(id)
@@ -115,6 +128,36 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
       }
       this.cdr.markForCheck();
     });
+  }
+
+  onCompleteSprint() {
+    this.sprintId;
+
+    const dialogRef = this.dialog.open(ConfirmUpdateComponent, {
+      width: '320px'
+    });
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        // Llamada PATCH al endpoint
+        this.http
+          .patch<void>(
+            `${ENVIROMENT}Sprint/UpdateStateSprint/${this.sprintId}`,
+            {}
+          )
+          .subscribe({
+            next: () => {
+              console.log('Sprint marcado como completado');
+              // aquí podrías refrescar datos, emitir un evento, etc.
+              this.cdr.markForCheck();
+              this.cdr.detectChanges();
+            },
+            error: err => {
+              console.error('Error al completar sprint', err);
+            }
+          });
+      }
+    });
+    console.log('Sprint completado:', this.sprintNumber);
   }
 
   async onEdit(task: Task) {

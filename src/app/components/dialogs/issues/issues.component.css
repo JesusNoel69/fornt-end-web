@@ -1,0 +1,85 @@
+/* 1. Título centrado y botón de cerrar */
+.dialog-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  .button-close {
+    position: absolute;
+    right: 0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0,0,0,0.6);
+  }
+  
+  /* 2. Área de revisión: botón + indicador */
+  .display-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .revision-button {
+    margin-right: 1rem;
+  }
+  .revision-button mat-icon {
+    margin-right: 0.25rem;
+  }
+  
+  /* 3. Indicador de estado redondo */
+  .status-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: background-color 0.3s;
+  }
+  .status-indicator.pending {
+    background-color: #f44336;  /* rojo */
+  }
+  .status-indicator.success {
+    background-color: #4caf50;  /* verde */
+  }
+  
+  /* 4. Mensaje de estado */
+  .message {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  /* 5. Accordion y detalles */
+  mat-accordion {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  mat-expansion-panel {
+    margin-bottom: 0.5rem;
+  }
+  .secret-detail {
+    background: #f9f9f9;
+    padding: 0.75rem;
+    border-radius: 4px;
+  }
+  .secret-detail pre {
+    background: #272822;
+    color: #f8f8f2;
+    padding: 0.5rem;
+    border-radius: 3px;
+    overflow-x: auto;
+  }
+  
+  /* 6. No secrets */
+  .no-secrets {
+    font-style: italic;
+    color: rgba(0,0,0,0.6);
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  /* 7. Actions */
+  mat-dialog-actions {
+    margin-top: 1rem;
+  }
+  

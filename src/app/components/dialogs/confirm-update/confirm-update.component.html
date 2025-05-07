@@ -1,0 +1,13 @@
+<mat-dialog-content class="delete-dialog-content">
+    <!-- <mat-icon class="warning-icon" aria-hidden="true">warning</mat-icon> -->
+    <div class="message">
+      <h2 mat-dialog-title>Confirmar eliminación</h2>
+      <p>¿Estás seguro de que deseas completar el Sprint? Esta acción no se puede deshacer.</p>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" class="delete-dialog-actions">
+    <button mat-raised-button class="cancel" (click)="cancel()">Cancelar</button>
+    <button mat-raised-button class="confirm" (click)="confirm()">Aceptar</button>
+  </mat-dialog-actions>
+  

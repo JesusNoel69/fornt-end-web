@@ -35,3 +35,21 @@ section{
     background: var( --mdc-circular-progress-active-indicator-color);
     color:var(--primary-color);
 }
+
+.spinner-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .spinner-label {
+    font-family: 'Digital 7 Mono', monospace;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 500;
+    /* Ajusta color/tamaño según tu diseño */
+  }
+
+  

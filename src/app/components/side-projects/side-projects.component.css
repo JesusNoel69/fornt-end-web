@@ -5,8 +5,13 @@
   margin: .5rem;
   cursor: pointer;
 }
-
+.projects-slider {
+  display: flex;               /* vertical por defecto (flex-direction: row) */
+  flex-direction: column;  
+  transition: transform 0.4s ease-in-out;
+}
 .project-card.selected {
+    /* width:100% !important; */
     border-color: #007bff; /* Color del borde */
     background-color: #e7f3ff;
   }
@@ -33,9 +38,9 @@
   button {
     background: #007bff !important;
     color: white;
-    min-width: calc(100% - 1rem) !important; /* Ocupa el 100% del ancho disponible menos el margen */
-    max-width: 100%;
+    min-width: calc(100% - 1rem) !important; /* Ocupa el 100% del ancho disponible menos el margen */;
     padding: 1rem;
+    /* min-height:100% !important; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,4 +54,47 @@
   button:hover {
     background: #0056b3;
   }
-  
+
+
+@media (max-width: 767px) {
+  /* CONTAINER flex para botón + slider */
+
+
+  .project-responsive {
+    display: flex !important;
+    align-items: flex-start;
+    min-width: 100% !important;
+    width: auto !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    
+    /* 3) Reserva espacio para la scrollbar en el propio slider */
+    /* scrollbar-gutter: stable; */
+  }
+
+ 
+  .toggle-btn{
+    min-width: 30px!important;
+    width:30px!important;
+    height: 100%!important;
+    /* border: solid 2px yellow; */
+  }
+  /* El carrusel ocupa el resto del ancho */
+  .projects-slider {
+    flex: 1;
+    display: flex;
+
+    width: max-content !important;     /* aquí hace crecer el contenedor */
+    overflow-x: auto !important;       /* activa scroll */
+    flex-direction: row;
+    transition: transform 0.4s ease-in-out;
+    /* overflow: hidden; */
+  }
+
+  /* Ajustes de las cards */
+  .project-card {
+    max-width: 240px;
+    height: 152px !important;
+  }
+}

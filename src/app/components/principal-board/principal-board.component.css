@@ -3,6 +3,20 @@ app-side-projects {
     height:100%; 
     overflow-y: auto;
 }
+@media (max-width: 767px) {
+    app-side-projects{
+        margin-bottom: .2rem !important;
+        overflow-x: auto;
+        scrollbar-width: none !important;
+    }
+    app-data-principal, app-sprint-details, app-sprints-principal{
+        margin-top: .2rem !important;
+    }
+    app-sprints-principal{
+        max-height: calc(100% - 2rem) !important;
+        margin-bottom: 2rem !important;
+    }
+}
 app-data-principal, app-sprint-details, app-sprints-principal {
     width: 100% !important; 
     height:100% !important;
@@ -16,3 +30,20 @@ mat-grid-list{
 .first-tile{
     border-radius: 0 0 0 7px;
 }
+/* .close-btn {
+    position: absolute !important;
+    top: 0.5rem;
+    right: 0.5rem;
+  } */
+
+  /* .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80vw;
+    height: 100vh;
+    background: white;
+    z-index: 1000;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+    padding: 1rem;
+  } */

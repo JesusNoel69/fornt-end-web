@@ -1,25 +1,29 @@
+<!-- side-projects.component.html -->
 <section class="mat-app-background">
-  @if (userRol) {
-    <button mat-raised-button (click)="openAddClick()">
-      <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 30 30" width="30" fill="white">
-        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-      </svg>
-    </button>
-  }
-  
-  
-  @for (project of projects; track $index) {
-      <mat-card class="project-card" appearance="outlined"
-      [class.selected]="selectedProjectIndex === $index"
-      (click)="selectProject($index)">
-          <mat-card-header class="project-card" >
-            <p >
-              Proyecto #{{project.Id}}
-            </p>
+  <div class="project-responsive" >
+    @if (userRol) {
+      <button mat-raised-button (click)="openAddClick()" [style.min-height]="isSmallScreen()?'152px':''" class="toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 30 30" width="30" fill="white">
+          <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+        </svg>
+      </button>
+    }
+    <div class="projects-slider"
+         [style.transform]="'translateX(-' + selectedProjectIndex * 100 + '%)'">
+      @for (project of projects; track $index) {
+        <mat-card class="project-card" appearance="outlined"
+                  [class.selected]="selectedProjectIndex === $index"
+                  (click)="selectProject($index)">
+          <mat-card-header [class.project-card]="!isSmallScreen()">
+            <p>Proyecto #{{project.Id}}</p>
           </mat-card-header>
-          <mat-card-content class="project-card">
-            <mat-progress-bar mode="determinate" value="{{percentajeCompleted(project.Sprints)}}" ></mat-progress-bar>
+          <mat-card-content [style.margin-top]="isSmallScreen()?'2rem':''">
+            <mat-progress-bar mode="determinate"
+                [value]="percentageCompleted(project.Sprints)">
+            </mat-progress-bar>
           </mat-card-content>
-      </mat-card>
-  }
+        </mat-card>
+      }
+    </div>
+  </div>
 </section>
