@@ -339,6 +339,7 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
       if (updatedBacklog && updatedBacklog.Tasks) {
         this.loadTasks(updatedBacklog.Tasks);
       }
+      this.reloadBoard();
       this.cdr.markForCheck();
       this.cdr.detectChanges();
 
@@ -412,7 +413,11 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
       this.taskService.deleteTaskById(task.Id).subscribe({
         next: () => {
           // Vuelve a ejecutar ngOnInit para recargar todo
+          console.log("entro");
+          this.reloadBoard();
           this.ngOnInit();
+          this.cdr.detectChanges();
+          this.cdr.markForCheck();
         },
         error: err => {
           console.error('Error al borrar la tarea:', err);

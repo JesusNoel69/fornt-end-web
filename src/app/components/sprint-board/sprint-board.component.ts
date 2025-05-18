@@ -378,41 +378,49 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   }
 
   openAddSprint(): void {
-      const dialogRef = this.dialog.open(AddSprintComponent, { width: '70%' });
-    
-      dialogRef.afterClosed().pipe(
-        takeUntil(this.destroy$),
-        switchMap(result => {
-          if (result && this.selectedProject) {
-            return this.projectService.refreshProjectById(this.selectedProject.Id);
-          } else {
-            return of(null);
-          }
-        }),
-        switchMap(updatedProject => {
-          if (updatedProject) {
-            this.projectService.updateSelectedProject(updatedProject);
-            return this.sprintService.getSprintsByProjectId(updatedProject.Id);
-          }
-          return of([]);
-        })
-      ).subscribe({
-        next: (sprints) => {
-          console.log("Sprints actualizados:", sprints);
-          this.sprints = sprints;
-          // this.currentIndex = 0;
-          if (this.sprints.length > 0) {
-            this.sprintService.selectSprint(this.sprints[0]);
-          } else {
-            this.sprintService.selectSprint(null);
-          }
-          this.cdr.markForCheck(); 
-        },
-        error: (err) => {
-          console.error("Error refrescando los sprints:", err);
+    const dialogRef = this.dialog.open(AddSprintComponent, { width: '70%' });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        // Si cerró sin crear sprint o no hay proyecto seleccionado, salimos
+        if (!result || !this.selectedProject) {
+          return;
         }
+
+        // Si sí creó un sprint, refrescamos proyecto y luego sprints
+        this.projectService.refreshProjectById(this.selectedProject.Id)
+          .pipe(
+            takeUntil(this.destroy$),
+            switchMap(updatedProject => {
+              // Actualizamos el proyecto en el servicio
+              this.projectService.updateSelectedProject(updatedProject!);
+              // Cargamos los sprints del proyecto recién actualizado
+              return this.sprintService.getSprintsByProjectId(updatedProject!.Id);
+            })
+          )
+          .subscribe({
+            next: sprints => {
+              console.log("Sprints actualizados:", sprints);
+
+              this.sprints = sprints;
+              // this.currentIndex = 0; // si lo necesitas, reactívalo aquí
+
+              if (sprints.length > 0) {
+                this.sprintService.selectSprint(sprints[0]);
+              } else {
+                this.sprintService.selectSprint(null);
+              }
+
+              // forzamos detección
+              this.cdr.markForCheck();
+            },
+            error: err => {
+              console.error("Error refrescando los sprints:", err);
+            }
+          });
       });
-    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

@@ -135,40 +135,49 @@ export class SprintsPrincipalComponent implements OnInit, OnDestroy {
 
   openAddSprint(): void {
     const dialogRef = this.dialog.open(AddSprintComponent, { width: '70%' });
-  
-    dialogRef.afterClosed().pipe(
-      takeUntil(this.destroy$),
-      switchMap(result => {
-        if (result && this.selectedProject) {
-          return this.projectService.refreshProjectById(this.selectedProject.Id);
-        } else {
-          return of(null);
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        // 1) Si no hay resultado, salimos sin tocar nada
+        if (!result || !this.selectedProject) {
+          return;
         }
-      }),
-      switchMap(updatedProject => {
-        if (updatedProject) {
-          this.projectService.updateSelectedProject(updatedProject);
-          return this.sprintService.getSprintsByProjectId(updatedProject.Id);
-        }
-        return of([]);
-      })
-    ).subscribe({
-      next: (sprints) => {
-        console.log("Sprints actualizados:", sprints);
-        this.sprints = sprints;
-        this.currentIndex = 0;
-        if (this.sprints.length > 0) {
-          this.sprintService.selectSprint(this.sprints[0]);
-        } else {
-          this.sprintService.selectSprint(null);
-        }
-        this.cdr.markForCheck(); 
-      },
-      error: (err) => {
-        console.error("Error refrescando los sprints:", err);
-      }
-    });
+
+        // 2) Si sí hay resultado, refrescamos el proyecto y luego los sprints
+        this.projectService.refreshProjectById(this.selectedProject.Id)
+          .pipe(
+            takeUntil(this.destroy$),
+            switchMap(updatedProject => {
+              // Actualizamos el SelectedProject en el servicio
+              this.projectService.updateSelectedProject(updatedProject!);
+              // Devolvemos el stream de sprints
+              return this.sprintService.getSprintsByProjectId(updatedProject!.Id);
+            })
+          )
+          .subscribe({
+            next: sprints => {
+              console.log("Sprints actualizados:", sprints);
+
+              this.sprints = sprints;
+              this.currentIndex = 0;
+
+              if (sprints.length > 0) {
+                this.sprintService.selectSprint(sprints[0]);
+              } else {
+                this.sprintService.selectSprint(null);
+              }
+
+              // Recalcula ancho y refresca vista
+              this.updateSlideWidth();
+              this.cdr.detectChanges();
+            },
+            error: err => {
+              console.error("Error refrescando los sprints:", err);
+            }
+          });
+      });
   }
+
   
   ngOnDestroy(): void {
     this.destroy$.next();
