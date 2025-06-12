@@ -12,9 +12,10 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Subject, of } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
-import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
+// import { ENVIRONMENT } from '../../../enviroments/enviroment.prod';
 
 import { CommonModule } from '@angular/common';
+import { TaskService } from '../../services/task.service';
 
 interface Content {
   goal: string | null;
@@ -41,6 +42,7 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   readonly dialog = inject(MatDialog);
   private http = inject(HttpClient);
+  private taskService = inject(TaskService);
 
   constructor(private userService: UserService){}
   // Subject para cancelar suscripciones al destruir el componente
@@ -66,13 +68,10 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
             startDate: sprint.StartDate,
             endDate: sprint.EndDate,
           };
-
           // Reseteamos el progreso mientras obtenemos el nuevo
           this.value = 0;
-
           // Esperamos el nuevo progreso y luego lo asignamos
-          this.value = await this.progressValue(sprint);
-
+          this.value = await this.taskService.progressValue(sprint);
           console.log("Nuevo progreso:", this.value);
           this.sprint = sprint;
         } else {
@@ -84,17 +83,17 @@ export class SprintDetailsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       });
   }
-  async progressValue(sprint: Sprint): Promise<number> {
-    console.log("Obteniendo progreso de sprint:", sprint);
-    try {
-      return await firstValueFrom(
-        this.http.get<number>(`${ENVIROMENT}Task/GetProgressvalue?sprintId=${sprint.Id}`)
-      );
-    } catch (error) {
-      console.error("Error obteniendo progreso:", error);
-      return 0; // En caso de error, devolvemos 0
-    }
-  }
+  // async progressValue(sprint: Sprint): Promise<number> {
+  //   console.log("Obteniendo progreso de sprint:", sprint);
+  //   try {
+  //     return await firstValueFrom(
+  //       this.http.get<number>(`${ENVIRONMENT}Task/GetProgressvalue?sprintId=${sprint.Id}`)
+  //     );
+  //   } catch (error) {
+  //     console.error("Error obteniendo progreso:", error);
+  //     return 0; // En caso de error, devolvemos 0
+  //   }
+  // }
 
   openChangeDetails(): void {
     const dialogRef = this.dialog.open(ChangesDetailsComponent, {width: '70%'});//, autoFocus: true

@@ -21,7 +21,7 @@ import { Project } from '../../../entities/project.entity';
 import { Task } from '../../../entities/Task.entity';
 import { Sprint } from '../../../entities/sprint.entity';
 import { ProjectService } from '../../../services/project.service';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+import { SprintService } from '../../../services/sprint.service';
 
 @Component({
   selector: 'app-add-sprint',
@@ -60,6 +60,7 @@ export class AddSprintComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
+  private sprintService = inject(SprintService);
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -120,38 +121,57 @@ export class AddSprintComponent implements OnInit, OnDestroy {
     };
   
     console.log("Sprint a agregar:", sprintToAdd);
-    const url = ENVIROMENT+'Sprint/AddSprint/' + this.selectedProject.Id;
+    // const url = ENVIRONMENT+'Sprint/AddSprint/' + this.selectedProject.Id;
   
     // Realizamos la llamada POST para insertar el sprint y luego refrescamos el proyecto
-    this.projectService.getSelectedProject()
-      .pipe(
-        takeUntil(this.destroy$),
-        switchMap(project => {
-          if (project) {
-            return this.http.post(url, sprintToAdd);
-          } else {
-            return of(null);
-          }
-        }),
-        switchMap(response => {
-          console.log("Sprint agregado:", response);
-          // Llamar al endpoint para refrescar el proyecto actualizado
-          return this.projectService.refreshProjectById(this.selectedProject!.Id);
-        })
-      )
+    // this.projectService.getSelectedProject()
+    //   .pipe(
+    //     takeUntil(this.destroy$),
+    //     switchMap(project => {
+    //       if (project) {
+    //         return this.http.post(url, sprintToAdd);
+    //       } else {
+    //         return of(null);
+    //       }
+    //     }),
+    //     switchMap(response => {
+    //       console.log("Sprint agregado:", response);
+    //       // Llamar al endpoint para refrescar el proyecto actualizado
+    //       return this.projectService.refreshProjectById(this.selectedProject!.Id);
+    //     })
+    //   )
+    //   .subscribe({
+    //     next: (updatedProject) => {
+    //       console.log("Proyecto actualizado:", updatedProject);
+    //       // Actualizar el BehaviorSubject con el proyecto actualizado
+    //       this.projectService.updateSelectedProject(updatedProject);
+    //       // Actualizar la propiedad local
+    //       this.selectedProject = updatedProject;
+    //       this.cdr.markForCheck();
+    //     },
+    //     error: (error) => {
+    //       console.error("Error agregando el sprint:", error);
+    //     }
+    //   });
+     // Aquí llamas al servicio
+    this.sprintService
+      .addSprint(this.selectedProject.Id, sprintToAdd)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (updatedProject) => {
-          console.log("Proyecto actualizado:", updatedProject);
-          // Actualizar el BehaviorSubject con el proyecto actualizado
-          this.projectService.updateSelectedProject(updatedProject);
-          // Actualizar la propiedad local
-          this.selectedProject = updatedProject;
-          this.cdr.markForCheck();
+        next: updatedProject => {
+          // if (updatedProject) {
+            console.log('Proyecto actualizado:', updatedProject);
+            // actualiza BehaviorSubject y componente
+            this.projectService.updateSelectedProject(updatedProject);
+            this.selectedProject = updatedProject;
+            this.cdr.markForCheck();
+          // }
         },
-        error: (error) => {
-          console.error("Error agregando el sprint:", error);
+        error: err => {
+          console.error('Error agregando sprint:', err);
         }
       });
+
   }
   
   

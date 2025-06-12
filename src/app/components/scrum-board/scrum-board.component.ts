@@ -57,27 +57,6 @@ export class ScrumBoardComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService){}
   ngOnInit() {
     this.reloadBoard();
-    // Suscribirse al proyecto seleccionado y obtener el ProductBacklog actualizado
-    // this.projectService.getSelectedProject()
-    //   .pipe(
-    //     takeUntil(this.destroy$),
-    //     switchMap(project => {
-    //       if (project) {
-    //         return this.projectService.getProductBacklogById(project.Id);
-    //       } else {
-    //         return of(null);
-    //       }
-    //     })
-    //   )
-    //   .subscribe(backlog => {
-    //     if (backlog && backlog.Tasks) {
-    //       console.log("i enter");
-
-    //       this.loadTasks(backlog.Tasks);
-    //     }
-    //     this.cdr.markForCheck();
-    //   });
-
       this.userService.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
         this.userId = id;
         // this.loadProjects(); // Recargar proyectos al cambiar el usuario

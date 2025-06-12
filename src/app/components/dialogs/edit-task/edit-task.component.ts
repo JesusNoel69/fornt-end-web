@@ -15,7 +15,6 @@ import { HttpClient } from '@angular/common/http';
 import { ProductBacklog } from '../../../entities/productbacklog.entity';
 import { Subject, firstValueFrom, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
 import { WeeklyScrum } from '../../../entities/weeklyscrum.entity';
 import { TaskService } from '../../../services/task.service';
 interface UpdateTaskDTO{

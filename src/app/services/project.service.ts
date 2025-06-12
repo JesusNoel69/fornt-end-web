@@ -6,13 +6,14 @@ import { ProductBacklog } from '../entities/productbacklog.entity';
 import { Developer } from '../entities/developer.entity';
 import { Task } from '../entities/Task.entity';
 import { UserService } from './user.service';
-import { ENVIROMENT } from "../../enviroments/enviroment.prod";
+import { ENVIRONMENT } from "../../enviroments/enviroment.prod";
+import { ChangeDetailWithTaskNameDto } from '../dtos/changedetailwithtaskname.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl: string = ENVIROMENT+"Project/GetProjects";
+  private apiUrl: string = ENVIRONMENT+"Project/GetProjects";
   
   private projectsSubject = new BehaviorSubject<Project[]>([]);
   private selectedProjectSubject = new BehaviorSubject<Project | null>(null);
@@ -37,7 +38,7 @@ export class ProjectService {
   }
 
   getProjectById(id: number): Observable<Project> {
-    const url = `${ENVIROMENT}Project/GetProjectById/${id}`;
+    const url = `${ENVIRONMENT}Project/GetProjectById/${id}`;
     return this.http.get<Project>(url)
       .pipe(
         tap(project => {
@@ -50,22 +51,8 @@ export class ProjectService {
       );
   }
 
-  // getProjectByProductUserId(id: number): Observable<Project> {
-  //   const url = `http://localhost:5038/Project/GetProjectByProductUserId/${id}`;
-  //   return this.http.get<Project>(url)
-  //     .pipe(
-  //       tap(project => {
-  //         console.log("Proyecto obtenido:", project);
-  //       }),
-  //       catchError(err => {
-  //         console.error("Error al obtener el proyecto:", err);
-  //         throw err;
-  //       })
-  //     );
-  // }
-
   refreshProjectById(projectId: number): Observable<Project> {
-    const url = `${ENVIROMENT}Project/GetProjectById/${projectId}`;
+    const url = `${ENVIRONMENT}Project/GetProjectById/${projectId}`;
     return this.http.get<Project>(url).pipe(
       tap((project) => {
         this.selectedProjectSubject.next(project);
@@ -98,7 +85,7 @@ export class ProjectService {
   
   getProductBacklogById(projectId: number): Observable<ProductBacklog> {
     console.log("productbacklogID: " + projectId);
-    const url = `${ENVIROMENT}Project/GetProductBacklogById/${projectId}`;
+    const url = `${ENVIRONMENT}Project/GetProductBacklogById/${projectId}`;
     return this.http.get<ProductBacklog>(url);
   }
   
@@ -134,12 +121,12 @@ export class ProjectService {
   
 
   getTeamProjectsByProjectId(projectId: number): Observable<Developer[]> {
-    const url = `${ENVIROMENT}User/GetDevelopersByProjectId/${projectId}`;
+    const url = `${ENVIRONMENT}User/GetDevelopersByProjectId/${projectId}`;
     return this.http.get<Developer[]>(url);
   }
 
   addProject(newProject: Project, userId: number): Observable<Project> {
-    return this.http.post<Project>(ENVIROMENT+'Project/InsertProject', { project: newProject, userId: userId })
+    return this.http.post<Project>(ENVIRONMENT+'Project/InsertProject', { project: newProject, userId: userId })
       .pipe(
         tap((insertedProject: Project) => {
           const currentProjects = this.projectsSubject.getValue();
@@ -156,7 +143,7 @@ export class ProjectService {
       return;
     }
 
-    const url = `${ENVIROMENT}Task/GetTasksBySprintId/${sprintId}`;
+    const url = `${ENVIRONMENT}Task/GetTasksBySprintId/${sprintId}`;
     this.http.get<Task[]>(url).subscribe({
       next: (tasks: Task[]) => {
         this.sprintTasksLoaded[sprintId] = true; // Marcamos que ya se cargaron las tareas para este sprint
@@ -171,5 +158,10 @@ export class ProjectService {
   // Observable para que otros componentes se suscriban a las tareas del sprint
   getSprintTasks(): Observable<Task[]> {
     return this.sprintTasksSubject.asObservable();
+  }
+
+  getChangeDetailsWithTaskName(projectId:number): Observable<ChangeDetailWithTaskNameDto[]>{
+    const url = `${ENVIRONMENT}ChangeDetails/GetChangeDetailsByProjectId/${projectId}`;
+    return this.http.get<ChangeDetailWithTaskNameDto[]>(url);
   }
 }

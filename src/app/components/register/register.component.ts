@@ -13,7 +13,7 @@ import { Team } from '../../entities/team.entity';
 import { Router } from '@angular/router';
 import { AuthService } from '../../authentication/auth.service';
 import { UserService } from '../../services/user.service';
-import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
+// import { ENVIRONMENT } from '../../../enviroments/enviroment.prod';
 
 @Component({
   selector: 'app-register',
@@ -36,7 +36,6 @@ export class RegisterComponent {
   password: string = '';
   // Para Developer se ingresa un teamId; para Product Owner se creará un nuevo equipo.
   teamId: number = 0;
-  // En este ejemplo: true => Product Owner, false => Developer.
   role: boolean = true; 
   productOwner: ProductOwner = null as any;
   nameSpecialization: string = "";
@@ -53,18 +52,16 @@ export class RegisterComponent {
     if (this.role) {
       console.log("PRODUCTOWNER")
       // Registro para Product Owner:
-      // 1. Crear un nuevo equipo (Team) sin asignar ProductOwner aún.
       const newTeam: Team = {
         Id: 0,
-        Name: this.name + "'s Team", // Ejemplo: nombre del equipo basado en el nombre del usuario.
-        Code: '', // Puedes generar o asignar un código según tu lógica.
-        ProductOwner: null as any, // Inicialmente null, se asignará tras registrar el Product Owner.
+        Name: this.name + "'s Team", 
+        Code: '',
+        ProductOwner: null as any,
         Developers: [],
         TeamProject: null as any
       };
 
-      const addTeamUrl = ENVIROMENT+'User/AddTeam';
-      this.http.post<Team>(addTeamUrl, newTeam).subscribe({
+      this.userService.addTeam(newTeam).subscribe({
         next: (teamResponse) => {
           this.team = teamResponse;
           console.log("Nuevo equipo creado:", this.team);
@@ -73,8 +70,7 @@ export class RegisterComponent {
           console.error("Error al crear el equipo:", err);
         }
       });
-      // console.log(this.team);
-      // 2. Crear el Product Owner asociado al nuevo equipo.
+
       const newProductOwner: ProductOwner = {
         Id: 0, // Se genera automáticamente en la BD.
         Name: this.name,
@@ -87,8 +83,7 @@ export class RegisterComponent {
         Developer: null as any,
         ChangeDetails: null as any
       };
-      const addOwnerUrl = ENVIROMENT+'User/AddProductOwner';
-      this.http.post<ProductOwner>(addOwnerUrl, newProductOwner).subscribe({
+     this.userService.addProductOwner(newProductOwner).subscribe({
         next: (ownerResponse) => {
           console.log("Product Owner registrado exitosamente:", ownerResponse);
           this.autoLogin();
@@ -99,22 +94,15 @@ export class RegisterComponent {
       });
     } else {
       console.log("DEVELOPER")
-      // Registro para Developer:
-      // Se espera que el usuario ingrese un teamId para buscar el equipo existente.
-      const teamUrl = ENVIROMENT+'User/GetTeamById/' + this.teamId;
-      this.http.get<Team>(teamUrl).subscribe({
+
+    this.userService.getTeamById(this.teamId).subscribe({
         next: (teamResponse) => {
           this.team = teamResponse;
           console.log("Equipo obtenido:", this.team);
-
-          // Obtener el ProductOwner asociado al equipo (usando teamId).
-          const urlOwner = ENVIROMENT+'User/GetProductOwner/' + this.teamId;
-          this.http.get<ProductOwner>(urlOwner).subscribe({
+          this.userService.getProductOwner(this.teamId).subscribe({
             next: (ownerResponse) => {
               this.productOwner = ownerResponse;
               console.log("Product Owner obtenido:", this.productOwner);
-
-              // Ahora se crea el Developer.
               const newDeveloper: Developer = {
                 Id: 0, // Se genera automáticamente en la BD.
                 Name: this.name,
@@ -129,8 +117,7 @@ export class RegisterComponent {
                 WeeklyScrum: null
               };
 
-              const addDevUrl = ENVIROMENT+'User/AddDeveloper';
-              this.http.post(addDevUrl, newDeveloper).subscribe({
+              this.userService.addDeveloper(newDeveloper).subscribe({
                 next: (devResponse) => {
                   console.log("Desarrollador registrado exitosamente:", devResponse);
                   this.autoLogin();
@@ -152,21 +139,6 @@ export class RegisterComponent {
     }
   }
   
-  // autoLogin() {
-  //   const loginPayload = { username: this.account, password: this.password };
-  //   // Suponiendo que el endpoint de login es este:
-  //   const loginUrl = 'http://localhost:5038/auth/login';
-  //   this.authService.login(loginPayload).subscribe({
-  //     next: (loginResponse) => {
-  //       this.authService.setToken(loginResponse.token);
-  //       console.log("Login automático exitoso, token:", loginResponse.token);
-  //       this.router.navigate(['/home']);
-  //     },
-  //     error: (err) => {
-  //       console.error("Error en el login automático:", err);
-  //     }
-  //   });
-  // }
   autoLogin() {
     const loginPayload = { username: this.account, password: this.password };
     
@@ -174,7 +146,7 @@ export class RegisterComponent {
       next: (loginResponse) => {
         this.authService.setToken(loginResponse.token);
         this.authService.setUser(loginResponse.user);
-        this.userService.setUser(loginResponse.user.Id, loginResponse.user.Rol); // Asegurar coherencia en los datos
+        this.userService.setUser(loginResponse.user.Id, loginResponse.user.Rol);
         
         console.log("Login automático exitoso, token:", loginResponse.token);
         this.router.navigate(['/home']);

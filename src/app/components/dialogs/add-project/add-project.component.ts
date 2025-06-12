@@ -20,7 +20,7 @@ import { Team } from '../../../entities/team.entity';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { UserService } from '../../../services/user.service';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+// import { ENVIRONMENT } from '../../../../enviroments/enviroment.prod';
 
 @Component({
   selector: 'app-add-project',
@@ -50,8 +50,6 @@ export class AddProjectComponent {
   endDate:Date=null as any;
   teams: Team[]=[];
   selectedTeam:Team=null as any;
-  //debo cambiarlo a una sesion usando el login
-  // porductOwnerIdFutureService:number=50;
   userId!: number;
   userRol!: boolean;
   private destroy$ = new Subject<void>();
@@ -80,7 +78,7 @@ export class AddProjectComponent {
     TeamProjects: [
       {
         TeamId: 0,
-        ProjectId: 0 // Opcional, se asignará en el backend
+        ProjectId: 0
       }
     ],
     ProductBacklog: {
@@ -111,29 +109,41 @@ export class AddProjectComponent {
     this.projectService.getProjects().subscribe((projects) => {
       this.projects = projects;
     });
-    const url = `${ENVIROMENT}User/GetTeamsByProductOwnerId/${this.userId}`;
-    this.http.get<Team[]>(url).subscribe({
-      next: (data) => {
-        this.teams = data;
-        console.log('Teams recibidos:', this.teams);
-      },
-      error: (err) => {
-        console.error('Error al obtener los teams:', err);
-      }
-    });
+    // const url = `${ENVIRONMENT}User/GetTeamsByProductOwnerId/${this.userId}`;
+    // this.http.get<Team[]>(url).subscribe({
+    //   next: (data) => {
+    //     this.teams = data;
+    //     console.log('Teams recibidos:', this.teams);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error al obtener los teams:', err);
+    //   }
+    // });
+    this.userService.getTeamsByProductOwnerId(this.userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: data => this.teams = data,
+        error: err => console.error('Error al obtener teams:', err)
+      });
 
   }
   getDevelopers(id:number){
-    const url = `${ENVIROMENT}User/GetDeveloperByTeamId/${id}`;
-    this.http.get<Developer[]>(url).subscribe({
-      next: (data) => {
-        this.developers = data;
-        console.log('Desarrolladores recibidos:', this.developers);
-      },
-      error: (err) => {
-        console.error('Error al obtener los desarrolladores:', err);
-      }
-    });
+    // const url = `${ENVIRONMENT}User/GetDeveloperByTeamId/${id}`;
+    // this.http.get<Developer[]>(url).subscribe({
+    //   next: (data) => {
+    //     this.developers = data;
+    //     console.log('Desarrolladores recibidos:', this.developers);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error al obtener los desarrolladores:', err);
+    //   }
+    // });
+     this.userService.getDevelopersByTeamId(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: data => this.developers = data,
+        error: err => console.error('Error al obtener developers:', err)
+      });
   }
 
   selectTeam(team: Team): void {
@@ -176,7 +186,6 @@ export class AddProjectComponent {
   setTaskState(task: Task, state: number): void {
     task.State = state;
   }
-
 
   setProjectState(state: number): void {
     this.project.State = state;

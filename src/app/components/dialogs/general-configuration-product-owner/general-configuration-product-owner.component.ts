@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Developer } from '../../../entities/developer.entity';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+// import { ENVIRONMENT } from '../../../../enviroments/enviroment.prod';
 
 // export interface Tile {
 //   color: string;
@@ -38,12 +38,10 @@ export class GeneralConfigurationProductOwnerComponent {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       console.log('Archivo seleccionado:', file.name);
-      // Lógica para subir el archivo, si es necesaria
     }
   }
 
   addNewUser(): void {
-    // Se crea el objeto Developer, sin asignar team (Team se asigna a null o se omite)
     const newDeveloper: Developer = {
       Id: 0,
       Rol: this.rol,
@@ -58,17 +56,15 @@ export class GeneralConfigurationProductOwnerComponent {
       Developer:null as any
     };
 
-    // Llama a un endpoint que se encargue de insertar el Developer sin equipo asignado
-    const url = ENVIROMENT+'Project/AddDeveloperWithoutProject'; // Asegúrate de que este endpoint exista en el backend
-    this.http.post(url, newDeveloper).subscribe({
-      next: (res) => {
-        console.log("Usuario agregado con éxito:", res);
-        // Aquí puedes actualizar la UI o notificar al usuario
-      },
-      error: (err) => {
-        console.error("Error al agregar usuario:", err);
-      }
-    });
+    // const url = ENVIRONMENT+'Project/AddDeveloperWithoutProject';
+    // this.http.post(url, newDeveloper).subscribe({
+    //   next: (res) => {
+    //     console.log("Usuario agregado con éxito:", res);
+    //   },
+    //   error: (err) => {
+    //     console.error("Error al agregar usuario:", err);
+    //   }
+    // });
   }
 }
 

@@ -9,16 +9,9 @@ import { ProjectService } from '../../../services/project.service';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetails } from '../../../entities/changedetails.entity';
 import { switchMap } from 'rxjs';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+import {ChangeDetailWithTaskNameDto} from '../../../dtos/changedetailwithtaskname.dto'
 
-interface ChangeDetailWithTaskNameDto {
-  Id: number;
-  SprintNumber?: number;
-  UserData?: string;
-  TaskInformation?: string;
-  TaskId: number;
-  TaskName: string;
-}
+
 @Component({
   selector: 'app-changes-details',
   standalone: true,
@@ -40,8 +33,7 @@ export class ChangesDetailsComponent implements OnInit {
     this.projectService.getSelectedProject().pipe(
       switchMap(project => {
         this.selectedProject = project;
-        const url = `${ENVIROMENT}ChangeDetails/GetChangeDetailsByProjectId/${project!.Id}`;
-        return this.http.get<ChangeDetailWithTaskNameDto[]>(url);
+        return this.projectService.getChangeDetailsWithTaskName(project!.Id);
       })
     ).subscribe({
       next: data => {

@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { UserService } from '../../../services/user.service';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+import { ENVIRONMENT } from '../../../../enviroments/enviroment.prod';
 
 
 
@@ -51,11 +51,12 @@ export class PerfilComponentComponent implements OnInit, OnDestroy {
       this.cdr.markForCheck();
 
       // Llamada HTTP directa al endpoint GetUserData
-      const url = ENVIROMENT+'User/GetUserData';
-      const params = new HttpParams().set('userId', this.userId.toString());
+      // const url = ENVIRONMENT+'User/GetUserData';
+      // const params = new HttpParams().set('userId', this.userId.toString());
 
-      this.http
-        .get<UserData>(url, { params, responseType: 'json' as const })
+      // this.http
+      //   .get<UserData>(url, { params, responseType: 'json' as const })
+      this.userService.getUserData(this.userId)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: data => {

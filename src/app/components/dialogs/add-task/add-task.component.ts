@@ -15,8 +15,8 @@ import { HttpClient } from '@angular/common/http';
 import { ProductBacklog } from '../../../entities/productbacklog.entity';
 import { Subject, firstValueFrom, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
-
+import { TaskService } from '../../../services/task.service';
+import { TaskCreateDto } from '../../../dtos/taskcreate.dto';
 @Component({
   selector: 'app-add-task',
   standalone: true,
@@ -49,7 +49,8 @@ export class AddTaskComponent implements OnInit, OnDestroy {
   public developers: Developer[] = [];
   productBacklog: ProductBacklog = null as any;
 
-  constructor(private projectService: ProjectService, private http: HttpClient,   private dialogRef: MatDialogRef<AddTaskComponent>) {}
+  constructor(private projectService: ProjectService, private taskService: TaskService,
+    private http: HttpClient,   private dialogRef: MatDialogRef<AddTaskComponent>) {}
 
   ngOnInit(): void {
     // Suscribirse al proyecto seleccionado
@@ -107,50 +108,37 @@ export class AddTaskComponent implements OnInit, OnDestroy {
 
   selectResponsable(developer: Developer): void {
     this.selectedResponsable = developer;
-    // console.log('Responsable seleccionado:', this.selectedResponsable);
   }
 
 
-async addTask(): Promise<void> {
-  if (!this.project) {
-    console.warn('No hay un proyecto seleccionado.');
-    return;
+  async addTask(): Promise<void> {
+    if (!this.project) {
+      console.warn('No hay un proyecto seleccionado.');
+      return;
+    }
+
+    const newTask: TaskCreateDto = {
+      SprintId: null,
+      Name: this.taskName,
+      WeeklyScrum: this.taskWeeklyScrum,
+      Description: this.taskInformation,
+      State: this.currentState,
+      Order: 0,
+      ProductBacklogId: this.productBacklog.Id,
+      DeveloperId: this.selectedResponsable.Id
+    };
+
+    const resultAddTask: boolean = await this.taskService.addTaskToProductBacklog(newTask);
+
+    if(resultAddTask){
+      const updatedBacklog = await firstValueFrom(this.projectService.getProductBacklogById(this.project!.Id));
+      console.log("Backlog actualizado que se enviará al cerrar el diálogo:", updatedBacklog);
+      this.dialogRef.close(updatedBacklog);
+    }else{
+      console.error("Error al agregar la tarea o actualizar el backlog:");
+    }
   }
 
-  const newTask = {
-    Name: this.taskName,
-    WeeklyScrum: this.taskWeeklyScrum,
-    Description: this.taskInformation,
-    State: this.currentState,
-    Order: 0,
-    ChangeDetails: [],
-    ProductBacklogId: this.productBacklog.Id,
-    DeveloperId: this.selectedResponsable.Id
-  };
-
-  const apiUrl = ENVIROMENT+'Task/AddTaskToProductBacklog';
-
-  try {
-    // 1️⃣ Espera a que la tarea se agregue antes de continuar
-    const addedTask = await firstValueFrom(this.http.post<Task>(apiUrl, newTask));
-    console.log("Tarea agregada:", addedTask);
-
-    // 2️⃣ Espera a que se obtenga el backlog actualizado antes de cerrar el diálogo
-    const updatedBacklog = await firstValueFrom(this.projectService.getProductBacklogById(this.project!.Id));
-    console.log("Backlog actualizado que se enviará al cerrar el diálogo:", updatedBacklog);
-
-    // 3️⃣ Cerrar el diálogo solo cuando el backlog actualizado esté listo
-    this.dialogRef.close(updatedBacklog);
-  } catch (error) {
-    console.error("Error al agregar la tarea o actualizar el backlog:", error);
-  }
-}
-
-  
-  
-  
-  
-  
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

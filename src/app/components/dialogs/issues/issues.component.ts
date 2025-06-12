@@ -8,7 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule }       from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ENVIROMENT } from '../../../../enviroments/enviroment.prod';
+import { ENVIRONMENT } from '../../../../enviroments/enviroment.prod';
+import { IntegrationService } from '../../../services/integration.service';
 export interface ScanResult {
   Message: string;
   Secrets: Array<{
@@ -36,6 +37,7 @@ export class IssuesComponent {
   constructor(
     private http: HttpClient,
     public dialogRef: MatDialogRef<IssuesComponent>,
+    private integrationService: IntegrationService
   ) {}
   
 
@@ -86,8 +88,8 @@ export class IssuesComponent {
           files.forEach(file => {
             formData.append('files', file, file.webkitRelativePath);
           });
-          this.http.post<ScanResult>(ENVIROMENT+'Integrations/AnalizeProject', formData)
-            .subscribe(response => {
+          // this.http.post<ScanResult>(ENVIRONMENT+'Integrations/AnalizeProject', formData)
+            this.integrationService.analizeProject(formData).subscribe(response => {
               console.log('Análisis enviado con éxito:', response);
               this.data=response;
             });

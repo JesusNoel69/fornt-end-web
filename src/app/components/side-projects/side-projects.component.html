@@ -8,8 +8,10 @@
         </svg>
       </button>
     }
+         <!-- [style.transform]="'translateX(-' + selectedProjectIndex * 100 + '%)'" -->
+
     <div class="projects-slider"
-         [style.transform]="'translateX(-' + selectedProjectIndex * 100 + '%)'">
+         >
       @for (project of projects; track $index) {
         <mat-card class="project-card" appearance="outlined"
                   [class.selected]="selectedProjectIndex === $index"

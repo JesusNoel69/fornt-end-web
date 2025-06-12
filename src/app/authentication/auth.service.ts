@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../entities/User.entity';
-import { ENVIROMENT } from '../../enviroments/enviroment.prod';
+import { ENVIRONMENT } from '../../enviroments/enviroment.prod';
 
 interface LoginResponse {
   token: string;
@@ -13,7 +13,7 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = ENVIROMENT + 'auth';
+  private apiUrl = ENVIRONMENT + 'auth';
 
   // Estado reactivo de autenticación
   public _authState = new BehaviorSubject<boolean>(this.hasToken());

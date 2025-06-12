@@ -1,6 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { ENVIRONMENT } from '../../enviroments/enviroment.prod';
+import { Developer } from '../entities/developer.entity';
+import { Team } from '../entities/team.entity';
+import { UserDataDto } from '../dtos/userdata.dto';
+import { DeveloperTaskDto } from '../dtos/developertask.dto';
+import { ProductOwner } from '../entities/productowner.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +18,8 @@ export class UserService {
   public userId$ = this.userIdSource.asObservable();
   public userRol$ = this.userRolSource.asObservable();
 
-  constructor() {
+  private baseUrl = `${ENVIRONMENT}User`;
+  constructor(private http: HttpClient) {
     this.loadUserFromStorage();
   }
   // setUser(id: number, rol: boolean) {
@@ -47,8 +54,59 @@ export class UserService {
     localStorage.removeItem('userId');
     localStorage.removeItem('userRole');
   }
-
-  public getUser(){
-    
+ 
+  getTeamsByProductOwnerId(ownerId: number): Observable<Team[]> {
+    return this.http.get<Team[]>(`${this.baseUrl}/GetTeamsByProductOwnerId/${ownerId}`);
   }
+
+  getDevelopersByTeamId(teamId: number): Observable<Developer[]> {
+    return this.http.get<Developer[]>(`${this.baseUrl}/GetDeveloperByTeamId/${teamId}`);
+  }
+
+  getUserData(userId: number){
+    const url = ENVIRONMENT+'User/GetUserData';        
+    const params = new HttpParams().set('userId', userId.toString());
+    return this.http.get<UserDataDto>(
+      `${this.baseUrl}/GetUserData`,
+      { params }
+    );
+  }
+  getDevelopersByIds(ids: number[]){
+    return this.http.post<Developer[]>(`${ENVIRONMENT}User/GetDevelopersByIds`, ids)
+  }
+
+  getDevelopersByTasksIds(taskIds: number[]){
+    return this.http.post<DeveloperTaskDto[]>(`${ENVIRONMENT}User/GetDevelopersByTasksIds`, taskIds)
+  }
+
+  addTeam(newTeam: Team){
+    const addTeamUrl = ENVIRONMENT+'User/AddTeam';
+    return this.http.post<Team>(addTeamUrl, newTeam);
+  }
+  
+  addProductOwner(newProductOwner: ProductOwner){
+    const addOwnerUrl = ENVIRONMENT+'User/AddProductOwner';
+    return this.http.post<ProductOwner>(addOwnerUrl, newProductOwner)
+  }
+
+  getTeamById(teamId: number){
+    const teamUrl = ENVIRONMENT+'User/GetTeamById/' + teamId;
+    return this.http.get<Team>(teamUrl)
+  }
+
+  getProductOwner(teamId: number){
+    const urlOwner = ENVIRONMENT+'User/GetProductOwner/' + teamId;
+    return this.http.get<ProductOwner>(urlOwner)
+  }
+
+  addDeveloper(newDeveloper: Developer){
+    const addDevUrl = ENVIRONMENT+'User/AddDeveloper';
+    return this.http.post(addDevUrl, newDeveloper)
+  }
+  
+//  const url = ENVIRONMENT+'User/GetUserData';
+//       const params = new HttpParams().set('userId', this.userId.toString());
+
+//       this.http
+//         .get<UserData>(url, { params, responseType: 'json' as const })
 }

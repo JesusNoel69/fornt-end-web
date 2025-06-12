@@ -22,17 +22,14 @@ import { TaskService } from '../../services/task.service';
 import { AddSprintComponent } from '../dialogs/add-sprint/add-sprint.component';
 import { UserService } from '../../services/user.service';
 import { Developer } from '../../entities/developer.entity';
-import { ENVIROMENT } from '../../../enviroments/enviroment.prod';
+import { ENVIRONMENT } from '../../../enviroments/enviroment.prod';
 import { DeleteConfirmComponent } from '../dialogs/delete-confirm/delete-confirm.component';
 import { EditTaskComponent } from '../dialogs/edit-task/edit-task.component';
 import { CdkMenuModule, CdkMenuTrigger } from '@angular/cdk/menu';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ConfirmUpdateComponent } from '../dialogs/confirm-update/confirm-update.component';
+import { DeveloperTaskDto } from '../../dtos/developertask.dto';
 
-interface DeveloperTask {
-  DeveloperName: string;
-  TaskId: number;
-}
 @Component({
   selector: 'app-sprint-board',
   standalone: true,
@@ -138,16 +135,14 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        // Llamada PATCH al endpoint
-        this.http
-          .patch<void>(
-            `${ENVIROMENT}Sprint/UpdateStateSprint/${this.sprintId}`,
-            {}
-          )
-          .subscribe({
+        // this.http
+        //   .patch<void>(
+        //     `${ENVIRONMENT}Sprint/UpdateStateSprint/${this.sprintId}`,
+        //     {}
+        //   )
+        this.sprintService.updateStateSprint(this.sprintId).subscribe({
             next: () => {
               console.log('Sprint marcado como completado');
-              // aquí podrías refrescar datos, emitir un evento, etc.
               this.cdr.markForCheck();
               this.cdr.detectChanges();
             },
@@ -216,6 +211,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
   }
 
   forwardSprint() {
+    console.log(this.sprints);
     if (this.sprints && this.indexSprint < this.sprints.length - 1) {
       this.indexSprint++;
       this.currentSprint = this.sprints[this.indexSprint];
@@ -228,9 +224,8 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
 
   private updateSprintData() {
     if (!this.currentSprint || !this.selectedProject) return;
-    // Obtener las tareas del sprint actual
-    this.http.get<Task[]>(`${ENVIROMENT}Task/GetTasksBySprintId/${this.currentSprint.Id}`)
-      .pipe(takeUntil(this.destroy$))
+    // this.http.get<Task[]>(`${ENVIRONMENT}Task/GetTasksBySprintId/${this.currentSprint.Id}`)
+      this.taskService.getTasksBySprintId(this.currentSprint.Id).pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (tasks: Task[]) => {
           // Actualizamos las tareas del sprint
@@ -260,10 +255,11 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
           this.sprintId=this.currentSprint.Id;
           if(this.ids.length>0){//puede ir vacio si no hay tareas en el sprint 
             // console.log(JSON.stringify(ids));
-            this.http.post<DeveloperTask[]>(`${ENVIROMENT}User/GetDevelopersByTasksIds`, this.ids)
-            .pipe(takeUntil(this.destroy$))
+            // this.http.post<DeveloperTask[]>(`${ENVIRONMENT}User/GetDevelopersByTasksIds`, this.ids)
+            
+            this.userService.getDevelopersByTasksIds(this.ids).pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: (developers: DeveloperTask[]) => {
+              next: (developers: DeveloperTaskDto[]) => {
                 console.log('Desarrolladores obtenidos:', developers);
                 
                 // Guardar la respuesta en `devs`
@@ -387,7 +383,7 @@ export class SprintBoardComponent implements OnInit, OnDestroy {
         if (!result || !this.selectedProject) {
           return;
         }
-
+        console.log("SI LLEGO")
         // Si sí creó un sprint, refrescamos proyecto y luego sprints
         this.projectService.refreshProjectById(this.selectedProject.Id)
           .pipe(
